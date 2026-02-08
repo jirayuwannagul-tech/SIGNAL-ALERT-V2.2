@@ -1,0 +1,405 @@
+วิเคราะห์ระบบ Trading Bot นี้แบบครบถ้วน:
+
+1. Architecture & Design Patterns
+2. Core Services และหน้าที่
+3. Signal Detection Logic  
+4. Risk Management Strategy
+5. Deployment Infrastructure
+6. Error Handling Mechanisms
+7. API Endpoints Structure
+8. Dependencies & Libraries
+
+ไฟล์โค้ดทั้งหมด:
+=== SQUEEZE BOT COMPLETE SYSTEM ===
+
+=== PROJECT FILES ===
+total 368
+-rw-r--r--@  1 jirayu_wannagulhotmail.com  staff      0 Sep 18 23:11 __init__.py
+drwxr-xr-x@ 11 jirayu_wannagulhotmail.com  staff    352 Sep 21 14:53 .
+drwxr-xr-x@ 14 jirayu_wannagulhotmail.com  staff    448 Sep 21 11:13 ..
+-rw-r--r--@  1 jirayu_wannagulhotmail.com  staff  20767 Sep 21 11:38 indicators.py
+-rw-r--r--@  1 jirayu_wannagulhotmail.com  staff  12931 Sep 19 21:38 line_notifier.py
+-rw-r--r--@  1 jirayu_wannagulhotmail.com  staff  14394 Sep 19 21:38 position_tracker.py
+-rw-r--r--@  1 jirayu_wannagulhotmail.com  staff   8094 Sep 19 21:38 price_fetcher.py
+-rw-r--r--@  1 jirayu_wannagulhotmail.com  staff  25257 Sep 21 14:52 scheduler.py
+-rw-r--r--@  1 jirayu_wannagulhotmail.com  staff  25257 Sep 21 14:53 scheduler.py.backup
+-rw-r--r--@  1 jirayu_wannagulhotmail.com  staff  33565 Sep 21 17:11 sheets_logger.py
+-rw-r--r--@  1 jirayu_wannagulhotmail.com  staff  26059 Sep 21 11:22 signal_detector.py
+
+=== MAIN APPLICATION ===
+import logging
+import os
+import time
+from threading import Thread
+from flask import Flask, jsonify, request
+from app.services.line_notifier import LineNotifier
+from app.services.position_tracker import PositionTracker
+from app.services.price_fetcher import PriceFetcher
+from app.services.scheduler import SignalScheduler
+from app.services.sheets_logger import SheetsLogger
+# Import services
+from app.services.signal_detector import SignalDetector
+from config.settings import Config
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize Flask app
+app = Flask(__name__)
+app.config.from_object(Config)
+
+# Global services (initialize lazily)
+services = {
+    "price_fetcher": None,
+    "signal_detector": None,
+    "position_tracker": None,
+    "scheduler": None,
+    "line_notifier": None,
+    "sheets_logger": None,
+    "initialized": False,
+}
+
+
+def initialize_services_background():
+    """
+    เริ่มต้นบริการทั้งหมดในเบื้องหลัง
+    - หลีกเลี่ยง timeout ตอน startup
+    - จัดการ dependencies ระหว่าง services
+    """
+    try:
+        logger.info("Starting background service initialization...")
+        
+        # Initialize core services first
+        services["price_fetcher"] = PriceFetcher()
+        logger.info("PriceFetcher initialized")
+        
+        services["signal_detector"] = SignalDetector({
+            "BINANCE_BASE_URL": Config.BINANCE_BASE_URL,
+            "RISK_MANAGEMENT": Config.RISK_MANAGEMENT,
+            "INDICATORS": Config.INDICATORS,
+        })
+        logger.info("SignalDetector initialized")
+        
+        services["position_tracker"] = PositionTracker()
+        logger.info("PositionTracker initialized")
+        
+        services["scheduler"] = SignalScheduler({
+            'DEFAULT_SYMBOLS': Config.DEFAULT_SYMBOLS,
+            'TIMEFRAMES': Config.TIMEFRAMES,
+            'CHECK_INTERVAL': Config.CHECK_INTERVAL
+        })
+        logger.info("SignalScheduler initialized")
+        
+        # Initialize notification services (optional)
+        try:
+            services["line_notifier"] = LineNotifier()
+            logger.info("LineNotifier initialized")
+        except Exception as e:
+            logger.warning(f"LineNotifier failed to initialize: {e}")
+            services["line_notifier"] = None
+            
+        try:
+            sheets_config = {
+                'GOOGLE_SHEETS_ID': Config.GOOGLE_SHEETS_ID,
+                'GOOGLE_SHEETS_CREDENTIALS': Config.GOOGLE_SHEETS_CREDENTIALS
+            }
+            services["sheets_logger"] = SheetsLogger(sheets_config)
+            logger.info("SheetsLogger initialized successfully")
+        except Exception as e:
+            logger.warning(f"SheetsLogger failed to initialize: {e}")
+            services["sheets_logger"] = None
+        
+        # **FIX 1: Inject services into scheduler (บรรทัด 78-84)**
+        services["scheduler"].set_services(
+            signal_detector=services["signal_detector"],
+            position_tracker=services["position_tracker"],
+            line_notifier=services["line_notifier"],
+            sheets_logger=services["sheets_logger"]
+        )
+        logger.info("Services injected into scheduler")
+        
+        services["initialized"] = True
+        logger.info("All services initialized successfully!")
+        
+    except Exception as e:
+        logger.error(f"Failed to initialize services: {e}")
+        services["initialized"] = False
+
+
+# Start background initialization
+Thread(target=initialize_services_background, daemon=True).start()
+
+
+@app.route("/")
+def root():
+    """
+    หน้าแรก - แสดงข้อมูลระบบ
+    - ชื่อบริการ
+    - เวอร์ชัน
+    - สถานะการทำงาน
+    """
+    return jsonify(
+        {
+            "service": "Squeeze Bot Trading System",
+            "version": "2.0",
+            "status": "running",
+            "services_ready": services["initialized"],
+        }
+    )
+
+
+@app.route("/health")
+def health_check():
+    """
+    ตรวจสอบสุขภาพระบบ
+    - สถานะการทำงาน
+    - การเริ่มต้น services
+    - timestamp
+    """
+    return (
+        jsonify(
+            {
+                "status": "healthy",
+                "services_initialized": services["initialized"],
+                "timestamp": time.time(),
+            }
+        ),
+        200,
+    )
+
+
+@app.route("/api/config")
+def get_config():
+    """
+    ดูการตั้งค่าระบบ
+    - รายการ symbols ที่ตรวจสอบ
+    - timeframes
+    - การจัดการความเสี่ยง
+    """
+    return jsonify(
+        {
+            "symbols": Config.DEFAULT_SYMBOLS,
+            "timeframes": Config.TIMEFRAMES,
+            "risk_management": Config.RISK_MANAGEMENT,
+            "services_ready": services["initialized"],
+        }
+    )
+
+
+def require_services(f):
+    """
+    Decorator สำหรับตรวจสอบว่า services พร้อมใช้งาน
+    - ป้องกันการเรียกใช้ก่อน initialize เสร็จ
+    - ส่งข้อความแจ้งให้รอ
+    """
+    def wrapper(*args, **kwargs):
+        if not services["initialized"]:
+            return (
+                jsonify(
+                    {
+                        "error": "Services are still initializing. Please wait...",
+                        "retry_after": 30,
+                    }
+                ),
+                503,
+            )
+        return f(*args, **kwargs)
+    wrapper.__name__ = f.__name__
+    return wrapper
+
+
+@app.route("/api/signals")
+@require_services
+def get_signals():
+    """
+    สแกนหา trading signals
+    - วิเคราะห์สัญญาณซื้อ/ขาย
+    - รองรับหลาย symbols และ timeframes
+    - ส่งกลับผลการวิเคราะห์ทั้งหมด
+    """
+    symbols = request.args.get("symbols", ",".join(Config.DEFAULT_SYMBOLS))
+    symbols_list = [s.strip() for s in symbols.split(",")]
+    
+    try:
+        results = []
+        for symbol in symbols_list:
+            for timeframe in Config.TIMEFRAMES:
+                signal = services["signal_detector"].analyze_symbol(symbol, timeframe)
+                if signal:
+                    results.append(signal)
+        
+        return jsonify(
+            {"signals": results, "count": len(results), "timestamp": time.time()}
+        )
+    except Exception as e:
+        logger.error(f"Error in get_signals: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/signals/active")
+@require_services
+def get_active_signals():
+    """
+    ดู signals ที่มีความแรงสูงเท่านั้น
+    - กรองเฉพาะ STRONG signals
+    - เหมาะสำหรับการตัดสินใจเทรด
+    """
+    try:
+        signals = services["signal_detector"].scan_all_symbols()
+        active_signals = [s for s in signals if s.get("strength") == "STRONG"]
+        
+        return jsonify(
+            {
+                "active_signals": active_signals,
+                "count": len(active_signals),
+                "timestamp": time.time(),
+            }
+        )
+    except Exception as e:
+        logger.error(f"Error in get_active_signals: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/positions")
+@require_services
+def get_positions():
+    """
+    ดูตำแหน่งการเทรดทั้งหมด
+    - แสดงรายการ positions ที่เปิดอยู่
+    - รวมถึงสถานะและ P&L
+    """
+    try:
+        positions = services["position_tracker"].get_all_positions()
+        return jsonify({"positions": positions, "count": len(positions)})
+    except Exception as e:
+        logger.error(f"Error in get_positions: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/positions/create", methods=["POST"])
+@require_services
+def create_position():
+    """
+    สร้างตำแหน่งการเทรดใหม่
+    - รับข้อมูล symbol, timeframe, direction
+    - คำนวณ risk levels
+    - บันทึกในระบบ tracking
+    """
+    try:
+        data = request.get_json()
+        position = services["position_tracker"].create_position(
+            symbol=data["symbol"],
+            timeframe=data["timeframe"],
+            direction=data["direction"],
+            entry_price=data["entry_price"],
+        )
+        return jsonify({"status": "success", "position": position})
+    except Exception as e:
+        logger.error(f"Error in create_position: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/scheduler/start", methods=["POST"])
+@require_services
+def start_scheduler():
+    """
+    เริ่มระบบสแกนอัตโนมัติ
+    - ตั้งตารางเวลาสแกน signals
+    - อัปเดต positions
+    - ส่งการแจ้งเตือน
+    """
+    try:
+        # **FIX 2: เรียก start_scheduler() แทน start() (บรรทัด 241)**
+        services["scheduler"].start_scheduler()
+        return jsonify({"status": "Scheduler started"})
+    except Exception as e:
+        logger.error(f"Error starting scheduler: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/scheduler/stop", methods=["POST"])
+@require_services
+def stop_scheduler():
+    """
+    หยุดระบบสแกนอัตโนมัติ
+    - ยกเลิกตารางเวลาทั้งหมด
+    - หยุดการทำงานของ background jobs
+    """
+    try:
+        services["scheduler"].stop_scheduler()
+        return jsonify({"status": "Scheduler stopped"})
+    except Exception as e:
+        logger.error(f"Error stopping scheduler: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/scheduler/status")
+@require_services
+def scheduler_status():
+    """
+    ตรวจสอบสถานะ scheduler
+    - แสดงสถานะการทำงาน (running/stopped)
+    - รายการ jobs ที่กำลังรัน
+    - เวลาที่จะรันครั้งถัดไป
+    """
+    try:
+        status = services["scheduler"].get_scheduler_status()
+        return jsonify(status)
+    except Exception as e:
+        logger.error(f"Error getting scheduler status: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+if __name__ == "__main__":
+    # =============================================================================
+    # 🔧 WERKZEUG ERROR FIX - ป้องกัน KeyError: 'WERKZEUG_SERVER_FD'
+    # =============================================================================
+    # แก้ไขปัญหา WERKZEUG_SERVER_FD ที่ทำให้ Flask ไม่สามารถเริ่มต้นได้
+    if 'WERKZEUG_SERVER_FD' in os.environ:
+        del os.environ['WERKZEUG_SERVER_FD']
+        logger.info("Removed WERKZEUG_SERVER_FD from environment")
+    
+    # เริ่มต้น Flask application
+    port = int(os.environ.get("PORT", 8080))
+    logger.info(f"Starting Flask application on port {port}")
+    
+    try:
+        app.run(host="0.0.0.0", port=port, debug=False)
+    except Exception as e:
+        logger.error(f"Failed to start Flask application: {e}")
+        raise
+=== REQUIREMENTS ===
+Flask==2.3.3
+requests==2.31.0
+python-dotenv==1.0.0
+APScheduler==3.10.4
+gspread==5.11.3
+google-auth==2.23.3
+ta==0.10.2
+line-bot-sdk
+google-auth>=2.0.0
+google-auth-oauthlib>=0.5.0
+google-auth-httplib2>=0.1.0
+google-api-python-client>=2.0.0
+=== DOCKERFILE ===
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copy requirements first
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY . .
+
+# Create directories
+RUN mkdir -p data/logs storage
+
+ENV PORT=8080
+EXPOSE 8080
+
+CMD ["python", "-m", "app.main"]

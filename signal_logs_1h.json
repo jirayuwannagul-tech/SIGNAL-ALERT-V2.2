@@ -1,0 +1,4002 @@
+[
+  {
+    "insertId": "68df52750007f3bd45d15db3",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,521 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=73.6, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.521149Z"
+  },
+  {
+    "insertId": "68df52750007f3790d308a10",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,521 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=73.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.521081Z"
+  },
+  {
+    "insertId": "68df52750007dc7a4242007d",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,515 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=65.4, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.515194Z"
+  },
+  {
+    "insertId": "68df52750007dc41bde0cd91",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,515 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=65.4 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.515137Z"
+  },
+  {
+    "insertId": "68df52750007c510bc14670e",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,509 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=DOWN, RSI=66.7, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.509200Z"
+  },
+  {
+    "insertId": "68df52750007c4cc1f637462",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,509 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=DOWN, RSI=66.7 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.509132Z"
+  },
+  {
+    "insertId": "68df52750007ad8eac1f425e",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,503 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=80.4, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.503182Z"
+  },
+  {
+    "insertId": "68df52750007ad4883ff157f",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,503 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=80.4 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.503112Z"
+  },
+  {
+    "insertId": "68df52750007958950f445d9",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,497 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=76.6, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.497033Z"
+  },
+  {
+    "insertId": "68df52750007952fd2e6d2c0",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,497 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=76.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.496943Z"
+  },
+  {
+    "insertId": "68df527500077e116b04d068",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,491 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=77.6, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.491025Z"
+  },
+  {
+    "insertId": "68df527500077d912ea5c9f7",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,491 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=77.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.490897Z"
+  },
+  {
+    "insertId": "68df5275000765cd553b4926",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,484 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=77.8, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.484813Z"
+  },
+  {
+    "insertId": "68df52750007658af853918b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,484 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=77.8 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.484746Z"
+  },
+  {
+    "insertId": "68df527500074e2e22c14a14",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,478 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=95.3, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.478766Z"
+  },
+  {
+    "insertId": "68df527500074de1eeb38f86",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,478 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=95.3 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.478689Z"
+  },
+  {
+    "insertId": "68df52750007360f36212199",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,472 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=84.0, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.472591Z"
+  },
+  {
+    "insertId": "68df5275000735cc43744277",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,472 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=84.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.472524Z"
+  },
+  {
+    "insertId": "68df527500071d3cacb31250",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,466 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=73.0, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.466236Z"
+  },
+  {
+    "insertId": "68df527500071cf4cb69f886",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,466 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=73.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.466164Z"
+  },
+  {
+    "insertId": "68df5275000705718d719e7f",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,460 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=77.0, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.460145Z"
+  },
+  {
+    "insertId": "68df5275000705283db27828",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,460 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=77.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.460072Z"
+  },
+  {
+    "insertId": "68df52750006ec7fef1c353b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,453 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=75.9, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.453759Z"
+  },
+  {
+    "insertId": "68df52750006ec36dfd60a70",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,453 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=75.9 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.453686Z"
+  },
+  {
+    "insertId": "68df52750006d4108348ffbb",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,447 - app.services.signal_detector - INFO - No signal - Sq=False, Mom=NEUTRAL, MACD=DOWN, RSI=50.0, Trend=NEUTRAL",
+    "timestamp": "2025-10-03T04:35:01.447504Z"
+  },
+  {
+    "insertId": "68df52750006d3d4430e4dad",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,447 - app.services.signal_detector - INFO - Signal check - Squeeze=ON, Mom=NEUTRAL, MACD=DOWN, RSI=50.0 (need: <40 or >60), Trend=NEUTRAL",
+    "timestamp": "2025-10-03T04:35:01.447444Z"
+  },
+  {
+    "insertId": "68df52750006bbacfeab5831",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,441 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=85.2, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.441260Z"
+  },
+  {
+    "insertId": "68df52750006bb5f06963a2b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,441 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=85.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.441183Z"
+  },
+  {
+    "insertId": "68df52750006a33ed2b0f87a",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,435 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=71.1, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.435006Z"
+  },
+  {
+    "insertId": "68df52750006a2f1fed94528",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,435 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=71.1 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.434929Z"
+  },
+  {
+    "insertId": "68df527500068adc9ff42e86",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,428 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=82.9, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.428764Z"
+  },
+  {
+    "insertId": "68df527500068a9b961fd9e6",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,428 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=82.9 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.428699Z"
+  },
+  {
+    "insertId": "68df52750006726dbf2f6ddb",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,422 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=80.6, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.422509Z"
+  },
+  {
+    "insertId": "68df52750006722798847b1c",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,422 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=80.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.422439Z"
+  },
+  {
+    "insertId": "68df527500065a135f547ac8",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,416 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=DOWN, RSI=70.3, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.416275Z"
+  },
+  {
+    "insertId": "68df5275000659d851748df7",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,416 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=DOWN, RSI=70.3 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.416216Z"
+  },
+  {
+    "insertId": "68df5275000641ed3a1afc75",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,410 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=56.3, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.410093Z"
+  },
+  {
+    "insertId": "68df5275000641a678b2f0b7",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,410 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=56.3 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.410022Z"
+  },
+  {
+    "insertId": "68df5275000628f95a0fb2ea",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,403 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=77.2, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.403705Z"
+  },
+  {
+    "insertId": "68df5275000628b91ec7ce44",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,403 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=77.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.403641Z"
+  },
+  {
+    "insertId": "68df527500060e918ec3823a",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,397 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=70.2, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.396945Z"
+  },
+  {
+    "insertId": "68df527500060e5f87fa6608",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,396 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=70.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.396895Z"
+  },
+  {
+    "insertId": "68df52750005f5bf9a6dd871",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,390 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=76.2, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.390591Z"
+  },
+  {
+    "insertId": "68df52750005f56ff40c4743",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,390 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=76.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.390511Z"
+  },
+  {
+    "insertId": "68df52750005dd3c7262b86b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,384 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=84.0, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.384316Z"
+  },
+  {
+    "insertId": "68df52750005dcfb56c0afe4",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,384 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=84.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.384251Z"
+  },
+  {
+    "insertId": "68df52750005c3b6e770eccc",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,377 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=70.6, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.377782Z"
+  },
+  {
+    "insertId": "68df52750005c36605123444",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,377 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=70.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.377702Z"
+  },
+  {
+    "insertId": "68df52750005abe345ba9f3e",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,371 - app.services.signal_detector - INFO - No signal - Sq=False, Mom=UP, MACD=NONE, RSI=58.0, Trend=NEUTRAL",
+    "timestamp": "2025-10-03T04:35:01.371683Z"
+  },
+  {
+    "insertId": "68df52750005abae55ca92f9",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,371 - app.services.signal_detector - INFO - Signal check - Squeeze=ON, Mom=UP, MACD=NONE, RSI=58.0 (need: <40 or >60), Trend=NEUTRAL",
+    "timestamp": "2025-10-03T04:35:01.371630Z"
+  },
+  {
+    "insertId": "68df527500059241c05f722c",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,365 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=82.9, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.365121Z"
+  },
+  {
+    "insertId": "68df527500059201a1756aa8",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,365 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=82.9 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.365057Z"
+  },
+  {
+    "insertId": "68df527500057a826f9c79f3",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,359 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=77.9, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.359042Z"
+  },
+  {
+    "insertId": "68df527500057a2c4b0ea4e3",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,359 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=77.9 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.358956Z"
+  },
+  {
+    "insertId": "68df5275000562f114b008a2",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,353 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=79.3, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.353009Z"
+  },
+  {
+    "insertId": "68df5275000562a63d93bc33",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,353 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=79.3 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.352934Z"
+  },
+  {
+    "insertId": "68df527500054a9507ea7d4a",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,346 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=79.3, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.346773Z"
+  },
+  {
+    "insertId": "68df527500054a5740756b70",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,346 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=79.3 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.346711Z"
+  },
+  {
+    "insertId": "68df527500053330bdd63da5",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,340 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=71.5, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.340784Z"
+  },
+  {
+    "insertId": "68df5275000532e7b6af164f",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,340 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=71.5 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.340711Z"
+  },
+  {
+    "insertId": "68df527500051b0fc48f02b8",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,334 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=75.2, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.334607Z"
+  },
+  {
+    "insertId": "68df527500051b04f44f5b8e",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,334 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=75.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.334596Z"
+  },
+  {
+    "insertId": "68df5275000503f3095bacb8",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,328 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=65.6, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.328691Z"
+  },
+  {
+    "insertId": "68df5275000503a367902c52",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,328 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=65.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.328611Z"
+  },
+  {
+    "insertId": "68df52750004ebbe2c39eefc",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,322 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=63.0, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.322494Z"
+  },
+  {
+    "insertId": "68df52750004eb7bc7fb5279",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,322 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=63.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.322427Z"
+  },
+  {
+    "insertId": "68df52750004d3da3cfa4346",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,316 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=79.0, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.316378Z"
+  },
+  {
+    "insertId": "68df52750004d388f3e46a6f",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,316 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=79.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.316296Z"
+  },
+  {
+    "insertId": "68df52750004bc7eada071b4",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,310 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=83.8, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.310398Z"
+  },
+  {
+    "insertId": "68df52750004bc46e493a710",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,310 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=83.8 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.310342Z"
+  },
+  {
+    "insertId": "68df52750004a461a6ee62c6",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,304 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=85.7, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.304225Z"
+  },
+  {
+    "insertId": "68df52750004a40facfe964e",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,304 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=85.7 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.304143Z"
+  },
+  {
+    "insertId": "68df527500048c44dba505bb",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,298 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=80.7, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.298052Z"
+  },
+  {
+    "insertId": "68df527500048bfd67aa1935",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,298 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=80.7 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.297981Z"
+  },
+  {
+    "insertId": "68df5275000474318187d92b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,292 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=DOWN, RSI=77.8, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.291889Z"
+  },
+  {
+    "insertId": "68df5275000473e9d8861616",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,291 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=DOWN, RSI=77.8 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.291817Z"
+  },
+  {
+    "insertId": "68df527500045cc11ae1c13b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,286 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=80.1, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.285889Z"
+  },
+  {
+    "insertId": "68df527500045c89c07ff701",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,285 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=80.1 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.285833Z"
+  },
+  {
+    "insertId": "68df527500044435fa4b0da0",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,279 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=59.7, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.279605Z"
+  },
+  {
+    "insertId": "68df5275000443f3652fbaec",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,279 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=59.7 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.279539Z"
+  },
+  {
+    "insertId": "68df527500042c18c4086993",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,273 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=73.6, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.273432Z"
+  },
+  {
+    "insertId": "68df527500042be474f7eccb",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,273 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=73.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.273380Z"
+  },
+  {
+    "insertId": "68df527500041444da489f98",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,267 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=64.9, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.267332Z"
+  },
+  {
+    "insertId": "68df52750004140ddd5f67e8",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,267 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=64.9 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.267277Z"
+  },
+  {
+    "insertId": "68df52750003fc6add1943f8",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,261 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=88.0, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.261226Z"
+  },
+  {
+    "insertId": "68df52750003fc2c9547fc4c",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,261 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=88.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.261164Z"
+  },
+  {
+    "insertId": "68df52750003e4130ff189fb",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,255 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=84.6, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.254995Z"
+  },
+  {
+    "insertId": "68df52750003e3c75fa4f76d",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,255 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=84.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.254919Z"
+  },
+  {
+    "insertId": "68df52750003cc5de1ecf38e",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,249 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=75.8, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.248925Z"
+  },
+  {
+    "insertId": "68df52750003cc0fef1f620c",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,249 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=75.8 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.248847Z"
+  },
+  {
+    "insertId": "68df52750003b3a303ec9e8c",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,242 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=83.5, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.242595Z"
+  },
+  {
+    "insertId": "68df52750003b35e87ff1bfe",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,242 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=83.5 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.242526Z"
+  },
+  {
+    "insertId": "68df527500039a065da2f9db",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,236 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=92.8, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.236038Z"
+  },
+  {
+    "insertId": "68df5275000399cedd50689a",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,236 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=92.8 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.235982Z"
+  },
+  {
+    "insertId": "68df527500038166765a46a7",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,229 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=71.5, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.229734Z"
+  },
+  {
+    "insertId": "68df52750003812272500fe4",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,229 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=71.5 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.229666Z"
+  },
+  {
+    "insertId": "68df5275000368aa94abcde6",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,223 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=93.2, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.223402Z"
+  },
+  {
+    "insertId": "68df52750003686742d7c750",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,223 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=93.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.223335Z"
+  },
+  {
+    "insertId": "68df5275000350440eeef54b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,217 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=89.2, Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.217156Z"
+  },
+  {
+    "insertId": "68df527500035005cfff2149",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:35:01.551940785Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:35:01,217 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=89.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:35:01.217093Z"
+  },
+  {
+    "insertId": "68df4ef1000868aa02752052",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.880848704Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,552 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=73.6, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.551082Z"
+  },
+  {
+    "insertId": "68df4ef100086858cf6c2735",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.880848704Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,552 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=73.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.551Z"
+  },
+  {
+    "insertId": "68df4ef100084d9c187dd99b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.880848704Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,545 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=65.4, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.544156Z"
+  },
+  {
+    "insertId": "68df4ef100084d49b08c1cc5",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.880848704Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,545 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=65.4 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.544073Z"
+  },
+  {
+    "insertId": "68df4ef10008332344b43ebc",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,538 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=DOWN, RSI=66.7, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.537379Z"
+  },
+  {
+    "insertId": "68df4ef1000832e0b6c3984c",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,538 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=DOWN, RSI=66.7 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.537312Z"
+  },
+  {
+    "insertId": "68df4ef100081976bd0ccad5",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,531 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=80.4, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.530806Z"
+  },
+  {
+    "insertId": "68df4ef10008192d1a17e80f",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,531 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=80.4 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.530733Z"
+  },
+  {
+    "insertId": "68df4ef10007fed23417df9b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,525 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=76.6, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.523986Z"
+  },
+  {
+    "insertId": "68df4ef10007fe70e7de2727",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,525 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=76.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.523888Z"
+  },
+  {
+    "insertId": "68df4ef10007e4d3cc0b5dbc",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,518 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=77.6, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.517331Z"
+  },
+  {
+    "insertId": "68df4ef10007e48b94531858",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,518 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=77.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.517259Z"
+  },
+  {
+    "insertId": "68df4ef10007cb376d3ec758",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,511 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=77.8, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.510775Z"
+  },
+  {
+    "insertId": "68df4ef10007cad9507bb107",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,511 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=77.8 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.510681Z"
+  },
+  {
+    "insertId": "68df4ef10007b0c57020644d",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,505 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=95.3, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.504005Z"
+  },
+  {
+    "insertId": "68df4ef10007b06b257d097a",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,505 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=95.3 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.503915Z"
+  },
+  {
+    "insertId": "68df4ef1000795d54ec31434",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,498 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=84.0, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.497109Z"
+  },
+  {
+    "insertId": "68df4ef100079591786cb276",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,498 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=84.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.497041Z"
+  },
+  {
+    "insertId": "68df4ef100077bf7feb019f1",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,491 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=73.0, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.490487Z"
+  },
+  {
+    "insertId": "68df4ef100077bad98f97f0c",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,491 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=73.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.490413Z"
+  },
+  {
+    "insertId": "68df4ef10007628145d77d8f",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,485 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=77.0, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.483969Z"
+  },
+  {
+    "insertId": "68df4ef10007621e1069b8c9",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,485 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=77.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.483870Z"
+  },
+  {
+    "insertId": "68df4ef100074996c32025a1",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,478 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=75.9, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.477590Z"
+  },
+  {
+    "insertId": "68df4ef10007494611dac165",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,478 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=75.9 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.477510Z"
+  },
+  {
+    "insertId": "68df4ef1000730064c4ecea9",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,472 - app.services.signal_detector - INFO - No signal - Sq=False, Mom=NEUTRAL, MACD=DOWN, RSI=50.0, Trend=NEUTRAL",
+    "timestamp": "2025-10-03T04:20:01.471046Z"
+  },
+  {
+    "insertId": "68df4ef100072fc30c553c0a",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,472 - app.services.signal_detector - INFO - Signal check - Squeeze=ON, Mom=NEUTRAL, MACD=DOWN, RSI=50.0 (need: <40 or >60), Trend=NEUTRAL",
+    "timestamp": "2025-10-03T04:20:01.470979Z"
+  },
+  {
+    "insertId": "68df4ef100071617fa51ae13",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,465 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=85.2, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.464407Z"
+  },
+  {
+    "insertId": "68df4ef1000715c8a1d831a2",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,465 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=85.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.464328Z"
+  },
+  {
+    "insertId": "68df4ef10006fc9f47ce810a",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,459 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=71.1, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.457887Z"
+  },
+  {
+    "insertId": "68df4ef10006fc52e85526e5",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,458 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=71.1 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.457810Z"
+  },
+  {
+    "insertId": "68df4ef10006e3063f50d631",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,452 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=82.9, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.451334Z"
+  },
+  {
+    "insertId": "68df4ef10006e2c6dfbe0fb6",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,452 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=82.9 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.451270Z"
+  },
+  {
+    "insertId": "68df4ef10006c9190977c981",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,445 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=80.6, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.444697Z"
+  },
+  {
+    "insertId": "68df4ef10006c8c92e40d9a4",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,445 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=80.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.444617Z"
+  },
+  {
+    "insertId": "68df4ef10006aee0de88e88c",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,439 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=DOWN, RSI=70.3, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.437984Z"
+  },
+  {
+    "insertId": "68df4ef10006ae83eed6dc4d",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,439 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=DOWN, RSI=70.3 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.437891Z"
+  },
+  {
+    "insertId": "68df4ef10006957e45feac5b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,432 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=56.3, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.431486Z"
+  },
+  {
+    "insertId": "68df4ef100069528ba713969",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,432 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=56.3 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.431400Z"
+  },
+  {
+    "insertId": "68df4ef100067c399f000bc4",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,426 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=77.2, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.425017Z"
+  },
+  {
+    "insertId": "68df4ef100067bd06e4df623",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,426 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=77.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.424912Z"
+  },
+  {
+    "insertId": "68df4ef10006623305d5db26",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,419 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=70.2, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.418355Z"
+  },
+  {
+    "insertId": "68df4ef1000661ece945e8f4",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,419 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=70.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.418284Z"
+  },
+  {
+    "insertId": "68df4ef1000649643f7e60b2",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,413 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=76.2, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.412004Z"
+  },
+  {
+    "insertId": "68df4ef10006490b553186ff",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,413 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=76.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.411915Z"
+  },
+  {
+    "insertId": "68df4ef100062ed3d2e6e69d",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,406 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=84.0, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.405203Z"
+  },
+  {
+    "insertId": "68df4ef100062e80582ede2e",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,406 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=84.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.405120Z"
+  },
+  {
+    "insertId": "68df4ef100061447cc7dad20",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,399 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=70.6, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.398407Z"
+  },
+  {
+    "insertId": "68df4ef100061408d8bec15f",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,399 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=70.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.398344Z"
+  },
+  {
+    "insertId": "68df4ef10005f979a306319c",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,392 - app.services.signal_detector - INFO - No signal - Sq=False, Mom=UP, MACD=NONE, RSI=58.0, Trend=NEUTRAL",
+    "timestamp": "2025-10-03T04:20:01.391545Z"
+  },
+  {
+    "insertId": "68df4ef10005f93bf56263a8",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,392 - app.services.signal_detector - INFO - Signal check - Squeeze=ON, Mom=UP, MACD=NONE, RSI=58.0 (need: <40 or >60), Trend=NEUTRAL",
+    "timestamp": "2025-10-03T04:20:01.391483Z"
+  },
+  {
+    "insertId": "68df4ef10005df5d883aba38",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,386 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=82.9, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.384861Z"
+  },
+  {
+    "insertId": "68df4ef10005df08b576e762",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,385 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=82.9 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.384776Z"
+  },
+  {
+    "insertId": "68df4ef10005c58e7021b5d4",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,379 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=77.9, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.378254Z"
+  },
+  {
+    "insertId": "68df4ef10005c55c754f07f0",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,379 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=77.9 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.378204Z"
+  },
+  {
+    "insertId": "68df4ef10005ab7455c942d8",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,372 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=79.3, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.371572Z"
+  },
+  {
+    "insertId": "68df4ef10005ab2918a64d56",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,372 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=79.3 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.371497Z"
+  },
+  {
+    "insertId": "68df4ef1000590573ff624a3",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,365 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=79.3, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.364631Z"
+  },
+  {
+    "insertId": "68df4ef10005900adf42a073",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,365 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=79.3 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.364554Z"
+  },
+  {
+    "insertId": "68df4ef1000576091541f483",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,359 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=71.5, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.357897Z"
+  },
+  {
+    "insertId": "68df4ef1000575c62ea9cb61",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,358 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=71.5 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.357830Z"
+  },
+  {
+    "insertId": "68df4ef100055c83447c021a",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,352 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=75.2, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.351363Z"
+  },
+  {
+    "insertId": "68df4ef100055c3bd6a6a491",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,352 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=75.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.351291Z"
+  },
+  {
+    "insertId": "68df4ef1000542e1e3ae7494",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,345 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=65.6, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.344801Z"
+  },
+  {
+    "insertId": "68df4ef10005428b699f034b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,345 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=65.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.344715Z"
+  },
+  {
+    "insertId": "68df4ef1000527e45cba632b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,339 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=63.0, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.337892Z"
+  },
+  {
+    "insertId": "68df4ef1000527a92db67b70",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,338 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=63.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.337833Z"
+  },
+  {
+    "insertId": "68df4ef100050da87552f6a3",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,332 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=79.0, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.331176Z"
+  },
+  {
+    "insertId": "68df4ef100050d6be79dec05",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,332 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=79.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.331115Z"
+  },
+  {
+    "insertId": "68df4ef10004f32573760457",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,325 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=83.8, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.324389Z"
+  },
+  {
+    "insertId": "68df4ef10004f2e4acf29c58",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,325 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=83.8 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.324324Z"
+  },
+  {
+    "insertId": "68df4ef10004d9e1a140ec86",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,319 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=85.7, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.317921Z"
+  },
+  {
+    "insertId": "68df4ef10004d99f9c64d275",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,318 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=85.7 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.317855Z"
+  },
+  {
+    "insertId": "68df4ef10004bf72fab228e5",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,312 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=80.7, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.311154Z"
+  },
+  {
+    "insertId": "68df4ef10004bf3c14582491",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,312 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=80.7 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.311100Z"
+  },
+  {
+    "insertId": "68df4ef10004a51cc9ac7555",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,305 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=DOWN, RSI=77.8, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.304412Z"
+  },
+  {
+    "insertId": "68df4ef10004a4d04da2f2ca",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,305 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=DOWN, RSI=77.8 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.304336Z"
+  },
+  {
+    "insertId": "68df4ef100048bce8c4b4315",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,299 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=80.1, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.297934Z"
+  },
+  {
+    "insertId": "68df4ef100048b80c5ed3655",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,299 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=80.1 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.297856Z"
+  },
+  {
+    "insertId": "68df4ef1000472974c82b160",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,292 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=59.7, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.291479Z"
+  },
+  {
+    "insertId": "68df4ef10004725bb6840899",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,292 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=59.7 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.291419Z"
+  },
+  {
+    "insertId": "68df4ef100045919c65a7481",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,286 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=DOWN, RSI=73.6, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.284953Z"
+  },
+  {
+    "insertId": "68df4ef1000458c6fb38954b",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,286 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=DOWN, RSI=73.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.284870Z"
+  },
+  {
+    "insertId": "68df4ef100043fdfc20f3fc5",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,279 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=64.9, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.278495Z"
+  },
+  {
+    "insertId": "68df4ef100043fa41ff7f6b1",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,279 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=64.9 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.278436Z"
+  },
+  {
+    "insertId": "68df4ef1000424e0849cc714",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,272 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=88.0, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.271584Z"
+  },
+  {
+    "insertId": "68df4ef1000424a38a3e1dd9",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,272 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=88.0 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.271523Z"
+  },
+  {
+    "insertId": "68df4ef10004096500d14880",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,265 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=84.6, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.264549Z"
+  },
+  {
+    "insertId": "68df4ef10004091cbdc2dd31",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,265 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=84.6 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.264476Z"
+  },
+  {
+    "insertId": "68df4ef10003ec1cd05497e4",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,258 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=75.8, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.257052Z"
+  },
+  {
+    "insertId": "68df4ef10003ebd8b62cb682",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,258 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=75.8 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.256984Z"
+  },
+  {
+    "insertId": "68df4ef10003d0be27c620ab",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,251 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=83.5, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.250046Z"
+  },
+  {
+    "insertId": "68df4ef10003d063ef5df6de",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,251 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=83.5 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.249955Z"
+  },
+  {
+    "insertId": "68df4ef10003b562fa33e6ee",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,244 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=92.8, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.243042Z"
+  },
+  {
+    "insertId": "68df4ef10003b5433d62c691",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,244 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=92.8 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.243011Z"
+  },
+  {
+    "insertId": "68df4ef100039ae444aec93c",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,237 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=71.5, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.236260Z"
+  },
+  {
+    "insertId": "68df4ef100039a9d788a6be0",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,237 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=71.5 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.236189Z"
+  },
+  {
+    "insertId": "68df4ef100037f45b70cde3d",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,230 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=UP, MACD=NONE, RSI=93.2, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.229189Z"
+  },
+  {
+    "insertId": "68df4ef100037ee8f1cb1b63",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,230 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=UP, MACD=NONE, RSI=93.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.229096Z"
+  },
+  {
+    "insertId": "68df4ef10003617a37f7bf5f",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,222 - app.services.signal_detector - INFO - No signal - Sq=True, Mom=NEUTRAL, MACD=NONE, RSI=89.2, Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.221562Z"
+  },
+  {
+    "insertId": "68df4ef10003613871c2e137",
+    "labels": {
+      "instanceId": "0069c7a98804423d1adcc5f91b16095448cb40f7d6c1a7fb4ca458d6e10ed412dd0b6fdc66ecffa99d55fdc75b335ddad98b8f6041880f7389b16a8fef34a8864ade7453e818e8e1a78fd9389f9babf2b20c"
+    },
+    "logName": "projects/signal-alert-472517/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-03T04:20:01.553214164Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "signal-alert",
+        "location": "asia-southeast1",
+        "project_id": "signal-alert-472517",
+        "revision_name": "signal-alert-00067-gnt",
+        "service_name": "signal-alert"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "2025-10-03 04:20:01,222 - app.services.signal_detector - INFO - Signal check - Squeeze=OFF, Mom=NEUTRAL, MACD=NONE, RSI=89.2 (need: <40 or >60), Trend=UP",
+    "timestamp": "2025-10-03T04:20:01.221496Z"
+  }
+]
