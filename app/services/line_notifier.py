@@ -169,7 +169,7 @@ class LineNotifier:
         rsi = indicators.get("rsi", {})
 
         # Create formatted message
-        message = f"""🤖 SQUEEZE BOT SIGNAL v2.0
+        message = f"""🤖 SQUEEZE BOT SIGNAL v2.2
 
 {signal_emoji} {signal_type}
 Symbol: {symbol}

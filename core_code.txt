@@ -1,0 +1,3473 @@
+=== CONFIG SETTINGS ===
+"""Configuration settings for Squeeze Bot - COMPLETE v2.0"""
+
+import os
+from typing import Dict, List, Optional
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+class Config:
+    """Base configuration class with layer organization - COMPLETE v2.0"""
+
+    # ================================================================
+    # 🌐 LAYER 1: System Basics (updated for refactored architecture)
+    # ================================================================
+
+    # System version and identification
+    VERSION = "2.0-refactored"
+    DEBUG = os.getenv("DEBUG", "false").lower() == "true"
+    
+    # Basic settings
+    CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", "900"))  # 15 minutes
+    TIMEFRAMES = ["4h", "1d"]
+    MAX_CONCURRENT_REQUESTS = int(os.getenv("MAX_CONCURRENT_REQUESTS", "10"))
+    
+    # Refactored service settings
+    SIGNAL_COOLDOWN_MINUTES = int(os.getenv("SIGNAL_COOLDOWN_MINUTES", "30"))
+    PRICE_MONITOR_INTERVAL = int(os.getenv("PRICE_MONITOR_INTERVAL", "30"))  # seconds
+
+    # ================================================================
+    # 📡 LAYER 2: External API Connections (updated for ConfigManager)
+    # ================================================================
+
+    # Binance API
+    BINANCE_BASE_URL = os.getenv("BINANCE_BASE_URL", "https://fapi.binance.com/fapi/v1")
+    BINANCE_API_KEY = os.getenv("BINANCE_API_KEY", "")
+    BINANCE_SECRET_KEY = os.getenv("BINANCE_SECRET_KEY", "")
+
+    # LINE Bot (updated for ConfigManager)
+    LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", "")
+    LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET", "")
+    LINE_USER_ID = os.getenv("LINE_USER_ID", "")
+
+    # Google Sheets (updated for ConfigManager)
+    GOOGLE_SHEETS_ID = os.getenv("GOOGLE_SHEETS_ID", "")
+    GOOGLE_SHEETS_CREDENTIALS = os.getenv("GOOGLE_SHEETS_CREDENTIALS", "")
+    
+    # Fix: Unescape JSON string
+    _creds_json = os.getenv("GOOGLE_CREDENTIALS_JSON", "")
+    if _creds_json:
+        # Railway may wrap with quotes, remove them
+        _creds_json = _creds_json.strip('"')
+        # Replace escaped quotes and newlines
+        _creds_json = _creds_json.replace('\\"', '"').replace('\\n', '\n')
+    
+    GOOGLE_APPLICATION_CREDENTIALS = _creds_json or os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "/app/credentials.json")
+
+    # ================================================================
+    # 💰 LAYER 3: Symbol Selection (COMPLETE - 50 symbols)
+    # ================================================================
+
+    # Top 50 Crypto by Market Cap - ALL VERIFIED on Binance Futures ✅
+    DEFAULT_SYMBOLS = [
+        # Top 10 - Major coins
+        "BTCUSDT", "ETHUSDT", "XRPUSDT", "BNBUSDT", "SOLUSDT",
+        "ADAUSDT", "DOGEUSDT", "TRXUSDT", "TONUSDT", "LINKUSDT",
+        
+        # 11-20 - Large caps
+        "AVAXUSDT", "DOTUSDT", "LTCUSDT", "NEARUSDT", "UNIUSDT",
+        "ICPUSDT", "APTUSDT", "ATOMUSDT", "HBARUSDT", "FILUSDT",
+        
+        # 21-30 - Mid caps
+        "ARBUSDT", "OPUSDT", "SUIUSDT", "INJUSDT", "STXUSDT",
+        "IMXUSDT", "AAVEUSDT", "GRTUSDT", "RENDERUSDT", "TIAUSDT",
+        
+        # 31-40 - DeFi & Layer 1/2
+        "POLUSDT", "MKRUSDT", "ALGOUSDT", "LDOUSDT", "VETUSDT",
+        "SEIUSDT", "TAOUSDT", "FTMUSDT", "KAVAUSDT", "RUNEUSDT",
+        
+        # 41-50 - Gaming, Metaverse & Others
+        "BEAMXUSDT", "SANDUSDT", "MANAUSDT", "AXSUSDT", "FLOWUSDT",
+        "CHZUSDT", "ENSUSDT", "APEUSDT", "QNTUSDT", "EGLDUSDT"
+    ]
+
+    # Priority symbols - Updated to 10 for better coverage
+    PRIORITY_SYMBOLS = [
+        "BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "SOLUSDT",
+        "ADAUSDT", "DOGEUSDT", "AVAXUSDT", "LINKUSDT", "DOTUSDT"
+    ]
+
+    # ================================================================
+    # 📊 LAYER 4: Technical Indicators (COMPLETE with ATR)
+    # ================================================================
+
+    INDICATORS = {
+        "squeeze": {
+            "length": int(os.getenv("SQUEEZE_LENGTH", "20")),
+            "bb_mult": float(os.getenv("SQUEEZE_BB_MULT", "2.0")),
+            "kc_mult": float(os.getenv("SQUEEZE_KC_MULT", "1.5")),
+            "use_true_range": True
+        },
+        "macd": {
+            "fast": int(os.getenv("MACD_FAST", "8")),
+            "slow": int(os.getenv("MACD_SLOW", "17")),
+            "signal": int(os.getenv("MACD_SIGNAL", "9"))
+        },
+        "rsi": {
+            "period": int(os.getenv("RSI_PERIOD", "14")),
+            "oversold": int(os.getenv("RSI_OVERSOLD", "40")),
+            "overbought": int(os.getenv("RSI_OVERBOUGHT", "60"))
+        },
+        "atr": {
+            "period": int(os.getenv("ATR_PERIOD", "14")),
+            "min_atr_multiplier": float(os.getenv("MIN_ATR_MULT", "0.5"))
+        }
+    }
+
+    # ================================================================
+    # 💸 LAYER 5: Risk Management (updated for PositionManager)
+    # ================================================================
+
+    RISK_MANAGEMENT = {
+        "4h": {
+            "tp_levels": [3.0, 5.0, 7.0],  # เพิ่มใหม่
+            "sl_level": 3.0,
+            "max_risk_per_trade": 3.0,
+            "max_open_trades": 3
+        },
+        "1d": {
+            "tp_levels": [5.0, 7.0, 9.0],
+            "sl_level": 5.0,
+            "max_risk_per_trade": 3.0,
+            "max_open_trades": 2
+        }
+    }
+
+    # ================================================================
+    # 🔄 LAYER 6: Signal Filtering (COMPLETE with liquidity checks)
+    # ================================================================
+
+    SIGNAL_FILTERING = {
+        "min_signal_strength": int(os.getenv("MIN_SIGNAL_STRENGTH", "70")),
+        "require_volume_confirmation": True,
+        "min_volume_ratio": float(os.getenv("MIN_VOLUME_RATIO", "1.2")),
+        "cooldown_minutes": int(os.getenv("SIGNAL_COOLDOWN", "15")),
+        "max_signals_per_day": int(os.getenv("MAX_SIGNALS_PER_DAY", "20")),
+        "min_24h_volume_usd": int(os.getenv("MIN_24H_VOLUME", "5000000")),
+        "min_open_interest_usd": int(os.getenv("MIN_OPEN_INTEREST", "2000000")),
+        "max_spread_percentage": float(os.getenv("MAX_SPREAD_PCT", "0.1"))
+    }
+
+    # ================================================================
+    # 🏷️ LAYER 7: Signal Classification
+    # ================================================================
+
+    SIGNAL_CATEGORIES = {
+        "strong": {
+            "min_strength": 90,
+            "description": "High confidence signals",
+            "notification_priority": "high"
+        },
+        "medium": {
+            "min_strength": 70,
+            "description": "Medium confidence signals",
+            "notification_priority": "medium"
+        },
+        "weak": {
+            "min_strength": 50,
+            "description": "Low confidence signals",
+            "notification_priority": "low"
+        }
+    }
+
+    # ================================================================
+    # 📱 LAYER 8: Notifications
+    # ================================================================
+
+    NOTIFICATIONS = {
+        "line_enabled": bool(os.getenv("LINE_NOTIFICATIONS", "true").lower() == "true"),
+        "sheets_enabled": bool(os.getenv("SHEETS_LOGGING", "true").lower() == "true"),
+        "console_enabled": True,
+        "signal_strength_threshold": 75,
+        "notification_cooldown": 300,
+        "version": "2.0.106"
+    }
+
+    # ================================================================
+    # 🗃️ LAYER 9: Data Storage (COMPLETE with performance optimization)
+    # ================================================================
+
+    DATA_STORAGE = {
+        "enabled": True,
+        "cache_duration_hours": 24,
+        "max_candles_per_symbol": 500,
+        "storage_path": "./data/candles",
+        "backup_enabled": True,
+        "compression": True,
+        "price_cache_timeout": 30,
+        "connection_pool_size": 20,
+        "batch_size": 10,
+        "retry_attempts": 3,
+        "retry_delay_seconds": 2,
+        "use_compression": True,
+        "max_memory_mb": 512
+    }
+
+    # ================================================================
+    # 🗃️ LAYER 10: Position Management (RESTORED)
+    # ================================================================
+
+    POSITION_MANAGEMENT = {
+        "positions_file": "data/positions.json",
+        "auto_cleanup_days": 30,
+        "max_positions_per_symbol": 1,
+        "position_timeout_hours": 168,
+        "track_partial_fills": True,
+        "calculate_pnl": True
+    }
+
+    # ================================================================
+    # 📊 LAYER 11: Symbol Categories & Tiers (FIXED)
+    # ================================================================
+
+    SYMBOL_CATEGORIES = {
+        "tier1": ["BTCUSDT", "ETHUSDT"],
+        "tier2": ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "SOLUSDT",
+                  "ADAUSDT", "DOGEUSDT", "AVAXUSDT", "LINKUSDT", "DOTUSDT"],
+        "tier3": DEFAULT_SYMBOLS[:30],
+        "tier4": DEFAULT_SYMBOLS[30:],
+        "layer1": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "ADAUSDT", "AVAXUSDT", 
+                   "DOTUSDT", "NEARUSDT", "APTUSDT", "ATOMUSDT", "ICPUSDT",
+                   "SUIUSDT", "ALGOUSDT", "SEIUSDT", "FTMUSDT", "EGLDUSDT"],
+        "layer2": ["ARBUSDT", "OPUSDT", "POLUSDT", "IMXUSDT", "STXUSDT"],
+        "defi": ["UNIUSDT", "AAVEUSDT", "MKRUSDT", "LDOUSDT", "INJUSDT",
+                 "RUNEUSDT", "KAVAUSDT", "GRTUSDT"],
+        "gaming": ["BEAMXUSDT", "SANDUSDT", "MANAUSDT", "AXSUSDT", 
+                   "FLOWUSDT", "CHZUSDT", "APEUSDT", "IMXUSDT"]
+    }
+
+    # ================================================================
+    # 🛡️ Validation Methods
+    # ================================================================
+
+    @classmethod
+    def validate_config(cls) -> List[str]:
+        """Validate required configuration settings for v2.0"""
+        errors = []
+
+        if not cls.BINANCE_BASE_URL:
+            errors.append("BINANCE_BASE_URL is required")
+
+        if not cls.TIMEFRAMES:
+            errors.append("At least one timeframe must be specified")
+
+        if not cls.DEFAULT_SYMBOLS:
+            errors.append("At least one symbol must be specified")
+
+        required_indicators = ["squeeze", "macd", "rsi"]
+        for indicator in required_indicators:
+            if indicator not in cls.INDICATORS:
+                errors.append(f"Missing required indicator: {indicator}")
+
+        for timeframe in cls.TIMEFRAMES:
+            if timeframe not in cls.RISK_MANAGEMENT:
+                errors.append(f"Missing risk management settings for timeframe: {timeframe}")
+
+        if cls.SIGNAL_COOLDOWN_MINUTES < 1:
+            errors.append("SIGNAL_COOLDOWN_MINUTES must be at least 1 minute")
+
+        if cls.PRICE_MONITOR_INTERVAL < 10:
+            errors.append("PRICE_MONITOR_INTERVAL must be at least 10 seconds")
+
+        return errors
+
+    @classmethod
+    def initialize_config(cls) -> None:
+        """Initialize configuration and display status for v2.0"""
+        print("=" * 60)
+        print(f"🚀 SIGNAL ALERT SYSTEM v{cls.VERSION} - CONFIGURATION")
+        print("=" * 60)
+        
+        print(f"Check Interval: {cls.CHECK_INTERVAL} seconds")
+        print(f"Timeframes: {', '.join(cls.TIMEFRAMES)}")
+        print(f"Symbols: {len(cls.DEFAULT_SYMBOLS)} total")
+        print(f"Priority Symbols: {len(cls.PRIORITY_SYMBOLS)}")
+        print(f"Signal Cooldown: {cls.SIGNAL_COOLDOWN_MINUTES} minutes")
+        print(f"Price Monitor Interval: {cls.PRICE_MONITOR_INTERVAL} seconds")
+        
+        print("\n📡 API Connections:")
+        print(f"Binance: {'✅ Configured' if cls.BINANCE_BASE_URL else '❌ Not configured'}")
+        print(f"Line Bot: {'✅ Configured' if cls.LINE_CHANNEL_ACCESS_TOKEN else '❌ Not configured'}")
+        print(f"Google Sheets: {'✅ Configured' if cls.GOOGLE_SHEETS_ID else '❌ Not configured'}")
+        
+        print(f"\n🔧 Refactored Services:")
+        print(f"ConfigManager: ✅ Ready")
+        print(f"DataManager: ✅ Ready")
+        print(f"PositionManager: ✅ Ready")
+        
+        print(f"\n📊 Technical Indicators:")
+        for name, settings in cls.INDICATORS.items():
+            print(f"{name.upper()}: {settings}")
+
+        errors = cls.validate_config()
+        if errors:
+            print(f"\n❌ Configuration Errors:")
+            for error in errors:
+                print(f"  - {error}")
+        else:
+            print(f"\n✅ Configuration validated successfully!")
+
+        print("=" * 60)
+
+    # ================================================================
+    # 🔧 Helper Functions (COMPLETE SET)
+    # ================================================================
+
+    @classmethod
+    def get_timeframe_config(cls, timeframe: str) -> Dict:
+        """Get configuration for specific timeframe"""
+        return cls.RISK_MANAGEMENT.get(timeframe, cls.RISK_MANAGEMENT.get("4h", {}))
+
+    @classmethod
+    def get_indicator_settings(cls, indicator: str) -> Dict:
+        """Get settings for specific indicator"""
+        return cls.INDICATORS.get(indicator, {})
+
+    @classmethod
+    def get_notification_config(cls) -> Dict:
+        """Get notification configuration"""
+        return cls.NOTIFICATIONS
+
+    @classmethod
+    def get_binance_config(cls) -> Dict:
+        """Get Binance API configuration for DataManager"""
+        return {
+            'base_url': cls.BINANCE_BASE_URL,
+            'api_key': cls.BINANCE_API_KEY,
+            'secret_key': cls.BINANCE_SECRET_KEY,
+            'timeout': 30,
+            'rate_limit': 1200
+        }
+
+    @classmethod
+    def get_google_config(cls) -> Dict:
+        """Get Google configuration for ConfigManager"""
+        return {
+            'sheets_id': cls.GOOGLE_SHEETS_ID,
+            'credentials_path': cls.GOOGLE_APPLICATION_CREDENTIALS
+        }
+
+    @classmethod
+    def get_line_config(cls) -> Dict:
+        """Get LINE configuration for ConfigManager"""
+        return {
+            'access_token': cls.LINE_CHANNEL_ACCESS_TOKEN,
+            'secret': cls.LINE_CHANNEL_SECRET,
+            'user_id': cls.LINE_USER_ID
+        }
+
+    @classmethod
+    def get_position_config(cls) -> Dict:
+        """Get position management configuration for PositionManager"""
+        return cls.POSITION_MANAGEMENT
+
+    @classmethod
+    def get_symbols_by_tier(cls, tier: int = 4) -> List[str]:
+        """Get symbols by tier level"""
+        if tier == 1:
+            return cls.SYMBOL_CATEGORIES["tier1"]
+        elif tier == 2:
+            return cls.SYMBOL_CATEGORIES["tier2"]
+        elif tier == 3:
+            return cls.SYMBOL_CATEGORIES["tier3"]
+        else:
+            return cls.DEFAULT_SYMBOLS
+
+    @classmethod
+    def get_symbols_by_category(cls, category: str) -> List[str]:
+        """Get symbols by category"""
+        return cls.SYMBOL_CATEGORIES.get(category, [])
+
+    @classmethod
+    def is_priority_symbol(cls, symbol: str) -> bool:
+        """Check if symbol is in priority list"""
+        return symbol in cls.PRIORITY_SYMBOLS
+
+    @classmethod
+    def get_update_interval(cls, symbol: str) -> int:
+        """Get update interval based on symbol priority (seconds)"""
+        if symbol in cls.SYMBOL_CATEGORIES["tier1"]:
+            return 30
+        elif symbol in cls.SYMBOL_CATEGORIES["tier2"]:
+            return 60
+        elif symbol in cls.SYMBOL_CATEGORIES["tier3"]:
+            return 300
+        else:
+            return 900
+
+    @classmethod
+    def validate_symbol(cls, symbol: str) -> bool:
+        """Validate if symbol exists in config"""
+        return symbol in cls.DEFAULT_SYMBOLS
+
+    @classmethod
+    def get_system_summary(cls) -> Dict:
+        """Get configuration summary for debugging v2.0"""
+        return {
+            "version": cls.VERSION,
+            "timeframes": cls.TIMEFRAMES,
+            "symbols_count": len(cls.DEFAULT_SYMBOLS),
+            "priority_symbols_count": len(cls.PRIORITY_SYMBOLS),
+            "risk_management_timeframes": list(cls.RISK_MANAGEMENT.keys()),
+            "indicators": list(cls.INDICATORS.keys()),
+            "check_interval_seconds": cls.CHECK_INTERVAL,
+            "signal_cooldown_minutes": cls.SIGNAL_COOLDOWN_MINUTES,
+            "price_monitor_interval": cls.PRICE_MONITOR_INTERVAL,
+            "rsi_thresholds": {
+                "oversold": cls.INDICATORS["rsi"]["oversold"],
+                "overbought": cls.INDICATORS["rsi"]["overbought"]
+            },
+            "macd_settings": cls.INDICATORS["macd"],
+            "line_configured": bool(cls.LINE_CHANNEL_ACCESS_TOKEN),
+            "sheets_configured": bool(cls.GOOGLE_SHEETS_ID),
+            "binance_configured": bool(cls.BINANCE_BASE_URL),
+            "refactored_services": True,
+            "position_management": True,
+            "symbol_tiers": {
+                "tier1": len(cls.SYMBOL_CATEGORIES["tier1"]),
+                "tier2": len(cls.SYMBOL_CATEGORIES["tier2"]),
+                "tier3": len(cls.SYMBOL_CATEGORIES["tier3"]),
+                "tier4": len(cls.SYMBOL_CATEGORIES["tier4"])
+            }
+        }
+
+    # ================================================================
+    # 📋 Change Log
+    # ================================================================
+
+    @classmethod
+    def get_change_log(cls) -> Dict:
+        """Get change log for v2.0"""
+        return {
+            "version": "2.0-refactored",
+            "changes": {
+                "added": [
+                    "50 verified Binance Futures symbols (from 30)",
+                    "ATR indicator for volatility filtering",
+                    "Liquidity & volume filters (min 24h volume, OI, spread)",
+                    "Symbol tier system (tier1-4) for priority management",
+                    "Symbol categories by sector (layer1, layer2, defi, gaming)",
+                    "Performance optimization (batch processing, retry logic)",
+                    "10 priority symbols (from 5)",
+                    "Enhanced helper functions (get_update_interval, etc.)",
+                    "ConfigManager for centralized configuration",
+                    "DataManager replacing PriceFetcher + DataUpdater", 
+                    "PositionManager for position logic",
+                    "Background position monitoring",
+                    "Comprehensive caching system"
+                ],
+                "modified": [
+                    "Signal cooldown: 4 hours → 30 minutes",
+                    "Max signals per day: 10 → 20",
+                    "Signal strength threshold: 70% → 75%",
+                    "MATICUSDT → POLUSDT (rebrand)",
+                    "Enhanced data storage configuration",
+                    "Improved risk management settings"
+                ],
+                "refactored": [
+                    "main.py - new service architecture", 
+                    "signal_detector.py - DataManager + PositionManager",
+                    "price_monitor.py - coordinator role",
+                    "scheduler.py - delegates to services",
+                    "sheets_logger.py - uses ConfigManager",
+                    "line_notifier.py - uses ConfigManager"
+                ]
+            }
+        }
+
+    # ================================================================
+    # 🔍 Developer Information
+    # ================================================================
+
+    @classmethod
+    def get_developer_info(cls) -> Dict:
+        """Get developer and debugging information for v2.0"""
+        return {
+            "architecture": {
+                "pattern": "Dependency Injection + Single Responsibility",
+                "core_services": [
+                    "ConfigManager (singleton)",
+                    "DataManager (price data + caching)",
+                    "PositionManager (position logic + tracking)"
+                ],
+                "coordinators": [
+                    "SignalDetector (analysis + position creation)",
+                    "PriceMonitor (monitoring coordination)",
+                    "SignalScheduler (job scheduling)"
+                ]
+            },
+            "validation_rules": {
+                "required_env_vars": [
+                    "BINANCE_BASE_URL",
+                    "LINE_CHANNEL_ACCESS_TOKEN", 
+                    "GOOGLE_SHEETS_ID"
+                ],
+                "optional_env_vars": [
+                    "CHECK_INTERVAL",
+                    "MIN_SIGNAL_STRENGTH",
+                    "MAX_SIGNALS_PER_DAY",
+                    "SIGNAL_COOLDOWN_MINUTES",
+                    "PRICE_MONITOR_INTERVAL",
+                    "MIN_24H_VOLUME",
+                    "MIN_OPEN_INTEREST",
+                    "ATR_PERIOD",
+                    "DEBUG"
+                ]
+            },
+            "performance_tips": [
+                "Use tier system to prioritize symbol updates",
+                "Enable batch processing for 50 symbols",
+                "Set appropriate volume filters to reduce noise",
+                "Monitor memory usage with max_memory_mb setting",
+                "Use compression for candle data storage"
+            ]
+        }
+
+=== MAIN ===
+import logging
+import os
+import time
+from threading import Thread
+from flask import Flask, jsonify, request
+
+# New refactored services
+from app.services.config_manager import ConfigManager
+from app.services.data_manager import DataManager
+from app.services.position_manager import PositionManager
+from app.services.websocket_manager import WebSocketManager
+
+# Legacy services (will be refactored)
+from app.services.signal_detector import SignalDetector
+from app.services.scheduler import SignalScheduler
+from app.services.sheets_logger import SheetsLogger
+from app.services.line_notifier import LineNotifier
+from app.services.performance_analyzer import PerformanceAnalyzer
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+def get_version():
+    """Read and auto-increment version on startup"""
+    try:
+        # Read current version
+        if os.path.exists('version.txt'):
+            with open('version.txt', 'r') as f:
+                version = int(f.read().strip())
+        else:
+            version = 106
+        
+        # Increment version
+        new_version = version + 1
+        
+        # Save new version
+        with open('version.txt', 'w') as f:
+            f.write(str(new_version))
+        
+        logger.info(f"🔢 Version auto-incremented: 2.2.{version} → 2.2.{new_version}")
+        return f"2.2.{new_version}"
+    except Exception as e:
+        logger.error(f"Error reading version: {e}")
+        return "2.2.0"
+
+VERSION = get_version()
+
+raw_port = os.environ.get("PORT", "8080")
+if raw_port == "$PORT" or not raw_port.isdigit():
+    port = 8080 
+else:
+    port = int(raw_port)
+
+# Initialize Flask app
+app = Flask(__name__)
+
+# Global services - refactored architecture
+services = {
+    # Core refactored services
+    "config_manager": None,
+    "data_manager": None, 
+    "position_manager": None,
+    "websocket_manager": None,
+    
+    # Legacy services (to be updated)
+    "signal_detector": None,
+    "scheduler": None,
+    "line_notifier": None,
+    "sheets_logger": None,
+    "performance_analyzer": None,
+    
+    "initialized": False,
+}
+
+
+def initialize_services_background():
+    """Initialize all services with new refactored architecture"""
+    try:
+        logger.info(f"🚀 Starting SIGNAL-ALERT {VERSION} service initialization...")
+        
+        # Step 1: Initialize ConfigManager (Singleton)
+        services["config_manager"] = ConfigManager()
+        logger.info("✅ ConfigManager initialized")
+        
+        # Step 2: Initialize DataManager (replaces PriceFetcher + DataUpdater)
+        services["data_manager"] = DataManager()
+        logger.info("✅ DataManager initialized (replaces PriceFetcher + DataUpdater)")
+        
+        # Step 3: Initialize PositionManager (replaces PositionTracker + PriceMonitor logic)
+        services["position_manager"] = PositionManager(services["data_manager"])
+        logger.info("✅ PositionManager initialized (replaces PositionTracker + PriceMonitor logic)")
+        
+        # Step 3.5: Initialize WebSocketManager for real-time data (Top 5 coins)
+        try:
+            # Create callback with SignalDetector
+            def kline_callback(kline_data):
+                services["data_manager"].process_websocket_kline(
+                    kline_data, 
+                    signal_detector=services.get("signal_detector")
+                )
+            
+            # Top 3 coins for Rebound strategy
+            symbols = ["btcusdt", "ethusdt", "solusdt"]
+            services["websocket_managers"] = []
+            
+            for symbol in symbols:
+                ws = WebSocketManager(symbol=symbol, timeframe="15m")
+                ws.set_kline_callback(kline_callback)
+                ws.connect()
+                services["websocket_managers"].append(ws)
+                logger.info(f"✅ WebSocket connected: {symbol}")
+            
+            logger.info(f"✅ All {len(symbols)} WebSockets initialized")
+        except Exception as e:
+            logger.warning(f"⚠️ WebSocketManager failed to initialize: {e}")
+            services["websocket_managers"] = []
+        
+        # Step 4: Initialize notification services with ConfigManager
+        try:
+            line_config = services["config_manager"].get_line_config()
+            services["line_notifier"] = LineNotifier(line_config)
+            logger.info("✅ LineNotifier initialized with ConfigManager")
+        except Exception as e:
+            logger.warning(f"⚠️ LineNotifier failed to initialize: {e}")
+            services["line_notifier"] = None
+            
+        try:
+            google_config = services["config_manager"].get_google_config()
+            # 👇 ใส่ # ไว้หน้า 2 บรรทัดนี้
+            # services["sheets_logger"] = SheetsLogger(google_config)
+            # logger.info("✅ SheetsLogger initialized with ConfigManager")
+            services["sheets_logger"] = None # 👈 เพิ่มบรรทัดนี้เพื่อให้ระบบรู้ว่าไม่ต้องใช้
+        except Exception as e:
+            logger.warning(f"⚠️ SheetsLogger failed to initialize: {e}")
+            services["sheets_logger"] = None
+        
+        # Step 5: Initialize SignalDetector with new services
+        try:
+            signal_config = {
+                "data_manager": services["data_manager"],
+                "position_manager": services["position_manager"],
+                "config_manager": services["config_manager"],
+                "line_notifier": services["line_notifier"]
+            }
+            services["signal_detector"] = SignalDetector(signal_config)
+            logger.info("✅ SignalDetector initialized with refactored services")
+        except Exception as e:
+            logger.error(f"❌ SignalDetector initialization failed: {e}")
+            services["signal_detector"] = None
+        
+        # Step 6: Initialize Scheduler with new architecture
+        try:
+            scheduler_config = services["config_manager"].get_all()
+            services["scheduler"] = SignalScheduler(scheduler_config)
+            
+            # Inject refactored services into scheduler
+            services["scheduler"].set_services(
+                signal_detector=services["signal_detector"],
+                position_manager=services["position_manager"],
+                line_notifier=services["line_notifier"],
+                sheets_logger=services["sheets_logger"]
+            )
+            logger.info("✅ SignalScheduler initialized with refactored services")
+            
+            # Auto-start scheduler
+            services["scheduler"].start_scheduler()
+            logger.info("✅ Scheduler auto-started")
+            
+        except Exception as e:
+            logger.error(f"❌ SignalScheduler initialization failed: {e}")
+            services["scheduler"] = None
+        
+        # Step 7: Initialize PerformanceAnalyzer
+        try:
+            services["performance_analyzer"] = PerformanceAnalyzer(
+                config={},
+                sheets_logger=services["sheets_logger"]
+            )
+            logger.info("✅ PerformanceAnalyzer initialized")
+        except Exception as e:
+            logger.warning(f"⚠️ PerformanceAnalyzer failed to initialize: {e}")
+            services["performance_analyzer"] = None
+        
+        # Step 8: Start automatic position monitoring
+        if services["position_manager"] and services["sheets_logger"]:
+            try:
+                # Start background position monitoring thread
+                monitor_thread = Thread(
+                    target=start_position_monitoring,
+                    daemon=True
+                )
+                monitor_thread.start()
+                logger.info("✅ Background position monitoring started")
+            except Exception as e:
+                logger.warning(f"⚠️ Failed to start background monitoring: {e}")
+        
+        services["initialized"] = True
+        logger.info(f"🎉 All services initialized successfully! SIGNAL-ALERT {VERSION} ready")
+        
+    except Exception as e:
+        logger.error(f"💥 Service initialization failed: {e}")
+        services["initialized"] = False
+
+
+def start_position_monitoring():
+    """Background thread for continuous position monitoring"""
+    monitor_interval = 30  # 30 seconds
+    
+    while True:
+        try:
+            if services["initialized"] and services["position_manager"]:
+                updates = services["position_manager"].update_positions()
+                
+                if updates:
+                    logger.info(f"📊 Updated {len(updates)} positions")
+                    
+                    # Log to sheets if available
+                    if services["sheets_logger"]:
+                        try:
+                            for position_id, update_info in updates.items():
+                                if update_info.get('position_closed'):
+                                    position = services["position_manager"].positions.get(position_id)
+                                    if position:
+                                        services["sheets_logger"].log_position_close(position)
+                                
+                                # ✅ แก้ indent ให้อยู่ใน for loop เดียวกัน
+                                for tp_level in ['TP1', 'TP2', 'TP3']:
+                                    tp_key = f'{tp_level}_hit'
+                                    if tp_key in update_info and update_info[tp_key].get('hit'):
+                                        position = services["position_manager"].positions.get(position_id)
+                                        if position:
+                                            services["sheets_logger"].log_tp_hit(position, update_info[tp_key])
+                                            logger.info(f"Logged {tp_level} hit for {position_id}")
+                                        
+                        except Exception as e:
+                            logger.error(f"Error logging to sheets: {e}")
+                            
+            time.sleep(monitor_interval)
+            
+        except Exception as e:
+            logger.error(f"Error in position monitoring thread: {e}")
+            time.sleep(monitor_interval)
+
+
+# Start background initialization
+Thread(target=initialize_services_background, daemon=True).start()
+
+
+@app.route("/")
+def root():
+    """Home endpoint - system information"""
+    config = services["config_manager"]
+    cache_stats = services["data_manager"].get_cache_stats() if services["data_manager"] else {}
+    
+    return jsonify({
+        "system": "SIGNAL-ALERT",
+        "version": VERSION,
+        "status": "running",
+        "services_ready": services["initialized"],
+        "architecture": "refactored",
+        "services": {
+            "config_manager": services["config_manager"] is not None,
+            "data_manager": services["data_manager"] is not None,
+            "position_manager": services["position_manager"] is not None,
+            "signal_detector": services["signal_detector"] is not None,
+            "scheduler": services["scheduler"] is not None
+        },
+        "features": [
+            "Centralized Data Management",
+            "Unified Position Tracking", 
+            "Single Source Price Fetching",
+            "Automated TP/SL Detection",
+            "Google Sheets Integration",
+            "Configuration Management",
+            "Comprehensive Error Handling"
+        ],
+        "metrics": {
+            "cache_stats": cache_stats,
+            "debug_mode": config.is_debug_mode() if config else False
+        }
+    })
+
+
+@app.route("/health")
+def health_check():
+    """System health check"""
+    health_data = {
+        "status": "healthy" if services["initialized"] else "initializing",
+        "timestamp": time.time(),
+        "services_initialized": services["initialized"],
+        "version": VERSION
+    }
+    
+    status_code = 200 if services["initialized"] else 503
+    return jsonify(health_data), status_code
+
+
+@app.route('/api/test/line', methods=['POST', 'GET'])
+def test_line_notification():
+    """Test LINE notification"""
+    try:
+        if not services["line_notifier"]:
+            return jsonify({
+                "success": False,
+                "error": "LineNotifier not initialized"
+            }), 500
+        
+        success = services["line_notifier"].send_test_message()
+        
+        return jsonify({
+            "success": success,
+            "message": "Test message sent to LINE" if success else "Failed to send",
+            "line_status": services["line_notifier"].get_status()
+        })
+        
+    except Exception as e:
+        logger.error(f"Test LINE error: {e}")
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
+@app.route('/api/line/webhook', methods=['POST'])
+def line_webhook():
+    """รับ webhook จาก LINE เพื่อดู Group ID"""
+    try:
+        # ดึง signature และ body จาก request
+        signature = request.headers.get('X-Line-Signature')
+        body = request.get_data(as_text=True)
+        
+        logger.info(f"📥 Received LINE webhook")
+        
+        # แปลง JSON body เป็น dict
+        import json
+        data = json.loads(body)
+        
+        # วนลูปดู events ที่ได้รับ
+        for event in data.get('events', []):
+            # เช็กว่ามาจากกลุ่มหรือไม่
+            source = event.get('source', {})
+            
+            if source.get('type') == 'group':
+                # 🎯 นี่คือ Group ID ที่เราต้องการ!
+                group_id = source.get('groupId')
+                
+                # แสดง log
+                logger.info(f"🎯 GROUP ID FOUND: {group_id}")
+                logger.info(f"📝 Message Type: {event.get('type')}")
+                logger.info(f"💬 Text: {event.get('message', {}).get('text', 'N/A')}")
+                
+        return jsonify({"status": "ok"}), 200
+        
+    except Exception as e:
+        logger.error(f"❌ Webhook error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/receive-signal', methods=['POST'])
+def receive_signal_from_outside():
+    try:
+        data = request.get_json()
+        symbol = data.get('symbol', 'UNKNOWN')
+        direction = data.get('direction', 'LONG').upper()
+        price = data.get('current_price', 0)
+        risk = data.get('risk_levels', {})
+        
+        # --- เพิ่มส่วนคำนวณ R:R ตรงนี้ครับพี่ ---
+        entry = risk.get('entry_price', price)
+        sl = risk.get('stop_loss', 0)
+        tp1 = risk.get('take_profit_1', 0)
+        
+        rr_ratio = 0.0
+        if entry and sl and tp1 and (entry != sl):
+            risk_amt = abs(entry - sl)
+            reward_amt = abs(tp1 - entry)
+            rr_ratio = reward_amt / risk_amt if risk_amt > 0 else 0
+        # -----------------------------------
+
+        analysis = {
+            "symbol": symbol,
+            "timeframe": data.get('timeframe', '4H'),
+            "current_price": price,
+            "signals": {
+                "buy": True if direction == "LONG" else False,
+                "short": True if direction == "SHORT" else False
+            },
+            "risk_levels": {
+                "entry_price": entry,
+                "stop_loss": sl,
+                "take_profit_1": tp1,
+                "take_profit_2": risk.get('take_profit_2', 0),
+                "take_profit_3": risk.get('take_profit_3', 0),
+                "risk_reward_ratio": rr_ratio  # ส่งค่าที่คำนวณแล้วไปให้บอท
+            },
+            "indicators": {
+                "squeeze": {"squeeze_off": True, "momentum_direction": "UP" if direction == "LONG" else "DOWN"},
+                "macd": {"cross_direction": "BULLISH" if direction == "LONG" else "BEARISH"},
+                "rsi": {"value": 55 if direction == "LONG" else 45}
+            },
+            "signal_strength": data.get('signal_strength', 100)
+        }
+        
+        if services["line_notifier"]:
+            services["line_notifier"].send_signal_alert(analysis)
+            
+        return jsonify({"status": "success", "message": "Signal processed", "rr": rr_ratio}), 200
+    except Exception as e:
+        logger.error(f"❌ Error: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+        
+@app.route("/startup")
+def startup_probe():
+    """Startup probe - always return OK for Cloud Run"""
+    return jsonify({
+        "status": "ok",
+        "timestamp": time.time()
+    }), 200
+
+
+@app.route("/keepalive")
+def keepalive():
+    """Keepalive endpoint for Cloud Run"""
+    try:
+        scheduler_status = "unknown"
+        position_count = 0
+        
+        if services["initialized"] and services["scheduler"]:
+            try:
+                status_info = services["scheduler"].get_scheduler_status()
+                scheduler_status = status_info.get("status", "unknown")
+                
+                # Auto-restart scheduler if stopped
+                if scheduler_status == "stopped":
+                    services["scheduler"].start_scheduler()
+                    logger.info("🔄 Auto-restarted scheduler from keepalive")
+                    scheduler_status = "restarted"
+            except Exception as e:
+                logger.warning(f"Scheduler check failed in keepalive: {e}")
+                scheduler_status = "error"
+        
+        if services["position_manager"]:
+            try:
+                summary = services["position_manager"].get_positions_summary()
+                position_count = summary["active_positions"]
+            except Exception as e:
+                logger.warning(f"Position count check failed: {e}")
+        
+        return jsonify({
+            "status": "alive",
+            "timestamp": time.time(),
+            "services_initialized": services["initialized"],
+            "scheduler_status": scheduler_status,
+            "active_positions": position_count,
+            "uptime_check": "ok",
+            "version": VERSION
+        })
+        
+    except Exception as e:
+        logger.error(f"Keepalive endpoint error: {e}")
+        return jsonify({
+            "status": "alive",
+            "timestamp": time.time(),
+            "error": str(e),
+            "version": VERSION
+        }), 200
+
+
+def require_services(f):
+    """Decorator to check if services are ready"""
+    def wrapper(*args, **kwargs):
+        if not services["initialized"]:
+            return jsonify({
+                "error": "Services are still initializing. Please wait...",
+                "retry_after": 30,
+                "version": VERSION
+            }), 503
+        return f(*args, **kwargs)
+    wrapper.__name__ = f.__name__
+    return wrapper
+
+
+@app.route("/api/signals")
+@require_services
+def get_signals():
+    """Scan for trading signals with new architecture"""
+    symbols = request.args.get("symbols", "BTCUSDT,ETHUSDT")
+    timeframes = request.args.get("timeframes", "4h")
+    
+    symbols_list = [s.strip() for s in symbols.split(",")]
+    timeframes_list = [t.strip() for t in timeframes.split(",")]
+    
+    try:
+        signals_found = []
+        
+        for symbol in symbols_list:
+            for timeframe in timeframes_list:
+                signal = services["signal_detector"].analyze_symbol(symbol, timeframe)
+                if signal:
+                    signals_found.append(signal)
+        
+        return jsonify({
+            "status": "success",
+            "signals": signals_found,
+            "signals_found": len(signals_found),
+            "timestamp": time.time(),
+            "version": VERSION
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in get_signals: {e}")
+        return jsonify({"error": str(e), "version": VERSION}), 500
+
+
+@app.route("/api/positions")
+@require_services
+def get_positions():
+    """Get all positions"""
+    try:
+        active_positions = services["position_manager"].get_active_positions()
+        summary = services["position_manager"].get_positions_summary()
+        
+        return jsonify({
+            "status": "success",
+            "active_positions": active_positions,
+            "summary": summary,
+            "total_positions": summary["total_positions"],
+            "active_count": summary["active_positions"],
+            "version": VERSION
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in get_positions: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/positions/summary")
+@require_services
+def get_positions_summary():
+    """Get positions summary"""
+    try:
+        summary = services["position_manager"].get_positions_summary()
+        return jsonify({
+            "status": "success",
+            "summary": summary,
+            "version": VERSION
+        })
+    except Exception as e:
+        logger.error(f"Error in get_positions_summary: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/positions/status/<symbol>/<timeframe>")
+@require_services  
+def get_position_status(symbol, timeframe):
+    """Get specific position status"""
+    try:
+        position = services["position_manager"].get_position_status(symbol.upper(), timeframe)
+        
+        return jsonify({
+            "status": "success",
+            "position_found": position is not None,
+            "position": position,
+            "version": VERSION
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting position status for {symbol} {timeframe}: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/positions/close", methods=["POST"])
+@require_services
+def close_position():
+    """Manually close a position"""
+    try:
+        data = request.get_json()
+        position_id = data.get("position_id")
+        reason = data.get("reason", "MANUAL")
+        
+        if not position_id:
+            return jsonify({"error": "position_id required"}), 400
+        
+        success = services["position_manager"].close_position(position_id, reason)
+        
+        if success:
+            return jsonify({
+                "status": "success",
+                "message": f"Position {position_id} closed",
+                "reason": reason,
+                "version": VERSION
+            })
+        else:
+            return jsonify({
+                "error": "Position not found or already closed",
+                "position_id": position_id
+            }), 404
+            
+    except Exception as e:
+        logger.error(f"Error closing position: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/positions/update", methods=["POST"])
+@require_services
+def update_positions():
+    """Update all positions with current prices"""
+    try:
+        updates = services["position_manager"].update_positions()
+        
+        return jsonify({
+            "status": "success",
+            "positions_updated": len(updates),
+            "updates": updates,
+            "timestamp": time.time(),
+            "version": VERSION
+        })
+        
+    except Exception as e:
+        logger.error(f"Error updating positions: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/monitor/status")
+@require_services
+def get_monitor_status():
+    """Get monitoring status"""
+    try:
+        summary = services["position_manager"].get_positions_summary()
+        cache_stats = services["data_manager"].get_cache_stats()
+        
+        return jsonify({
+            "status": "success",
+            "monitoring": True,
+            "active_positions_count": summary["active_positions"],
+            "total_positions": summary["total_positions"],
+            "cache_stats": cache_stats,
+            "version": VERSION
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting monitor status: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/monitor/force-check", methods=["POST"])
+@require_services
+def force_check_positions():
+    """Force check all positions immediately"""
+    try:
+        updates = services["position_manager"].update_positions()
+        
+        return jsonify({
+            "status": "success",
+            "message": "Force check completed",
+            "positions_checked": len(services["position_manager"].get_active_positions()),
+            "updates": updates,
+            "timestamp": time.time(),
+            "version": VERSION
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in force check: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/monitor/check/<symbol>")
+@require_services
+def get_symbol_price(symbol):
+    """Get current price for specific symbol"""
+    try:
+        price = services["data_manager"].get_single_price(symbol.upper())
+        
+        if price is not None:
+            return jsonify({
+                "status": "success", 
+                "symbol": symbol.upper(),
+                "current_price": price,
+                "timestamp": time.time(),
+                "version": VERSION
+            })
+        else:
+            return jsonify({
+                "error": f"Failed to get price for {symbol}",
+                "symbol": symbol.upper()
+            }), 500
+            
+    except Exception as e:
+        logger.error(f"Error getting price for {symbol}: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/scheduler/start", methods=["POST"])
+@require_services
+def start_scheduler():
+    """Start automatic scheduler"""
+    try:
+        services["scheduler"].start_scheduler()
+        return jsonify({
+            "status": "success", 
+            "message": "Scheduler started",
+            "version": VERSION
+        })
+    except Exception as e:
+        logger.error(f"Error starting scheduler: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/scheduler/stop", methods=["POST"])
+@require_services
+def stop_scheduler():
+    """Stop automatic scheduler"""
+    try:
+        services["scheduler"].stop_scheduler()
+        return jsonify({
+            "status": "success",
+            "message": "Scheduler stopped", 
+            "version": VERSION
+        })
+    except Exception as e:
+        logger.error(f"Error stopping scheduler: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/scheduler/status")
+@require_services
+def get_scheduler_status():
+    """Get scheduler status"""
+    try:
+        status = services["scheduler"].get_scheduler_status()
+        return jsonify({
+            "status": "success",
+            "scheduler": status,
+            "version": VERSION
+        })
+    except Exception as e:
+        logger.error(f"Error getting scheduler status: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/debug/services")
+@require_services
+def debug_services():
+    """Debug endpoint for service status"""
+    try:
+        debug_info = {
+            "version": VERSION,
+            "initialized": services["initialized"],
+            "services": {}
+        }
+        
+        # Check each service
+        for service_name, service in services.items():
+            if service_name == "initialized":
+                continue
+                
+            if service is None:
+                debug_info["services"][service_name] = "not_available"
+            elif service_name == "config_manager":
+                debug_info["services"][service_name] = {
+                    "available": True,
+                    "debug_mode": service.is_debug_mode(),
+                    "version": service.get("VERSION", "unknown")
+                }
+            elif service_name == "data_manager":
+                debug_info["services"][service_name] = {
+                    "available": True,
+                    "cache_stats": service.get_cache_stats()
+                }
+            elif service_name == "position_manager":
+                summary = service.get_positions_summary()
+                debug_info["services"][service_name] = {
+                    "available": True,
+                    "active_positions": summary["active_positions"],
+                    "total_positions": summary["total_positions"],
+                    "win_rate": summary["win_rate_pct"]
+                }
+            elif service_name == "scheduler":
+                try:
+                    status = service.get_scheduler_status()
+                    debug_info["services"][service_name] = {
+                        "available": True,
+                        "status": status.get("status", "unknown")
+                    }
+                except Exception as e:
+                    debug_info["services"][service_name] = {"error": str(e)}
+            else:
+                debug_info["services"][service_name] = "available"
+        
+        return jsonify(debug_info)
+        
+    except Exception as e:
+        logger.error(f"Error in debug services: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/debug/positions")
+@require_services
+def debug_positions():
+    """Debug positions in detail"""
+    try:
+        active_positions = services["position_manager"].get_active_positions()
+        summary = services["position_manager"].get_positions_summary()
+        
+        return jsonify({
+            "version": VERSION,
+            "total_positions": summary["total_positions"],
+            "active_positions": summary["active_positions"],
+            "closed_positions": summary["closed_positions"],
+            "win_rate_pct": summary["win_rate_pct"],
+            "total_pnl_pct": summary["total_pnl_pct"],
+            "active_positions_detail": active_positions
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in debug positions: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+if __name__ == "__main__":
+    # ลบพวก raw_port = ... และ if raw_port == ... ทิ้งให้หมด
+    
+    logger.info(f"🚀 Starting SIGNAL-ALERT {VERSION} on port {port}")
+    
+    try:
+        app.run(host="0.0.0.0", port=port, debug=False)
+    except Exception as e:
+        logger.error(f"💥 Failed to start Flask application: {e}")
+        raise
+
+
+=== WEBSOCKET MANAGER ===
+"""
+WebSocket Manager v2.2 - Real-time Binance Data Stream
+"""
+import logging
+import json
+import time
+import threading
+from typing import Callable, Optional, Dict
+import websocket
+
+logger = logging.getLogger(__name__)
+
+class WebSocketManager:
+    def __init__(self, symbol: str = "btcusdt", timeframe: str = "15m"):
+        self.symbol = symbol.lower()
+        self.timeframe = timeframe.lower()
+        self.base_url = "wss://stream.binance.com:9443/ws"
+        self.stream_name = f"{self.symbol}@kline_{self.timeframe}"
+        
+        self.ws = None
+        self.ws_thread = None
+        self.is_running = False
+        self.reconnect_attempts = 0
+        self.max_reconnect_attempts = 10
+        self.reconnect_delay = 5
+        self.on_kline_callback: Optional[Callable] = None
+        
+        logger.info(f"WebSocketManager initialized: {self.stream_name}")
+
+    def connect(self):
+        if self.is_running:
+            logger.warning("WebSocket already running")
+            return
+        
+        self.is_running = True
+        self.reconnect_attempts = 0
+        
+        ws_url = f"{self.base_url}/{self.stream_name}"
+        logger.info(f"Connecting to: {ws_url}")
+        
+        self.ws = websocket.WebSocketApp(
+            ws_url,
+            on_message=self._on_message,
+            on_error=self._on_error,
+            on_close=self._on_close,
+            on_open=self._on_open
+        )
+        
+        self.ws_thread = threading.Thread(target=self._run_websocket, daemon=True)
+        self.ws_thread.start()
+        logger.info("WebSocket thread started")
+    
+    def _run_websocket(self):
+        try:
+            self.ws.run_forever(ping_interval=20, ping_timeout=10)
+        except Exception as e:
+            logger.error(f"WebSocket run error: {e}")
+            self._attempt_reconnect()
+    
+    def disconnect(self):
+        logger.info("Disconnecting WebSocket...")
+        self.is_running = False
+        if self.ws:
+            self.ws.close()
+        logger.info("WebSocket disconnected")
+
+    def _on_message(self, ws, message):
+        logger.info("🔔 Message received")
+        try:
+            data = json.loads(message)
+            
+            if data.get("e") != "kline":
+                return
+            
+            kline = data.get("k", {})
+            
+            kline_data = {
+                "symbol": data.get("s"),
+                "timeframe": self.timeframe,
+                "open_time": kline.get("t"),
+                "close_time": kline.get("T"),
+                "open": float(kline.get("o", 0)),
+                "high": float(kline.get("h", 0)),
+                "low": float(kline.get("l", 0)),
+                "close": float(kline.get("c", 0)),
+                "volume": float(kline.get("v", 0)),
+                "is_closed": kline.get("x", False)
+            }
+            
+            if self.on_kline_callback:
+                self.on_kline_callback(kline_data)
+            
+            if kline_data["is_closed"]:
+                logger.info(f"🕯️ Kline closed: {kline_data['symbol']} {self.timeframe} C: {kline_data['close']:.2f}")
+                
+        except Exception as e:
+            logger.error(f"Error processing message: {e}")
+    
+    def _on_open(self, ws):
+        logger.info(f"✅ WebSocket connected: {self.stream_name}")
+        self.reconnect_attempts = 0
+    
+    def _on_error(self, ws, error):
+        logger.error(f"❌ WebSocket error: {error}")
+    
+    def _on_close(self, ws, close_status_code, close_msg):
+        logger.warning(f"🔌 WebSocket closed: {close_status_code} - {close_msg}")
+        logger.warning(f"🔍 Debug: is_running={self.is_running}, reconnect_attempts={self.reconnect_attempts}")
+        
+        if self.is_running:
+            logger.info("🔄 Initiating reconnect...")
+            self._attempt_reconnect()
+        else:
+            logger.warning("⚠️ Not reconnecting (is_running=False)")
+
+    def _attempt_reconnect(self):
+        if self.reconnect_attempts >= self.max_reconnect_attempts:
+            logger.error(f"Max reconnect attempts ({self.max_reconnect_attempts}) reached. Giving up.")
+            self.is_running = False
+            return
+        
+        self.reconnect_attempts += 1
+        wait_time = self.reconnect_delay * self.reconnect_attempts
+        
+        logger.info(f"🔄 Reconnect attempt {self.reconnect_attempts}/{self.max_reconnect_attempts} in {wait_time}s...")
+        
+        time.sleep(wait_time)
+        
+        if self.is_running:
+            self.ws = None
+            ws_url = f"{self.base_url}/{self.stream_name}"
+            logger.info(f"Reconnecting to: {ws_url}")
+            
+            self.ws = websocket.WebSocketApp(
+                ws_url,
+                on_message=self._on_message,
+                on_error=self._on_error,
+                on_close=self._on_close,
+                on_open=self._on_open
+            )
+            
+            self.ws_thread = threading.Thread(target=self._run_websocket, daemon=True)
+            self.ws_thread.start()
+
+    def set_kline_callback(self, callback: Callable):
+        self.on_kline_callback = callback
+        logger.info("Kline callback registered")
+    
+    def get_status(self) -> Dict:
+        return {
+            "is_running": self.is_running,
+            "stream": self.stream_name,
+            "reconnect_attempts": self.reconnect_attempts,
+            "thread_alive": self.ws_thread.is_alive() if self.ws_thread else False
+        }
+    
+    def change_stream(self, symbol: str, timeframe: str):
+        logger.info(f"Changing stream to {symbol}@kline_{timeframe}")
+        self.disconnect()
+        time.sleep(2)
+        self.symbol = symbol.lower()
+        self.timeframe = timeframe.lower()
+        self.stream_name = f"{self.symbol}@kline_{self.timeframe}"
+        self.connect()
+
+def test_websocket():
+    def on_kline(data):
+        print(f"📊 {data['symbol']} {data['timeframe']}")
+        print(f"   Close: {data['close']:.2f}")
+        print(f"   Closed: {data['is_closed']}")
+        print()
+    
+    ws_manager = WebSocketManager(symbol="btcusdt", timeframe="15m")
+    ws_manager.set_kline_callback(on_kline)
+    ws_manager.connect()
+    
+    try:
+        print("WebSocket running... Press Ctrl+C to stop")
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("\nStopping...")
+    finally:
+        ws_manager.disconnect()
+
+if __name__ == "__main__":
+    test_websocket()
+
+
+=== SCHEDULER ===
+"""
+Auto Scheduler for Signal Detection and Notification - REFACTORED for v2.0
+Simplified to use refactored services architecture
+"""
+import json
+import logging
+import os
+from datetime import datetime, timedelta
+from typing import Dict, List
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+from config.settings import Config
+
+logger = logging.getLogger(__name__)
+
+
+class SignalScheduler:
+    """
+    REFACTORED Signal Scheduler for v2.0
+    
+    Main responsibilities:
+    - Schedule automated signal scanning
+    - Coordinate between refactored services
+    - Send notifications and log data
+    - Prevent duplicate signals with cooldown system
+    
+    Uses refactored services:
+    - SignalDetector (with integrated DataManager + PositionManager)
+    - LineNotifier (via ConfigManager)
+    - SheetsLogger (via ConfigManager)
+    """
+
+    def __init__(self, config: Dict):
+        """
+        Initialize scheduler with refactored architecture
+        
+        Args:
+            config: Configuration dictionary from ConfigManager
+        """
+        # Basic configuration
+        self.config = config
+        self.scheduler = BackgroundScheduler()
+        self.running = False
+        
+        # Services (will be injected)
+        self.signal_detector = None
+        self.position_manager = None
+        self.line_notifier = None
+        self.sheets_logger = None
+        
+        # Signal deduplication system
+        self.last_signals = {}  # Store signal history
+        self.cooldown_minutes = Config.SIGNAL_COOLDOWN_MINUTES
+        self.signal_history_file = "data/signal_history.json"
+        
+        # Load signal history from file
+        self._load_signal_history()
+        
+        logger.info(f"SignalScheduler v2.0 initialized with {self.cooldown_minutes}min cooldown")
+
+    def _load_signal_history(self):
+        """Load signal history from file"""
+        try:
+            if os.path.exists(self.signal_history_file):
+                with open(self.signal_history_file, 'r') as f:
+                    data = json.load(f)
+                
+                # Convert string timestamps back to datetime
+                for key, timestamp_str in data.items():
+                    self.last_signals[key] = datetime.fromisoformat(timestamp_str)
+                
+                logger.info(f"Loaded {len(self.last_signals)} signal history records")
+            else:
+                logger.info("No signal history file found, starting fresh")
+                
+        except Exception as e:
+            logger.error(f"Error loading signal history: {e}")
+            self.last_signals = {}
+
+    def _save_signal_history(self):
+        """Save signal history to file"""
+        try:
+            # Create directory if it doesn't exist
+            os.makedirs(os.path.dirname(self.signal_history_file), exist_ok=True)
+            
+            # Convert datetime to string for JSON storage
+            data = {}
+            for key, timestamp in self.last_signals.items():
+                data[key] = timestamp.isoformat()
+            
+            with open(self.signal_history_file, 'w') as f:
+                json.dump(data, f, indent=2)
+                
+            logger.debug(f"Saved {len(data)} signal history records")
+            
+        except Exception as e:
+            logger.error(f"Error saving signal history: {e}")
+
+    def _is_duplicate_signal(self, symbol: str, timeframe: str, direction: str) -> bool:
+        """
+        Check if signal is duplicate within cooldown period
+        
+        Args:
+            symbol: Trading symbol
+            timeframe: Timeframe
+            direction: Signal direction (LONG/SHORT)
+            
+        Returns:
+            bool: True if signal is duplicate
+        """
+        signal_key = f"{symbol}_{timeframe}_{direction}"
+        current_time = datetime.now()
+        
+        # Check if we've sent this signal recently
+        if signal_key in self.last_signals:
+            last_time = self.last_signals[signal_key]
+            time_diff = current_time - last_time
+            
+            # If still within cooldown period
+            if time_diff.total_seconds() < (self.cooldown_minutes * 60):
+                remaining_minutes = self.cooldown_minutes - (time_diff.total_seconds() / 60)
+                logger.debug(f"Signal cooldown active for {signal_key}: {remaining_minutes:.1f} minutes remaining")
+                return True
+        
+        # Clean up old data (keep only last 24 hours)
+        cutoff_time = current_time - timedelta(hours=24)
+        keys_to_remove = [
+            key for key, timestamp in self.last_signals.items()
+            if timestamp < cutoff_time
+        ]
+        for key in keys_to_remove:
+            del self.last_signals[key]
+        
+        return False
+
+    def _record_signal(self, symbol: str, timeframe: str, direction: str):
+        """Record signal that was sent"""
+        signal_key = f"{symbol}_{timeframe}_{direction}"
+        self.last_signals[signal_key] = datetime.now()
+        
+        # Save to file immediately
+        self._save_signal_history()
+        logger.debug(f"Recorded signal: {signal_key}")
+
+    def set_services(self, signal_detector, position_manager, line_notifier, sheets_logger):
+        """
+        Inject refactored services
+        
+        Args:
+            signal_detector: SignalDetector instance
+            position_manager: PositionManager instance
+            line_notifier: LineNotifier instance
+            sheets_logger: SheetsLogger instance
+        """
+        self.signal_detector = signal_detector
+        self.position_manager = position_manager
+        self.line_notifier = line_notifier
+        self.sheets_logger = sheets_logger
+        
+        logger.info("Refactored services injected into scheduler")
+
+    def start_scheduler(self):
+        """Start the automated scheduler"""
+        if self.running:
+            logger.warning("Scheduler already running")
+            return
+        
+        if not all([self.signal_detector, self.position_manager]):
+            logger.error("Required services not set")
+            return
+        
+        # Job 1: Scan 4H signals - ทุก 15 นาที
+        self.scheduler.add_job(
+            func=self._scan_4h_signals,
+            trigger="cron",
+            hour="*",
+            minute="*/15",      # ← แก้ตรงนี้! เดิมเป็น "0"
+            id="scan_4h_signals",
+            name="4H Signal Scanner v2.0",
+            replace_existing=True,
+        )
+
+        # Job 2: ถูกต้องแล้ว ✅
+        self.scheduler.add_job(
+            func=self._scan_1d_signals,
+            trigger="cron",
+            hour="0,4,8,12,16,20",
+            minute=0,
+            id="scan_1d_signals",
+            name="1D Signal Scanner v2.0 (Every 4H)",
+            replace_existing=True,
+        )
+        
+        # Job 2: Update positions every 2 minutes (via PositionManager)
+        self.scheduler.add_job(
+            func=self._update_positions_refactored,
+            trigger=IntervalTrigger(minutes=2),
+            id="update_positions",
+            name="Position Tracker v2.0",
+            replace_existing=True,
+        )
+        
+        # Job 3: Daily summary at midnight
+        self.scheduler.add_job(
+            func=self._send_daily_summary,
+            trigger="cron",
+            hour=0,
+            minute=0,
+            id="daily_summary",
+            name="Daily Summary v2.0",
+            replace_existing=True,
+        )
+        
+        # Start scheduler
+        self.scheduler.start()
+        self.running = True
+        
+        logger.info("SignalScheduler v2.0 started successfully")
+        logger.info("Scheduled jobs:")
+        logger.info(" - 4H signals: every 15 minutes")
+        logger.info(" - 1D signals: every 4 hours (00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC)")
+        logger.info(" - Position updates: every 2 minutes (via PositionManager)")
+        logger.info(" - Daily summary: daily at 00:00 UTC (07:00 ICT)")
+        logger.info(f" - Signal cooldown: {self.cooldown_minutes} minutes")
+
+    def stop_scheduler(self):
+        """Stop the scheduler"""
+        if not self.running:
+            logger.warning("Scheduler not running")
+            return
+        
+        # Save history before stopping
+        self._save_signal_history()
+        
+        self.scheduler.shutdown(wait=False)
+        self.running = False
+        
+        logger.info("SignalScheduler v2.0 stopped")
+
+    def get_scheduler_status(self) -> Dict:
+        """Get current scheduler status"""
+        if not self.running:
+            return {
+                "status": "stopped",
+                "jobs": [],
+                "next_run_times": {},
+                "signal_history_count": len(self.last_signals),
+                "version": "2.0-refactored"
+            }
+        
+        jobs = []
+        next_run_times = {}
+        
+        for job in self.scheduler.get_jobs():
+            job_info = {
+                "id": job.id,
+                "name": job.name,
+                "next_run": (
+                    job.next_run_time.isoformat() if job.next_run_time else None
+                ),
+                "trigger": str(job.trigger),
+            }
+            jobs.append(job_info)
+            next_run_times[job.id] = job_info["next_run"]
+        
+        return {
+            "status": "running",
+            "jobs": jobs,
+            "next_run_times": next_run_times,
+            "scheduler_state": str(self.scheduler.state),
+            "signal_history_count": len(self.last_signals),
+            "cooldown_minutes": self.cooldown_minutes,
+            "version": "2.0-refactored",
+            "services_connected": {
+                "signal_detector": self.signal_detector is not None,
+                "position_manager": self.position_manager is not None,
+                "line_notifier": self.line_notifier is not None,
+                "sheets_logger": self.sheets_logger is not None
+            }
+        }
+
+    def _scan_4h_signals(self):
+        """Scan 4H signals"""
+        try:
+            logger.info("Starting 4H signal scan v2.0...")
+            
+            symbols = Config.DEFAULT_SYMBOLS if hasattr(Config, 'DEFAULT_SYMBOLS') else ["BTCUSDT", "ETHUSDT"]
+        
+            if not symbols:
+                logger.warning("No symbols configured for scanning")
+                return
+            
+            active_signals = self.signal_detector.get_active_signals(symbols, ["4h"])
+            logger.info(f"Found {len(active_signals)} active signals on 4H")
+            
+            processed_count = 0
+            for signal in active_signals:
+                if self._process_signal_refactored(signal, "4h"):
+                    processed_count += 1
+            
+            logger.info(f"Processed {processed_count}/{len(active_signals)} signals on 4H")
+            
+        except Exception as e:
+            logger.error(f"Error in 4H signal scan: {e}")
+
+    def _scan_1d_signals(self):
+        """Scan 1D signals using refactored SignalDetector"""
+        try:
+            logger.info("Starting 1D signal scan v2.0...")
+            
+            symbols = Config.DEFAULT_SYMBOLS if hasattr(Config, 'DEFAULT_SYMBOLS') else ["BTCUSDT", "ETHUSDT"]
+        
+            if not symbols:
+                logger.warning("No symbols configured for scanning")
+                return
+            
+            # Use refactored SignalDetector
+            active_signals = self.signal_detector.get_active_signals(symbols, ["1d"])
+            logger.info(f"Found {len(active_signals)} active signals on 1D")
+            
+            processed_count = 0
+            for signal in active_signals:
+                if self._process_signal_refactored(signal, "1d"):
+                    processed_count += 1
+            
+            logger.info(f"Processed {processed_count}/{len(active_signals)} signals on 1D")
+            
+        except Exception as e:
+            logger.error(f"Error in 1D signal scan: {e}")
+            if self.line_notifier:
+                try:
+                    self.line_notifier.send_error_alert(
+                        f"1D signal scan failed: {str(e)}", "Scheduler v2.0"
+                    )
+                except:
+                    pass
+
+    def _process_signal_refactored(self, signal: Dict, timeframe: str) -> bool:
+        """
+        Process signal using refactored architecture
+        
+        Args:
+            signal: Signal data from SignalDetector
+            timeframe: Timeframe being processed
+            
+        Returns:
+            bool: True if signal was processed successfully
+        """
+        try:
+            # Extract basic signal information
+            symbol = signal.get("symbol")
+            signals = signal.get("signals", {})
+            signal_strength = signal.get("signal_strength", 0)
+            position_created = signal.get("position_created", False)
+            
+            # Validate basic data
+            if not symbol:
+                return False
+            
+            # Check signal strength threshold (75%)
+            if signal_strength < 75:
+                logger.debug(f"Skipping {symbol} {timeframe} - signal strength {signal_strength} < 75")
+                return False
+            
+            # Determine trading direction
+            direction = None
+            if signals.get("buy"):
+                direction = "LONG"
+            elif signals.get("short"):
+                direction = "SHORT"
+            
+            if not direction:
+                logger.debug(f"No valid signal direction for {symbol} {timeframe}")
+                return False
+            
+            # Check for duplicate signals
+            if self._is_duplicate_signal(symbol, timeframe, direction):
+                logger.info(f"⏭️ SKIPPED DUPLICATE: {symbol} {timeframe} {direction}")
+                return False
+            
+            # SignalDetector should have already created position if valid
+            if not position_created:
+                logger.debug(f"Position not auto-created for {symbol} {timeframe}")
+                # Still record to prevent duplicate attempts
+                self._record_signal(symbol, timeframe, direction)
+                return False
+            
+            # Send LINE notification for new signals with positions
+            if self.line_notifier:
+                try:
+                    self.line_notifier.send_signal_alert(signal)
+                    logger.info(f"Sent LINE notification for {symbol} {timeframe} {direction}")
+                except Exception as e:
+                    logger.warning(f"Failed to send LINE notification: {e}")
+            
+            # Log to Google Sheets for new signals with positions
+            if self.sheets_logger:
+                try:
+                    self.sheets_logger.log_trading_journal(signal)
+                    logger.info(f"Logged to Google Sheets: {symbol} {timeframe} {direction}")
+                except Exception as e:
+                    logger.warning(f"Failed to log to Google Sheets: {e}")
+            
+            # Record signal in history
+            self._record_signal(symbol, timeframe, direction)
+            
+            logger.info(f"Processed new signal: {symbol} {timeframe} {direction} (Strength: {signal_strength})")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error processing signal {signal.get('symbol', 'UNKNOWN')}: {e}")
+            return False
+
+    def _update_positions_refactored(self):
+        """
+        Update positions using refactored PositionManager
+        
+        This method now simply triggers PositionManager to update all positions
+        and handles any notifications/logging for the results
+        """
+        try:
+            if not self.position_manager:
+                logger.warning("No PositionManager available for position updates")
+                return
+            
+            # Get current active positions count
+            summary = self.position_manager.get_positions_summary()
+            active_count = summary.get("active_positions", 0)
+            
+            logger.info(f"📍 Checking {active_count} active positions...")
+            
+            if active_count == 0:
+                logger.debug("No active positions to update")
+                return
+            
+            # Trigger PositionManager to update all positions
+            updates = self.position_manager.update_positions()
+            
+            # Process any position updates for notifications
+            notifications_sent = 0
+            sheets_logged = 0
+            
+            for position_id, update_info in updates.items():
+                try:
+                    # Check if any important events occurred
+                    events = []
+                    if update_info.get('position_closed'):
+                        events.append("Position closed")
+                    
+                    for tp_level in ['TP1', 'TP2', 'TP3']:
+                        if update_info.get(f'{tp_level}_hit', {}).get('hit', False):
+                            events.append(f"{tp_level} hit")
+                    
+                    if update_info.get('sl_hit', {}).get('hit', False):
+                        events.append("SL hit")
+                    
+                    if events:
+                        logger.info(f"Position {position_id}: {', '.join(events)}")
+                        
+                        # Send LINE notification if available
+                        if self.line_notifier:
+                            try:
+                                # Format update for LINE notification
+                                position_data = self.position_manager.positions.get(position_id)
+                                if position_data:
+                                    notification_data = {
+                                        "position": position_data,
+                                        "updates": update_info,
+                                        "events": events
+                                    }
+                                    self.line_notifier.send_position_update(notification_data)
+                                    notifications_sent += 1
+                            except Exception as e:
+                                logger.warning(f"Failed to send position update notification: {e}")
+                        
+                        # Log to Google Sheets if available
+                        if self.sheets_logger:
+                            try:
+                                position_data = self.position_manager.positions.get(position_id)
+                                if position_data:
+                                    self.sheets_logger.log_position_update({
+                                        "position": position_data,
+                                        "updates": update_info
+                                    })
+                                    sheets_logged += 1
+                            except Exception as e:
+                                logger.warning(f"Failed to log position update: {e}")
+                                
+                except Exception as e:
+                    logger.error(f"Error processing update for {position_id}: {e}")
+            
+            if notifications_sent > 0 or sheets_logged > 0:
+                logger.info(f"Position updates: {notifications_sent} LINE notifications, {sheets_logged} sheets logs")
+                
+        except Exception as e:
+            logger.error(f"Error in refactored position update: {e}")
+
+    def _send_daily_summary(self):
+        """Send daily summary using refactored services"""
+        try:
+            logger.info("Generating daily summary v2.0...")
+            
+            # Get statistics from sheets logger if available
+            if self.sheets_logger:
+                try:
+                    stats = self.sheets_logger.get_trading_statistics(days=1)
+                except:
+                    stats = {}
+            else:
+                stats = {}
+            
+            # Get position summary from PositionManager
+            if self.position_manager:
+                try:
+                    position_summary = self.position_manager.get_positions_summary()
+                except:
+                    position_summary = {}
+            else:
+                position_summary = {}
+            
+            daily_summary = {
+                "date": datetime.now().strftime("%Y-%m-%d"),
+                "version": "2.0-refactored",
+                "total_signals": stats.get("total_trades", 0),
+                "active_positions": position_summary.get("active_positions", 0),
+                "closed_positions": position_summary.get("closed_positions", 0),
+                "total_positions": position_summary.get("total_positions", 0),
+                "win_rate_pct": position_summary.get("win_rate_pct", 0),
+                "total_pnl_pct": position_summary.get("total_pnl_pct", 0),
+                "wins": position_summary.get("wins", 0),
+                "losses": position_summary.get("losses", 0),
+                "signal_history_count": len(self.last_signals),
+                "best_performer": stats.get("best_performer", ""),
+                "worst_performer": stats.get("worst_performer", "")
+            }
+            
+            # Send LINE notification
+            if self.line_notifier:
+                try:
+                    self.line_notifier.send_daily_summary(daily_summary)
+                    logger.info("Daily summary sent via LINE")
+                except Exception as e:
+                    logger.warning(f"Failed to send daily summary via LINE: {e}")
+            
+            # Log to Google Sheets
+            if self.sheets_logger:
+                try:
+                    self.sheets_logger.log_daily_summary(daily_summary)
+                    logger.info("Daily summary logged to sheets")
+                except Exception as e:
+                    logger.warning(f"Failed to log daily summary: {e}")
+            
+        except Exception as e:
+            logger.error(f"Error sending daily summary: {e}")
+
+    def get_enhanced_status(self) -> Dict:
+        """Get detailed status including position summary"""
+        try:
+            scheduler_status = self.get_scheduler_status()
+            
+            # Add position summary if available
+            if self.position_manager:
+                try:
+                    position_summary = self.position_manager.get_positions_summary()
+                    scheduler_status["position_summary"] = position_summary
+                except Exception as e:
+                    logger.error(f"Error getting position summary: {e}")
+            
+            # Add signal history details
+            scheduler_status["signal_history"] = self.get_signal_history()
+            
+            return scheduler_status
+            
+        except Exception as e:
+            logger.error(f"Error getting enhanced status: {e}")
+            return self.get_scheduler_status()
+
+    def force_scan_now(self, timeframe: str = "1d") -> Dict:
+        """Force immediate signal scan"""
+        try:
+            if timeframe == "1d":
+                self._scan_1d_signals()
+                return {"status": "1D scan completed", "version": "2.0-refactored"}
+            else:
+                return {"error": "Invalid timeframe. Use '1d' only"}
+        except Exception as e:
+            logger.error(f"Error in force scan: {e}")
+            return {"error": str(e)}
+
+    def force_update_positions(self) -> Dict:
+        """Force immediate position update"""
+        try:
+            self._update_positions_refactored()
+            return {"status": "Position update completed", "version": "2.0-refactored"}
+        except Exception as e:
+            logger.error(f"Error in force position update: {e}")
+            return {"error": str(e)}
+
+    def clear_signal_history(self):
+        """Clear all signal history (for testing)"""
+        self.last_signals = {}
+        self._save_signal_history()
+        logger.info("Signal history cleared")
+
+    def get_signal_history(self) -> Dict:
+        """Get signal history with timestamps"""
+        history = {}
+        for key, timestamp in self.last_signals.items():
+            history[key] = {
+                "timestamp": timestamp.isoformat(),
+                "minutes_ago": (datetime.now() - timestamp).total_seconds() / 60
+            }
+        return history
+
+    def _process_signal(self, signal: Dict, timeframe: str):
+        """Legacy method - redirects to refactored version"""
+        return self._process_signal_refactored(signal, timeframe)
+
+    def _update_positions(self):
+        """Legacy method - redirects to refactored version"""
+        self._update_positions_refactored()
+
+=== SIGNAL DETECTOR ===
+"""Signal detection logic combining all indicators - CONSERVATIVE MODE v2.0"""
+
+import logging
+from datetime import datetime
+import time
+from typing import Dict, List, Optional, Tuple
+
+from .indicators import TechnicalIndicators
+from ..utils.core_utils import ErrorHandler
+from ..utils.data_types import DataConverter
+from .signal_history_manager import SignalHistoryManager
+
+logger = logging.getLogger(__name__)
+
+
+class SignalDetector:
+    """Detect trading signals using Squeeze + MACD Uncle Cholok + RSI strategy - CONSERVATIVE"""
+
+    def __init__(self, config: Dict):
+        """Initialize signal detector with refactored services"""
+        # Extract refactored services
+        self.data_manager = config["data_manager"]
+        self.position_manager = config["position_manager"]
+        self.config_manager = config["config_manager"]
+        self.line_notifier = config.get("line_notifier")
+        
+        # Initialize utilities
+        self.indicators = TechnicalIndicators()
+        self.data_converter = DataConverter()
+        self.active_positions = set()
+        
+        # Get configuration from ConfigManager
+        self.risk_management = self._load_risk_config()
+        self.indicator_settings = self._load_indicator_config()
+        self.signal_history = SignalHistoryManager()
+        
+        logger.info("✅ SignalDetector initialized - CONSERVATIVE MODE")
+    
+    def _load_risk_config(self) -> Dict:
+        """Load risk management configuration from Config"""
+        try:
+            # ✅ อ่านจาก Config class
+            from config.settings import Config
+            return Config.RISK_MANAGEMENT
+        except Exception as e:
+            logger.warning(f"Error loading risk config, using defaults: {e}")
+            return {
+                "4h": {"tp_levels": [1.2, 1.5, 2.0], "sl_level": 1.5},
+                "1d": {"tp_levels": [3.0, 5.0, 7.0], "sl_level": 3.0}
+            }
+    
+    def _load_indicator_config(self) -> Dict:
+        try:
+            return {
+                "squeeze": {"length": 20, "bb_mult": 2.0, "kc_mult": 1.5},
+                "macd": {"fast": 8, "slow": 17, "signal": 9}, 
+                "rsi": {
+                    "period": 14, 
+                    "oversold": 35,  # ✅ แก้จาก 40 เป็น 35
+                    "overbought": 65 # ✅ แก้จาก 60 เป็น 65
+                }
+            }
+            
+        except Exception as e:
+            logger.warning(f"Error loading indicator config, using defaults: {e}")
+            return {
+                "squeeze": {"length": 20, "bb_mult": 2.0, "kc_mult": 1.5},
+                "macd": {"fast": 8, "slow": 17, "signal": 9}, 
+                "rsi": {"period": 14, "oversold": 40, "overbought": 60}
+            }
+
+    def analyze_realtime(self, kline_data: Dict) -> Optional[Dict]:
+        """Analyze real-time kline data"""
+        try:
+            # Only analyze when candle closes
+            if not kline_data.get('is_closed'):
+                return None
+            
+            symbol = kline_data['symbol']
+            timeframe = kline_data['timeframe']
+            
+            logger.info(f"🔍 Real-time analysis: {symbol} {timeframe}")
+            
+            # Use existing analyze_symbol
+            return self.analyze_symbol(symbol, timeframe)
+            
+        except Exception as e:
+            logger.error(f"Error in real-time analysis: {e}")
+            return None
+    
+    @ErrorHandler.service_error_handler("SignalDetector")
+    def analyze_symbol(self, symbol: str, timeframe: str = "4h") -> Optional[Dict]:
+        """Analyze symbol using refactored data flow"""
+        try:
+            logger.info(f"🔍 Analyzing {symbol} on {timeframe} (CONSERVATIVE)")
+
+            # Get data from DataManager
+            df = self.data_manager.get_klines(symbol, timeframe, limit=100)
+
+            df_1d = self.data_manager.get_klines(symbol, "1d", limit=100)
+            trend_1d = self._detect_signals_improved_fixed(None, "1d", df_1d)
+
+            if df is None:
+                logger.warning(f"No data available for {symbol} {timeframe}")
+                return {
+                    "error": f"Failed to fetch data for {symbol}",
+                    "symbol": symbol,
+                    "timeframe": timeframe,
+                    "timestamp": datetime.now().isoformat(),
+                    "version": "2.0-conservative"
+                }
+
+            # Validate data quality
+            if not self.data_converter.validate_dataframe(df):
+                logger.warning(f"Invalid DataFrame for {symbol} {timeframe}")
+                return None
+
+            # Calculate all indicators
+            analysis = self.indicators.analyze_all_indicators(df, self.indicator_settings)
+
+            # Detect trading signals with CONSERVATIVE logic
+            signals = self._detect_signals_improved_fixed(analysis, timeframe, df, trend_1d=trend_1d)
+
+            # Calculate risk management levels  
+            risk_levels = self._calculate_risk_levels(analysis["current_price"], timeframe, signals, symbol)
+
+            # Handle position creation with duplicate prevention
+            position_created = self._handle_signal_position_fixed(
+                symbol, timeframe, signals, analysis["current_price"], risk_levels
+            )
+
+            # Create comprehensive result
+            result = {
+                "symbol": symbol,
+                "timeframe": timeframe,
+                "timestamp": datetime.now().isoformat(),
+                "current_price": analysis["current_price"],
+                "version": "2.0-conservative",
+                
+                # Indicator values
+                "indicators": {
+                    "squeeze": analysis["squeeze"],
+                    "macd": analysis["macd"],
+                    "rsi": analysis["rsi"],
+                },
+                
+                # Trading signals
+                "signals": signals,
+                
+                # Risk management
+                "risk_levels": risk_levels,
+                
+                # Overall assessment
+                "signal_strength": self._calculate_signal_strength_improved(signals),
+                "recommendation": self._get_recommendation_improved(signals),
+                
+                # Position info
+                "position_created": position_created,
+                "has_active_position": self._has_active_position_strict(symbol, timeframe),
+            }
+
+            # Convert NumPy types for JSON serialization
+            result = self.data_converter.sanitize_signal_data(result)
+
+            # Log significant results
+            if result.get('recommendation'):
+                logger.info(f"Analysis complete for {symbol}: {result['recommendation']}")
+                if position_created:
+                    logger.info(f"🆕 Created position for {symbol} {timeframe}")
+            
+            return result
+
+        except Exception as e:
+            logger.error(f"Analysis error for {symbol}: {str(e)}")
+            return {
+                "error": f"Analysis error for {symbol}: {str(e)}",
+                "symbol": symbol,
+                "timeframe": timeframe,
+                "timestamp": datetime.now().isoformat(),
+                "version": "2.0-conservative"
+            }
+
+    def _has_active_position_strict(self, symbol: str, timeframe: str) -> bool:
+        """✅ STRICT check if position exists - prevent duplicates"""
+        try:
+            # Check 1: Via PositionManager
+            position = self.position_manager.get_position_status(symbol, timeframe)
+            if position is not None:
+                logger.debug(f"Found active position via PositionManager: {symbol} {timeframe}")
+                return True
+            
+            # Check 2: Check all direction combinations
+            for direction in ["LONG", "SHORT"]:
+                position_id = f"{symbol}_{timeframe}_{direction}"
+                if position_id in self.position_manager.positions:
+                    pos_data = self.position_manager.positions[position_id]
+                    if pos_data.get('status') == 'ACTIVE':
+                        logger.debug(f"Found active position by ID: {position_id}")
+                        return True
+            
+            # Check 3: In active_positions set
+            if symbol in self.active_positions:
+                logger.debug(f"Found in active_positions set: {symbol}")
+                return True
+            
+            return False
+            
+        except Exception as e:
+            logger.error(f"Error checking active position: {e}")
+            return True  # Return True on error to prevent duplicate
+
+    @ErrorHandler.service_error_handler("SignalDetector") 
+    def _handle_signal_position_fixed(
+        self, symbol: str, timeframe: str, signals: Dict, current_price: float, risk_levels: Dict
+    ) -> bool:
+        """Handle position creation - only blocks if active position exists"""
+        try:
+            # Check if we have a valid signal
+            has_signal = signals.get("buy") or signals.get("short")
+        
+            if not has_signal:
+                return False
+        
+            # Check if active position exists (no cooldown check)
+            if symbol in self.active_positions:
+                logger.warning(f"⚠️ {symbol} already in active positions set")
+                return False
+
+            # Check via PositionManager strictly
+            existing_position = self.position_manager.get_position_status(symbol, timeframe)
+            if existing_position:
+                logger.warning(f"⚠️ Position already exists: {symbol} {timeframe}")
+                return False
+        
+            # Check all possible position IDs
+            direction = "LONG" if signals.get("buy") else "SHORT"
+            for dir_check in ["LONG", "SHORT"]:
+                check_id = f"{symbol}_{timeframe}_{dir_check}"
+                if check_id in self.position_manager.positions:
+                    if self.position_manager.positions[check_id].get('status') == 'ACTIVE':
+                        logger.warning(f"⚠️ Found active {dir_check} position: {symbol} {timeframe}")
+                        return False
+        
+            # Create signal data for position creation
+            signal_data = {
+                "symbol": symbol,
+                "timeframe": timeframe,
+                "direction": direction,
+                "current_price": current_price,
+                "signal_strength": self._calculate_signal_strength_improved(signals)
+            }
+        
+            # Create position using PositionManager
+            position_id = self.position_manager.create_position(signal_data)
+        
+            if position_id:
+                logger.info(f"✅ Created {direction} position: {symbol} {timeframe} @ {current_price}")
+            
+                # Update tracking (no cooldown timestamp)
+                self.active_positions.add(symbol)
+            
+                return True
+            else:
+                logger.warning(f"Failed to create position for {symbol} {timeframe}")
+                return False
+            
+        except Exception as e:
+            logger.error(f"Error handling signal position: {e}")
+            return False
+
+    def _detect_signals_improved_fixed(self, analysis: Dict, timeframe: str = "1d", df=None, trend_1d=None) -> Dict[str, bool]:
+        """
+        1D: CDC ActionZone (EMA 12/26 Crossover)
+        4H: RSI + MACD + Enhanced filters + STRONG MOMENTUM MODE + PULLBACK MODE
+        """
+        try:
+            import pandas as pd
+
+            # Validate dataframe
+            if df is None or 'close' not in df.columns:
+                logger.warning("Invalid dataframe")
+                return {"buy": False, "short": False, "sell": False, "cover": False}
+            
+            # ========================================
+            # 1D: CDC ACTIONZONE (EMA CROSSOVER)
+            # ========================================
+            if timeframe == "1d":
+                if len(df) < 30:
+                    logger.warning(f"Insufficient data: {len(df)} candles")
+                    return {"buy": False, "short": False, "sell": False, "cover": False}
+                
+                # Calculate EMA 12 and 26
+                df['ema12'] = df['close'].ewm(span=12, adjust=False).mean()
+                df['ema26'] = df['close'].ewm(span=26, adjust=False).mean()
+                
+                # Current values
+                ema12_curr = df['ema12'].iloc[-1]
+                ema26_curr = df['ema26'].iloc[-1]
+                ema12_prev = df['ema12'].iloc[-2]
+                ema26_prev = df['ema26'].iloc[-2]
+                price_curr = df['close'].iloc[-1]
+                
+            
+                # CDC ActionZone conditions
+                buy_signal = (ema12_curr > ema26_curr) and (price_curr > ema12_curr)
+                short_signal = (ema12_curr < ema26_curr) and (price_curr < ema12_curr)
+                
+                # Log
+                if buy_signal:
+                    logger.info(
+                        f"🟢 1D CDC BUY | "
+                        f"EMA12: {ema12_curr:.2f} > EMA26: {ema26_curr:.2f} | "
+                        f"Price: {price_curr:.2f} > EMA12"
+                    )
+                elif short_signal:
+                    logger.info(
+                        f"🔴 1D CDC SELL | "
+                        f"EMA12: {ema12_curr:.2f} < EMA26: {ema26_curr:.2f} | "
+                        f"Price: {price_curr:.2f} < EMA12"
+                    )
+                
+                return {
+                    "buy": buy_signal,
+                    "short": short_signal,
+                    "sell": False,
+                    "cover": False
+                }
+            
+            # ========================================
+            # 4H: IMPROVED SIGNALS
+            # ========================================
+            else:
+                if len(df) < 30:
+                    logger.warning(f"Insufficient data: {len(df)} candles")
+                    return {"buy": False, "short": False, "sell": False, "cover": False}
+                
+                # Calculate RSI
+                from ta.momentum import RSIIndicator
+                rsi_indicator = RSIIndicator(df['close'], window=14)
+                df['rsi'] = rsi_indicator.rsi()
+                df['rsi_ma'] = df['rsi'].rolling(window=14).mean()
+                
+                rsi_current = df['rsi'].iloc[-1]
+                rsi_ma_current = df['rsi_ma'].iloc[-1]
+                rsi_prev = df['rsi'].iloc[-2]
+                rsi_ma_prev = df['rsi_ma'].iloc[-2]
+                
+                # MACD values
+                macd_data = analysis.get("macd", {})
+                macd_cross = macd_data.get("cross_direction", "NONE")
+                macd_line = macd_data.get("macd_line", 0)
+                
+                # Calculate MACD previous value
+                from ta.trend import MACD
+                macd_indicator = MACD(df['close'], window_slow=17, window_fast=8, window_sign=9)
+                df['macd'] = macd_indicator.macd()
+                macd_prev = df['macd'].iloc[-2] if len(df) > 1 else macd_line
+                
+                # Squeeze
+                squeeze_data = analysis.get("squeeze", {})
+                squeeze_off = squeeze_data.get("squeeze_off", False)
+                
+                # Check NaN
+                if any(pd.isna([rsi_current, rsi_ma_current, rsi_prev, rsi_ma_prev])):
+                    logger.warning("NaN values in RSI")
+                    return {"buy": False, "short": False, "sell": False, "cover": False}
+                
+                # RSI Crossovers
+                rsi_cross_up = (rsi_prev <= rsi_ma_prev) and (rsi_current > rsi_ma_current)
+                rsi_cross_down = (rsi_prev >= rsi_ma_prev) and (rsi_current < rsi_ma_current)
+                
+                # ========================================
+                # 🔥 ORIGINAL SIGNALS (Crossover Based)
+                # ========================================
+                original_buy = (
+                    rsi_cross_up and 
+                    macd_cross == "UP" and 
+                    macd_line > -20 and        # ✅ แก้แล้ว: -20 แทน 0
+                    squeeze_off
+                )
+                
+                original_short = (
+                    rsi_cross_down and 
+                    macd_cross == "DOWN" and 
+                    macd_line < 20 and         # ✅ แก้แล้ว: 20 แทน 0
+                    squeeze_off
+                )
+                
+                # ========================================
+                # 🔥 STRONG MOMENTUM MODE
+                # ========================================
+                strong_momentum_buy = (
+                    rsi_current > 65 and           # ✅ ลดจาก 70
+                    rsi_current > rsi_prev and
+                    macd_line > 80 and             # ✅ ลดจาก 100
+                    macd_line > macd_prev and
+                    squeeze_off
+                )
+                
+                strong_momentum_short = (
+                    rsi_current < 35 and           # ✅ เพิ่มจาก 30
+                    rsi_current < rsi_prev and
+                    macd_line < -80 and            # ✅ เพิ่มจาก -100
+                    macd_line < macd_prev and
+                    squeeze_off
+                )
+                
+                # ========================================
+                # 🆕 PULLBACK MODE
+                # ========================================
+                pullback_buy = (
+                    macd_line > 50 and
+                    rsi_current > 45 and rsi_current < 55 and
+                    rsi_current > rsi_prev and
+                    squeeze_off
+                )
+                
+                pullback_short = (
+                    macd_line < -50 and
+                    rsi_current > 45 and rsi_current < 55 and
+                    rsi_current < rsi_prev and
+                    squeeze_off
+                )
+                
+                # ========================================
+                # รวมสัญญาณทั้ง 3 โหมด ✅
+                # ========================================
+                buy_signal = original_buy or strong_momentum_buy or pullback_buy
+                short_signal = original_short or strong_momentum_short or pullback_short
+                
+                # ========================================
+                # Multi-Timeframe Filter
+                # ========================================
+                if trend_1d:
+                    raw_buy = buy_signal
+                    raw_short = short_signal
+                    
+                    buy_signal = buy_signal and trend_1d.get("buy", False)
+                    short_signal = short_signal and trend_1d.get("short", False)
+                    
+                    # Log ถ้าโดนบล็อก
+                    if raw_buy and not buy_signal:
+                        logger.info(f"🚫 LONG Blocked by 1D Trend (CDC is RED)")
+                    if raw_short and not short_signal:
+                        logger.info(f"🚫 SHORT Blocked by 1D Trend (CDC is GREEN)")
+                
+                # ========================================
+                # 📊 LOGGING
+                # ========================================
+                if original_buy:
+                    logger.info(
+                        f"🟢 4H LONG (Crossover) | "
+                        f"RSI: {rsi_prev:.2f}→{rsi_current:.2f} | "
+                        f"MACD: {macd_cross} ({macd_line:.6f}) | "
+                        f"Squeeze: OFF"
+                    )
+                elif strong_momentum_buy:
+                    logger.info(
+                        f"🔥 4H LONG (Strong Momentum) | "
+                        f"RSI: {rsi_current:.2f} (rising, >65) | "
+                        f"MACD: {macd_line:.6f} (rising, >80) | "
+                        f"Squeeze: OFF"
+                    )
+                elif pullback_buy:
+                    logger.info(
+                        f"📈 4H LONG (Pullback) | "
+                        f"RSI: {rsi_current:.2f} (mid, rising) | "
+                        f"MACD: {macd_line:.6f} (>50) | "
+                        f"Squeeze: OFF"
+                    )
+                elif original_short:
+                    logger.info(
+                        f"🔴 4H SHORT (Crossover) | "
+                        f"RSI: {rsi_prev:.2f}→{rsi_current:.2f} | "
+                        f"MACD: {macd_cross} ({macd_line:.6f}) | "
+                        f"Squeeze: OFF"
+                    )
+                elif strong_momentum_short:
+                    logger.info(
+                        f"🔥 4H SHORT (Strong Momentum) | "
+                        f"RSI: {rsi_current:.2f} (falling, <35) | "
+                        f"MACD: {macd_line:.6f} (falling, <-80) | "
+                        f"Squeeze: OFF"
+                    )
+                elif pullback_short:
+                    logger.info(
+                        f"📉 4H SHORT (Pullback) | "
+                        f"RSI: {rsi_current:.2f} (mid, falling) | "
+                        f"MACD: {macd_line:.6f} (<-50) | "
+                        f"Squeeze: OFF"
+                    )
+                else:
+                    logger.debug(
+                        f"4H No signal | RSI: {rsi_current:.2f}, "
+                        f"MACD: {macd_cross} ({macd_line:.6f}), Squeeze: {squeeze_off}"
+                    )
+                
+                return {
+                    "buy": buy_signal,
+                    "short": short_signal,
+                    "sell": False,
+                    "cover": False
+                }
+        
+        except Exception as e:
+            logger.error(f"Error detecting signals: {e}", exc_info=True)
+            return {"buy": False, "short": False, "sell": False, "cover": False}
+
+    def _check_market_trend_enhanced(self, df) -> str:
+        """Conservative trend detection using MA20 and MA50"""
+        try:
+            close = df['close']
+            
+            # Calculate MAs
+            ma_20 = close.rolling(20).mean()
+            ma_50 = close.rolling(50).mean() if len(close) >= 50 else None
+            
+            current_price = close.iloc[-1]
+            ma_20_current = ma_20.iloc[-1]
+            
+            # Case 1: Have MA50 - strict check
+            if ma_50 is not None:
+                ma_50_current = ma_50.iloc[-1]
+                
+                # Uptrend: Price > MA20 AND MA20 > MA50
+                if current_price > ma_20_current and ma_20_current > ma_50_current:
+                    return "UP"
+                
+                # Downtrend: Price < MA20 AND MA20 < MA50
+                elif current_price < ma_20_current and ma_20_current < ma_50_current:
+                    return "DOWN"
+                
+                else:
+                    return "NEUTRAL"
+            
+            # Case 2: No MA50 - use only MA20
+            else:
+                if current_price > ma_20_current:
+                    return "UP"
+                elif current_price < ma_20_current:
+                    return "DOWN"
+                else:
+                    return "NEUTRAL"
+                    
+        except Exception as e:
+            logger.error(f"Error checking market trend: {e}")
+            return "NEUTRAL"
+
+    def _get_recommendation_improved(self, signals: Dict[str, bool]) -> str:
+        """Generate recommendation based on signals"""
+        if signals.get("buy"):
+            return "LONG"
+        elif signals.get("short"):
+            return "SHORT"
+        else:
+            return ""
+
+    def _calculate_signal_strength_improved(self, signals: Dict[str, bool]) -> int:
+        """Calculate signal strength (0-100)"""
+        if signals.get("buy") or signals.get("short"):
+            return 100  # Signals that pass conservative conditions = 100%
+        else:
+            return 0
+
+    def _calculate_risk_levels(self, current_price: float, timeframe: str, signals: Dict, symbol: str) -> Dict:
+        """Calculate Stop Loss and Take Profit levels"""
+        try:
+            risk_config = self.risk_management.get(
+                timeframe, self.risk_management.get("4h", {})
+            )
+
+            tp_percentages = risk_config.get("tp_levels", [3.0, 5.0, 7.0])
+            
+            # --- 🆕 เริ่มส่วนที่แก้ไขใหม่: คำนวณ SL ตามความซิ่ง (Volatility) ---
+            # ดึงข้อมูล 10 แท่งล่าสุดมาดูระยะเหวี่ยง (ใช้ข้อมูลจาก signals หรือ symbol ที่เกี่ยวข้อง)
+            symbol = symbol
+            df_recent = self.data_manager.get_klines(symbol, timeframe, limit=10)
+            
+            if df_recent is not None and not df_recent.empty:
+                # คำนวณความเหวี่ยงเฉลี่ยเป็น % (High-Low)
+                volatility = ((df_recent['high'] - df_recent['low']) / df_recent['close']).mean() * 100
+                # ใช้ 1.5 เท่าของความเหวี่ยง แต่ไม่ต่ำกว่า 2% และไม่เกิน 5%
+                sl_percentage = min(max(volatility * 1.5, 2.0), 5.0)
+                logger.info(f"🛡️ Dynamic SL set at {sl_percentage:.2f}% (Volatility: {volatility:.2f}%)")
+            else:
+                # ถ้าดึงข้อมูลไม่ได้ ให้ใช้ค่าจาก Config ตามเดิม
+                sl_percentage = risk_config.get("sl_level", 3.0)
+            # -----------------------------------------------------------
+
+            risk_levels = {"timeframe": timeframe, "entry_price": current_price}
+
+            # Determine signal direction
+            is_long_signal = signals.get("buy", False)
+            is_short_signal = signals.get("short", False)
+
+            # Calculate levels based on signal direction
+            if is_long_signal:
+                risk_levels.update({
+                    "direction": "LONG",
+                    "stop_loss": current_price * (1 - sl_percentage / 100),
+                    "take_profit_1": current_price * (1 + tp_percentages[0] / 100),
+                    "take_profit_2": current_price * (1 + tp_percentages[1] / 100),
+                    "take_profit_3": current_price * (1 + tp_percentages[2] / 100),
+                    "risk_reward_ratio": tp_percentages[0] / sl_percentage,
+                })
+
+            elif is_short_signal:
+                risk_levels.update({
+                    "direction": "SHORT",
+                    "stop_loss": current_price * (1 + sl_percentage / 100),
+                    "take_profit_1": current_price * (1 - tp_percentages[0] / 100),
+                    "take_profit_2": current_price * (1 - tp_percentages[1] / 100),
+                    "take_profit_3": current_price * (1 - tp_percentages[2] / 100),
+                    "risk_reward_ratio": tp_percentages[0] / sl_percentage,
+                })
+
+            return risk_levels
+
+        except Exception as e:
+            logger.error(f"Error calculating risk levels: {e}")
+            return {"error": "Failed to calculate risk levels"}
+
+    def scan_multiple_symbols(self, symbols: List[str], timeframes: List[str] = None) -> List[Dict]:
+        """Scan multiple symbols for signals across different timeframes"""
+        if timeframes is None:
+            timeframes = ["4h", "1d"]
+
+        results = []
+
+        for symbol in symbols:
+            for timeframe in timeframes:
+                logger.info(f"🔍 Scanning {symbol} on {timeframe}")
+                result = self.analyze_symbol(symbol, timeframe)
+                
+                # ========================================
+                # 🆕 Check 1D signal history before adding
+                # ========================================
+                if result and timeframe == "1d":
+                    signals = result.get("signals", {})
+                    current_price = result.get("current_price", 0)
+                    
+                    if signals.get("buy"):
+                        signal_type = "LONG"
+                    elif signals.get("short"):
+                        signal_type = "SHORT"
+                    else:
+                        signal_type = None
+                    
+                    # Check if should notify
+                    if signal_type:
+                        should_notify = self.signal_history.should_notify(
+                            symbol, timeframe, signal_type, current_price
+                        )
+                        
+                        if should_notify:
+                            # Record signal
+                            self.signal_history.record_signal(
+                                symbol, timeframe, signal_type, current_price
+                            )
+                            # Clear opposite signal
+                            self.signal_history.clear_opposite_signal(
+                                symbol, timeframe, signal_type
+                            )
+                            # Add to results
+                            results.append(result)
+                            logger.info(f"✅ NEW 1D signal: {symbol} {signal_type}")
+                        else:
+                            logger.debug(f"⏭️ SKIP 1D signal: {symbol} {signal_type} (already notified)")
+                    else:
+                        # No signal, still add to results for tracking
+                        results.append(result)
+                else:
+                    # 4H or other timeframes - add normally
+                    if result:
+                        results.append(result)
+                
+                time.sleep(0.2)
+
+        return results
+        
+    def get_active_signals(self, symbols: List[str], timeframes: List[str] = None) -> List[Dict]:
+        """Get only signals with active recommendations"""
+        if timeframes is None:
+            timeframes = ["4h", "1d"]
+
+        all_results = self.scan_multiple_symbols(symbols, timeframes)
+
+        # Filter only results with actual recommendations
+        active_signals = []
+        for result in all_results:
+            if "signals" in result and result.get("recommendation"):
+                signals = result["signals"]
+                if signals.get("buy") or signals.get("short"):
+                    active_signals.append(result)
+
+        logger.info(f"Found {len(active_signals)} active signals out of {len(all_results)} scans")
+        return active_signals
+
+    def scan_all_symbols(self, symbols: List[str] = None, timeframes: List[str] = None) -> List[Dict]:
+        """Scan all symbols and return all results"""
+        if symbols is None:
+            symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT"]
+        if timeframes is None:
+            timeframes = ["4h", "1d"]
+            
+        return self.scan_multiple_symbols(symbols, timeframes)
+
+    def validate_signal_quality(self, analysis: Dict) -> Dict:
+        """Validate signal quality and reliability"""
+        try:
+            quality_score = 0
+            quality_factors = []
+
+            indicators = analysis.get("indicators", {})
+            signals = analysis.get("signals", {})
+
+            # Check squeeze momentum quality
+            squeeze = indicators.get("squeeze", {})
+            if squeeze.get("squeeze_off"):
+                quality_score += 30
+                quality_factors.append("Squeeze breakout confirmed")
+
+                # Check momentum strength
+                details = squeeze.get("details", {})
+                momentum_value = abs(details.get("momentum_value", 0))
+                if momentum_value > 0.001:
+                    quality_score += 10
+                    quality_factors.append("Strong momentum")
+
+            # Check MACD quality
+            macd = indicators.get("macd", {})
+            if macd.get("cross_direction") != "NONE":
+                quality_score += 25
+                quality_factors.append("MACD cross confirmed")
+
+                # Check if MACD is above/below zero line
+                macd_details = macd.get("details", {})
+                if macd_details.get("macd_above_zero") and signals.get("buy"):
+                    quality_score += 10
+                    quality_factors.append("MACD above zero line")
+                elif not macd_details.get("macd_above_zero") and signals.get("short"):
+                    quality_score += 10
+                    quality_factors.append("MACD below zero line")
+
+            # Check RSI quality
+            rsi = indicators.get("rsi", {})
+            rsi_value = rsi.get("value", 50)
+            
+            if rsi_value < 40 or rsi_value > 60:
+                quality_score += 20
+                level = "oversold" if rsi_value < 40 else "overbought"
+                quality_factors.append(f"RSI {level} level")
+
+                # Check RSI trend alignment
+                rsi_details = rsi.get("details", {})
+                rsi_trend = rsi_details.get("rsi_trend", "NEUTRAL")
+                if (rsi_value < 40 and rsi_trend == "RISING") or (rsi_value > 60 and rsi_trend == "FALLING"):
+                    quality_score += 5
+                    quality_factors.append("RSI trend alignment")
+
+            # Signal grade bonus
+            if signals.get("buy") or signals.get("short"):
+                quality_score += 15
+                quality_factors.append("Strong signal grade")
+
+            # Risk-reward assessment
+            risk_levels = analysis.get("risk_levels", {})
+            risk_reward = risk_levels.get("risk_reward_ratio", 0)
+            if risk_reward >= 1.0:
+                quality_score += 5
+                quality_factors.append("Favorable risk-reward ratio")
+
+            # Cap quality score at 100
+            quality_score = min(quality_score, 100)
+
+            return {
+                "quality_score": quality_score,
+                "quality_factors": quality_factors,
+                "risk_reward_ratio": risk_reward,
+                "signal_reliability": (
+                    "HIGH" if quality_score >= 80
+                    else "MEDIUM" if quality_score >= 60 
+                    else "LOW"
+                ),
+            }
+
+        except Exception as e:
+            logger.error(f"Error validating signal quality: {e}")
+            return {
+                "quality_score": 0,
+                "quality_factors": [],
+                "risk_reward_ratio": 0,
+                "signal_reliability": "UNKNOWN",
+            }
+
+    # Position Management Integration Methods
+    def get_position_summary(self) -> Dict:
+        """Get positions summary from PositionManager"""
+        try:
+            return self.position_manager.get_positions_summary()
+        except Exception as e:
+            logger.error(f"Error getting position summary: {e}")
+            return {"error": str(e)}
+    
+    def get_position_status(self, symbol: str, timeframe: str) -> Dict:
+        """Get specific position status from PositionManager"""
+        try:
+            position = self.position_manager.get_position_status(symbol, timeframe)
+            return {
+                "position_found": position is not None,
+                "position": position,
+                "symbol": symbol,
+                "timeframe": timeframe
+            }
+        except Exception as e:
+            logger.error(f"Error getting position status: {e}")
+            return {"error": str(e), "position_found": False}
+    
+    def force_close_position(self, symbol: str, timeframe: str, reason: str = "MANUAL") -> Dict:
+        """Force close a position via PositionManager"""
+        try:
+            # Create position_id in the format expected by PositionManager
+            position_id = f"{symbol}_{timeframe}_LONG"  # Try LONG first
+            success = self.position_manager.close_position(position_id, reason)
+            
+            if not success:
+                # Try SHORT if LONG doesn't exist
+                position_id = f"{symbol}_{timeframe}_SHORT"
+                success = self.position_manager.close_position(position_id, reason)
+            
+            if success:
+                # Remove from tracking
+                if symbol in self.active_positions:
+                    self.active_positions.remove(symbol)
+                
+                return {
+                    "success": True, 
+                    "message": f"Closed position for {symbol} {timeframe}",
+                    "reason": reason
+                }
+            else:
+                return {
+                    "success": False, 
+                    "message": f"No active position found for {symbol} {timeframe}"
+                }
+                
+        except Exception as e:
+            logger.error(f"Error force closing position: {e}")
+            return {"success": False, "error": str(e)}
+    
+    def update_all_positions(self, current_prices: Dict[str, float]) -> List[Dict]:
+        """Update all positions with current prices via PositionManager"""
+        try:
+            updates = self.position_manager.update_positions()
+            
+            # Format results for compatibility
+            results = []
+            for position_id, update_info in updates.items():
+                # Extract symbol from position_id (format: SYMBOL_TIMEFRAME_DIRECTION)
+                parts = position_id.split('_')
+                if len(parts) >= 3:
+                    symbol = parts[0]
+                    timeframe = parts[1]
+                    
+                    result = {
+                        "symbol": symbol,
+                        "timeframe": timeframe,
+                        "position_id": position_id,
+                        "update_info": update_info
+                    }
+                    results.append(result)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Error updating all positions: {e}")
+            return []
+
+    def get_data_storage_stats(self) -> Dict:
+        """Get data storage statistics from DataManager"""
+        try:
+            return self.data_manager.get_cache_stats()
+        except Exception as e:
+            logger.error(f"Error getting data storage stats: {e}")
+            return {"error": str(e)}
+    
+    def force_data_update(self, symbol: str, timeframe: str):
+        """Force data update for symbol/timeframe via DataManager"""
+        try:
+            # Clear cache to force refresh
+            self.data_manager.clear_cache()
+            logger.info(f"Forced data update for {symbol} {timeframe}")
+        except Exception as e:
+            logger.error(f"Error forcing data update for {symbol} {timeframe}: {e}")
+    
+    def clear_position_history(self):
+        """Clear position history for testing"""
+        self.active_positions.clear()
+        logger.info("Cleared position history and tracking")
+    
+    def shutdown(self):
+        """Shutdown SignalDetector and cleanup resources"""
+        try:
+            logger.info("Shutting down SignalDetector CONSERVATIVE mode...")
+            
+            # Clear data manager cache
+            if hasattr(self.data_manager, 'clear_cache'):
+                self.data_manager.clear_cache()
+            
+            # Cleanup old positions  
+            if hasattr(self.position_manager, 'cleanup_old_positions'):
+                self.position_manager.cleanup_old_positions()
+            
+            # Clear tracking
+            self.active_positions.clear()
+                
+            logger.info("SignalDetector shutdown complete")
+            
+        except Exception as e:
+            logger.error(f"Error during shutdown: {e}")
+
+
+=== LINE NOTIFIER ===
+"""LINE Bot notification service for trading signals - REFACTORED for v2.0"""
+import logging
+import requests
+from datetime import datetime
+from typing import Dict, Optional
+
+from linebot import LineBotApi, WebhookHandler
+from linebot.exceptions import InvalidSignatureError, LineBotApiError
+from linebot.models import TextSendMessage
+
+logger = logging.getLogger(__name__)
+
+
+class LineNotifier:
+    """
+    REFACTORED LINE Bot service for v2.0
+    
+    Main responsibilities:
+    - Send trading signal notifications
+    - Send position update alerts
+    - Send daily summaries and error alerts
+    - Handle LINE webhook verification
+    
+    Uses ConfigManager for:
+    - LINE channel access token
+    - LINE channel secret
+    - LINE user ID
+    """
+
+    def __init__(self, config: Dict):
+        """
+        Initialize LINE notifier with ConfigManager config
+        
+        Args:
+            config: Configuration from ConfigManager.get_line_config()
+                   Expected keys: 'access_token', 'secret', optionally 'user_id'
+        """
+        # Configuration from ConfigManager
+        self.channel_access_token = config.get("access_token")
+        self.channel_secret = config.get("secret")
+        self.user_id = config.get("user_id")  # Optional, can be set later
+
+        if not self.channel_access_token or not self.channel_secret:
+            logger.warning(
+                "LINE credentials not fully configured - notifications disabled"
+            )
+            self.line_bot_api = None
+            self.handler = None
+            return
+
+        try:
+            self.line_bot_api = LineBotApi(self.channel_access_token)
+            self.handler = WebhookHandler(self.channel_secret)
+            logger.info("LineNotifier v2.0 initialized successfully")
+        except Exception as e:
+            logger.error(f"LINE Bot initialization failed: {e}")
+            self.line_bot_api = None
+            self.handler = None
+
+    def send_signal_alert(self, analysis: Dict) -> bool:
+        """ส่งสัญญาณเทรดไป LINE และส่งต่อให้จ่าเฉย"""
+        symbol = analysis.get("symbol", "UNKNOWN")
+        try:
+            # 🚨 1. ส่งต่อให้จ่าเฉย (ทำก่อนเลย)
+            jachey_url = "https://web-production-82bfc.up.railway.app/callback" # เช็ค URL อีกทีนะครับ
+            try:
+                # ส่ง data ทั้งก้อน (analysis) ไปให้จ่าเลย
+                requests.post(jachey_url, json=analysis, timeout=5)
+                logger.info(f"👮‍♂️ [RELAY] ข้อมูลถึงจ่าเฉยแล้ว: {symbol}")
+            except Exception as e:
+                logger.error(f"❌ [RELAY] ส่งหาจ่าพลาด: {str(e)}")
+
+            # 🚨 2. ส่ง LINE หาพี่ (โค้ดเดิม)
+            if not self.line_bot_api or not self.user_id:
+                return False
+
+            signals = analysis.get("signals", {})
+            if signals.get("buy") or signals.get("short"):
+                message = self._create_entry_signal_message(analysis)
+                self.line_bot_api.push_message(self.user_id, TextSendMessage(text=message))
+                logger.info(f"✅ LINE ALERT SENT: {symbol}")
+                return True
+            return False
+
+        except Exception as e:
+            logger.error(f"💥 ERROR: {str(e)}")
+            return False
+
+    def send_position_update(self, update_data: Dict) -> bool:
+        """
+        Send position update notification to LINE
+        
+        Args:
+            update_data: Position update data with events and position info
+            
+        Returns:
+            bool: True if message sent successfully
+        """
+        try:
+            if not self.line_bot_api or not self.user_id:
+                logger.warning("LINE not properly configured, cannot send position update")
+                return False
+
+            # Check if there are significant events to report
+            events = update_data.get("events", [])
+            if not events:
+                return False  # No significant update
+
+            message = self._create_position_update_message(update_data)
+            self.line_bot_api.push_message(self.user_id, TextSendMessage(text=message))
+            logger.info(f"Position update sent: {', '.join(events)}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Error sending position update: {e}")
+            return False
+
+    def send_daily_summary(self, summary: Dict) -> bool:
+        """
+        Send daily trading summary
+        
+        Args:
+            summary: Daily summary data
+            
+        Returns:
+            bool: True if message sent successfully
+        """
+        try:
+            if not self.line_bot_api or not self.user_id:
+                logger.warning("LINE not properly configured, cannot send daily summary")
+                return False
+
+            message = self._create_daily_summary_message(summary)
+            self.line_bot_api.push_message(self.user_id, TextSendMessage(text=message))
+            logger.info("Daily summary sent")
+            return True
+
+        except Exception as e:
+            logger.error(f"Error sending daily summary: {e}")
+            return False
+
+    def _create_entry_signal_message(self, analysis: Dict) -> str:
+        """Create formatted message for entry signals"""
+        symbol = analysis.get("symbol", "UNKNOWN")
+        timeframe = analysis.get("timeframe", "4h")
+        current_price = analysis.get("current_price", 0)
+        signals = analysis.get("signals", {})
+        risk_levels = analysis.get("risk_levels", {})
+        signal_strength = analysis.get("signal_strength", 0)
+
+        # Determine signal type and colors
+        if signals.get("buy"):
+            signal_type = "🟢 LONG"
+            direction = "LONG"
+            signal_emoji = "📈"
+        elif signals.get("short"):
+            signal_type = "🔴 SHORT"
+            direction = "SHORT"
+            signal_emoji = "📉"
+        else:
+            signal_type = "⚫ UNKNOWN"
+            direction = "UNKNOWN"
+            signal_emoji = "❓"
+
+        # Get indicator values
+        indicators = analysis.get("indicators", {})
+        squeeze = indicators.get("squeeze", {})
+        macd = indicators.get("macd", {})
+        rsi = indicators.get("rsi", {})
+
+        # Create formatted message
+        message = f"""🤖 SQUEEZE BOT SIGNAL v2.0
+
+{signal_emoji} {signal_type}
+Symbol: {symbol}
+Timeframe: {timeframe.upper()}
+Price: ${current_price:.4f}
+Strength: {signal_strength}%
+
+📊 INDICATORS:
+- Squeeze: {"OFF ✅" if squeeze.get('squeeze_off') else "ON ❌"}
+- Momentum: {squeeze.get('momentum_direction', 'NEUTRAL')}
+- MACD: {macd.get('cross_direction', 'NONE')} Cross
+- RSI: {rsi.get('value', 50):.1f}
+
+🎯 TRADE SETUP:
+- Entry: ${risk_levels.get('entry_price', current_price):.4f}
+- SL: ${risk_levels.get('stop_loss', 0):.4f}
+- TP1: ${risk_levels.get('take_profit_1', 0):.4f}
+- TP2: ${risk_levels.get('take_profit_2', 0):.4f}
+- TP3: ${risk_levels.get('take_profit_3', 0):.4f}
+
+⚖️ R:R = {risk_levels.get('risk_reward_ratio', 0):.2f}
+🕐 {datetime.now().strftime('%H:%M:%S')}
+
+#{symbol} #{timeframe.upper()} #{direction} #v2"""
+
+        return message
+
+    def _create_position_update_message(self, update_data: Dict) -> str:
+        """Create formatted message for position updates"""
+        # Extract position and update information
+        position = update_data.get("position", {})
+        updates = update_data.get("updates", {})
+        events = update_data.get("events", [])
+
+        symbol = position.get("symbol", "UNKNOWN")
+        direction = position.get("direction", "UNKNOWN")
+        current_price = position.get("current_price", 0)
+        pnl_pct = position.get("pnl_pct", 0)
+
+        # Direction emoji
+        direction_emoji = "🟢" if direction == "LONG" else "🔴" if direction == "SHORT" else "⚫"
+
+        message = f"📊 POSITION UPDATE v2.0\n\n"
+        message += f"{direction_emoji} {direction} Position\n"
+        message += f"Symbol: {symbol}\n"
+        message += f"Current Price: ${current_price:.4f}\n"
+
+        # P&L with color
+        pnl_emoji = "🟢" if pnl_pct > 0 else "🔴" if pnl_pct < 0 else "⚫"
+        message += f"P&L: {pnl_emoji} {pnl_pct:+.2f}%\n\n"
+
+        # Report events
+        for event in events:
+            if "SL hit" in event:
+                message += f"🛑 {event}\n"
+            elif "TP" in event and "hit" in event:
+                message += f"🎯 {event}\n"
+            elif "Position closed" in event:
+                message += f"🏁 {event}\n"
+
+        message += f"\n🕐 {datetime.now().strftime('%H:%M:%S')}"
+        message += f"\n#{symbol} #{direction} #Update #v2"
+
+        return message
+
+    def _create_daily_summary_message(self, summary: Dict) -> str:
+        """Create formatted daily summary message"""
+        total_signals = summary.get("total_signals", 0)
+        active_positions = summary.get("active_positions", 0)
+        closed_positions = summary.get("closed_positions", 0)
+        total_pnl_pct = summary.get("total_pnl_pct", 0)
+        win_rate_pct = summary.get("win_rate_pct", 0)
+        wins = summary.get("wins", 0)
+        losses = summary.get("losses", 0)
+        version = summary.get("version", "2.0")
+
+        # P&L with color
+        pnl_emoji = "🟢" if total_pnl_pct > 0 else "🔴" if total_pnl_pct < 0 else "⚫"
+
+        message = f"📈 DAILY SUMMARY {version}\n\n"
+        message += f"🚨 Signals Today: {total_signals}\n"
+        message += f"📊 Active Positions: {active_positions}\n"
+        message += f"✅ Closed Positions: {closed_positions}\n"
+        message += f"💰 Total P&L: {pnl_emoji} {total_pnl_pct:+.2f}%\n"
+        message += f"🎯 Win Rate: {win_rate_pct:.1f}% ({wins}W/{losses}L)\n\n"
+
+        # Best/worst performers if available
+        best_performer = summary.get("best_performer", "")
+        worst_performer = summary.get("worst_performer", "")
+
+        if best_performer:
+            message += f"🏆 Best: {best_performer}\n"
+        if worst_performer:
+            message += f"📉 Worst: {worst_performer}\n"
+
+        message += f"\n📅 {datetime.now().strftime('%Y-%m-%d')}"
+        message += f"\n#DailySummary #SqueezeBot #{version.replace('.', '')}"
+
+        return message
+
+    def send_test_message(self) -> bool:
+        """Send test message to verify LINE integration"""
+        try:
+            if not self.line_bot_api or not self.user_id:
+                logger.warning("LINE not properly configured for test")
+                return False
+
+            test_message = f"🤖 Squeeze Bot Test Message v2.0\n\n"
+            test_message += f"✅ LINE integration is working!\n"
+            test_message += f"🕐 Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+            test_message += f"🚀 Status: Ready for LONG/SHORT signals\n"
+            test_message += f"🔧 Version: 2.0-refactored"
+
+            self.line_bot_api.push_message(
+                self.user_id, TextSendMessage(text=test_message)
+            )
+            logger.info("Test message sent successfully")
+            return True
+
+        except Exception as e:
+            logger.error(f"Error sending test message: {e}")
+            return False
+
+    def send_error_alert(self, error_message: str, context: str = "") -> bool:
+        """Send error alert to LINE"""
+        try:
+            if not self.line_bot_api or not self.user_id:
+                logger.warning("LINE not properly configured, cannot send error alert")
+                return False
+
+            message = f"⚠️ SQUEEZE BOT ERROR v2.0\n\n"
+            message += f"🚨 Error: {error_message}\n"
+            if context:
+                message += f"📍 Context: {context}\n"
+            message += f"\n🕐 Time: {datetime.now().strftime('%H:%M:%S')}"
+
+            self.line_bot_api.push_message(self.user_id, TextSendMessage(text=message))
+            logger.info("Error alert sent to LINE")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to send error alert: {e}")
+            return False
+
+    def verify_webhook_signature(self, body: str, signature: str) -> bool:
+        """Verify LINE webhook signature"""
+        try:
+            if not self.handler:
+                return False
+            self.handler.handle(body, signature)
+            return True
+        except InvalidSignatureError:
+            logger.error("Invalid LINE webhook signature")
+            return False
+        except Exception as e:
+            logger.error(f"Webhook signature verification error: {e}")
+            return False
+
+    def set_user_id(self, user_id: str):
+        """Set LINE user ID for notifications"""
+        self.user_id = user_id
+        logger.info(f"LINE user ID set: {user_id}")
+
+    def is_configured(self) -> bool:
+        """Check if LINE notifier is properly configured"""
+        return (
+            self.line_bot_api is not None
+            and self.channel_access_token is not None
+            and self.channel_secret is not None
+        )
+
+    def is_ready(self) -> bool:
+        """Check if LINE notifier is ready to send messages"""
+        return self.is_configured() and self.user_id is not None
+
+    def get_status(self) -> Dict:
+        """Get LINE notifier status"""
+        return {
+            "configured": self.is_configured(),
+            "ready": self.is_ready(),
+            "has_user_id": self.user_id is not None,
+            "version": "2.0-refactored",
+        }
+
+    def shutdown(self):
+        """Shutdown LINE notifier"""
+        try:
+            logger.info("Shutting down LineNotifier v2.0...")
+            # Clean up any resources if needed
+            logger.info("LineNotifier shutdown complete")
+        except Exception as e:
+            logger.error(f"Error during LineNotifier shutdown: {e}")
+
+    # Legacy compatibility methods
+    def send_position_alert(self, position_data: Dict) -> bool:
+        """Legacy method - redirects to send_position_update"""
+        # Convert legacy format to new format
+        update_data = {
+            "position": position_data,
+            "events": position_data.get("events", []),
+            "updates": position_data.get("updates", {}),
+        }
+        return self.send_position_update(update_data)
