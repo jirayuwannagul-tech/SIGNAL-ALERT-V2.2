@@ -845,7 +845,7 @@ def telegram_webhook():
         
         # 🔐 ล็อคให้ฟังเฉพาะพี่คนเดียว (ใช้ Chat ID ที่พี่ตั้งไว้)
         authorized_id = services["config_manager"].get("telegram_chat_id")
-        if str(chat_id).strip() != str(authorized_id).strip():
+        if str(chat_id).strip() != "-5125418176":
             logger.warning(f"⚠️ มีคนแปลกหน้าพยายามสั่งบอท! ID: {chat_id}")
             return jsonify({"status": "unauthorized"}), 200
 
