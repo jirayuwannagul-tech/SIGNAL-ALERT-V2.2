@@ -148,6 +148,19 @@ def initialize_services_background():
             }
             services["signal_detector"] = SignalDetector(signal_config)
             logger.info("✅ SignalDetector initialized with refactored services")
+            
+            # Register 15m rebound callback
+            def on_15m_rebound(kline_data):
+                """Callback for 15m candle close - analyze rebound signals"""
+                try:
+                    result = services["signal_detector"].analyze_rebound(kline_data)
+                    if result and result.get('recommendation'):
+                        services["line_notifier"].send_signal_alert(result)
+                except Exception as e:
+                    logger.error(f"Error in 15m rebound callback: {e}")
+            
+            services["data_manager"].register_rebound_callback(on_15m_rebound)
+            logger.info("✅ Registered 15m rebound callback")
         except Exception as e:
             logger.error(f"❌ SignalDetector initialization failed: {e}")
             services["signal_detector"] = None
