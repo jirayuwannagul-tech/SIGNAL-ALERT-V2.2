@@ -8,6 +8,7 @@ import os
 from datetime import datetime, timedelta
 from typing import Dict, List
 from apscheduler.schedulers.background import BackgroundScheduler
+from app.services.telegram_notifier import TelegramNotifier
 from apscheduler.triggers.interval import IntervalTrigger
 from config.settings import Config
 
@@ -21,6 +22,7 @@ class SignalScheduler:
     Main responsibilities:
     - Schedule automated signal scanning
     - Coordinate between refactored services
+        self.telegram_notifier = None
     - Send notifications and log data
     - Prevent duplicate signals with cooldown system
     
@@ -80,6 +82,7 @@ class SignalScheduler:
     def _save_signal_history(self):
         """Save signal history to file"""
         try:
+        self.telegram_notifier = TelegramNotifier(token=self.config.get("telegram_token"), chat_id=self.config.get("telegram_chat_id"))
             # Create directory if it doesn't exist
             os.makedirs(os.path.dirname(self.signal_history_file), exist_ok=True)
             
@@ -144,6 +147,7 @@ class SignalScheduler:
 
     def set_services(self, signal_detector, position_manager, line_notifier, sheets_logger):
         """
+            if self.telegram_notifier: self.telegram_notifier.send_signal_alert(signal)
         Inject refactored services
         
         Args:
