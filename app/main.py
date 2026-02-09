@@ -311,6 +311,35 @@ def health_check():
     status_code = 200 if services["initialized"] else 503
     return jsonify(health_data), status_code
 
+@app.route('/api/telegram/webhook', methods=['POST'])
+def telegram_webhook():
+    """รับ Webhook จาก Telegram เพื่อตอบโต้คำสั่ง"""
+    try:
+        data = request.get_json()
+        bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+        target_chat_id = os.getenv("TELEGRAM_CHAT_ID")
+
+        if data and 'message' in data:
+            message = data['message']
+            chat_id = str(message.get('chat', {}).get('id', ''))
+            text = message.get('text', '')
+
+            # ตรวจสอบว่าส่งมาจากกลุ่มที่กำหนดไหม
+            if chat_id.strip() == str(target_chat_id).strip():
+                if text == "/status":
+                    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+                    payload = {
+                        "chat_id": chat_id,
+                        "text": f"🤖 *จำเฉยรายงานตัวครับพี่!*\n\n✅ สถานะ: Online\n🔢 เวอร์ชัน: {VERSION}\n📊 ระบบเทรด: Ready\n🏠 ห้อง: {chat_id}",
+                        "parse_mode": "Markdown"
+                    }
+                    requests.post(url, json=payload)
+                    logger.info(f"✅ Sent status reply to {chat_id}")
+
+        return jsonify({"status": "ok"}), 200
+    except Exception as e:
+        logger.error(f"❌ Telegram Webhook Error: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/test/line', methods=['POST', 'GET'])
 def test_line_notification():
