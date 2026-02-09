@@ -22,9 +22,9 @@ class SignalScheduler:
     
     Main responsibilities:
     - Schedule automated signal scanning
-        self.telegram_notifier = None
+    self.telegram_notifier = None
     - Coordinate between refactored services
-        self.telegram_notifier = None
+    self.telegram_notifier = None
     - Send notifications and log data
     - Prevent duplicate signals with cooldown system
     
@@ -82,10 +82,10 @@ class SignalScheduler:
             self.last_signals = {}
 
     def _save_signal_history(self):
-        self.telegram_notifier = TelegramNotifier(token=self.config.get("telegram_token"), chat_id=self.config.get("telegram_chat_id"))
+    self.telegram_notifier = TelegramNotifier(token=self.config.get("telegram_token"), chat_id=self.config.get("telegram_chat_id"))
         """Save signal history to file"""
         try:
-        self.telegram_notifier = TelegramNotifier(token=self.config.get("telegram_token"), chat_id=self.config.get("telegram_chat_id"))
+    self.telegram_notifier = TelegramNotifier(token=self.config.get("telegram_token"), chat_id=self.config.get("telegram_chat_id"))
             # Create directory if it doesn't exist
             os.makedirs(os.path.dirname(self.signal_history_file), exist_ok=True)
             
