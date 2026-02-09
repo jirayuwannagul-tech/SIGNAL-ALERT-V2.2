@@ -159,7 +159,7 @@ class LineNotifier:
         # Determine direction
         if signals.get("buy"):
             direction = "LONG"
-            direction_emoji = "📈"
+            direction_emoji = "🟢"
             # Calculate percentages for LONG
             sl_pct = ((sl_price - entry_price) / entry_price) * 100
             tp1_pct = ((tp1_price - entry_price) / entry_price) * 100
@@ -167,12 +167,12 @@ class LineNotifier:
             tp3_pct = ((tp3_price - entry_price) / entry_price) * 100
         elif signals.get("short"):
             direction = "SHORT"
-            direction_emoji = "📉"
+            direction_emoji = "🔴"
             # Calculate percentages for SHORT
-            sl_pct = ((sl_price - entry_price) / entry_price) * 100  # ✅ แก้แล้ว!
-            tp1_pct = ((entry_price - tp1_price) / entry_price) * 100
-            tp2_pct = ((entry_price - tp2_price) / entry_price) * 100
-            tp3_pct = ((entry_price - tp3_price) / entry_price) * 100
+            sl_pct = ((sl_price - entry_price) / entry_price) * 100
+            tp1_pct = -((entry_price - tp1_price) / entry_price) * 100  # ✅ เป็น -
+            tp2_pct = -((entry_price - tp2_price) / entry_price) * 100  # ✅ เป็น -
+            tp3_pct = -((entry_price - tp3_price) / entry_price) * 100  # ✅ เป็น -
         else:
             direction = "UNKNOWN"
             direction_emoji = "❓"
@@ -225,13 +225,25 @@ class LineNotifier:
             
         else:  # 15m or other
             header_emoji = "🟡⚡"
-            strategy_name = "15m SCALP"
+            strategy_name = "15m SCALP (Rebound)"
             
-            # 15m indicators (simplified)
-            rsi_status = "Oversold" if rsi.get('value', 50) < 35 else "Overbought" if rsi.get('value', 50) > 65 else "Neutral"
+            # 15m rebound indicators
+            rsi_value = rsi.get('value', 50)
+            rsi_status = "Oversold" if rsi_value < 35 else "Overbought" if rsi_value > 65 else "Neutral"
             
-            indicator_line = f"""📊 RSI: {rsi.get('value', 50):.1f} ({rsi_status})
-⚠️ Quick Scalp - Exit Fast!"""
+            # BB values if available
+            bb_data = indicators.get("bb", {})
+            bb_upper = bb_data.get('upper', 0)
+            bb_lower = bb_data.get('lower', 0)
+            
+            if bb_upper > 0 and bb_lower > 0:
+                indicator_line = f"""📊 RSI: {rsi_value:.1f} ({rsi_status})
+📊 BB Upper: {bb_upper:.2f}
+�� BB Lower: {bb_lower:.2f}
+⚠️ Quick Entry/Exit - Scalp Only!"""
+            else:
+                indicator_line = f"""📊 RSI: {rsi_value:.1f} ({rsi_status})
+⚠️ Quick Entry/Exit - Scalp Only!"""
 
         # Create formatted message
         message = f"""{header_emoji} REBOUND ALERT {header_emoji}

@@ -120,9 +120,15 @@ class Config:
     # ================================================================
 
     RISK_MANAGEMENT = {
+        "15m": {
+            "tp_levels": [0.5, 1.0, 1.5],
+            "sl_level": 0.5,
+            "max_risk_per_trade": 2.0,
+            "max_open_trades": 5
+        },
         "4h": {
-            "tp_levels": [3.0, 5.0, 7.0],  # เพิ่มใหม่
-            "sl_level": 3.0,
+            "tp_levels": [2.0, 4.0, 6.0],
+            "sl_level": 1.5,
             "max_risk_per_trade": 3.0,
             "max_open_trades": 3
         },

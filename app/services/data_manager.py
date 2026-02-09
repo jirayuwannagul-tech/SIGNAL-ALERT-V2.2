@@ -19,6 +19,7 @@ class DataManager:
         self.config = ConfigManager()
         self.json_manager = JSONManager()
         self.data_converter = DataConverter()
+        self.rebound_callback = None  # Callback for 15m candle close
         
         # Cache management
         self.cache = {}
@@ -33,6 +34,11 @@ class DataManager:
         self._setup_session()
         
         self.logger.info("✅ DataManager initialized")
+    
+    def register_rebound_callback(self, callback):
+        """Register callback for 15m candle close events"""
+        self.rebound_callback = callback
+        self.logger.info("✅ Registered rebound callback for 15m signals")
     
     def _setup_session(self):
         """Setup requests session with connection pooling"""
@@ -307,6 +313,14 @@ class DataManager:
                 f"C: {kline_data['close']:.2f} | "
                 f"Closed: {kline_data.get('is_closed')}"
             )
+            
+            # Trigger rebound callback for 15m candle close
+            if kline_data.get('is_closed') and timeframe == '15m' and self.rebound_callback:
+                try:
+                    self.logger.info(f"🟡 15m candle closed: {symbol} @ {kline_data['close']:.2f}")
+                    self.rebound_callback(kline_data)
+                except Exception as e:
+                    self.logger.error(f"Error in rebound callback: {e}")
             
             # When candle closes
             if kline_data.get('is_closed'):
