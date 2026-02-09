@@ -831,6 +831,62 @@ def debug_positions():
         logger.error(f"Error in debug positions: {e}")
         return jsonify({"error": str(e)}), 500
 
+# --- 🧠 ส่วนที่เพิ่ม: ระบบสมองกลภาษาไทยของน้องจำเฉย ---
+@app.route('/api/telegram/webhook', methods=['POST'])
+def telegram_webhook():
+    try:
+        data = request.get_json()
+        if not data or 'message' not in data:
+            return jsonify({"status": "no message"}), 200
+
+        message = data['message']
+        text = message.get('text', '')
+        chat_id = str(message.get('chat', {}).get('id', ''))
+        
+        # 🔐 ล็อคให้ฟังเฉพาะพี่คนเดียว (ใช้ Chat ID ที่พี่ตั้งไว้)
+        authorized_id = services["config_manager"].get("telegram_chat_id")
+        if chat_id != str(authorized_id):
+            logger.warning(f"⚠️ มีคนแปลกหน้าพยายามสั่งบอท! ID: {chat_id}")
+            return jsonify({"status": "unauthorized"}), 200
+
+        # 🤖 ระบบตอบโต้ภาษาไทย
+        bot = services.get("scheduler").telegram_notifier if services.get("scheduler") else None
+        
+        if text == "/status":
+            summary = services["position_manager"].get_positions_summary() if services["position_manager"] else {}
+            active = summary.get("active_positions", 0)
+            msg = (
+                f"🤖 *รายงานตัวครับพี่!*\n"
+                f"━━━━━━━━━━━━━━━\n"
+                f"✅ สถานะ: บอทจำเฉยยังอยู่ดี\n"
+                f"📦 ถืออยู่: `{active}` ไม้\n"
+                f"🚀 เวอร์ชัน: `{VERSION}`\n"
+                f"━━━━━━━━━━━━━━━\n"
+                f"สั่งสแกนพิมพ์ /scan ได้เลยครับ"
+            )
+            if bot: bot.send_message(msg)
+
+        elif text == "/scan":
+            if bot: bot.send_message("🔍 *รับทราบครับ!* กำลังออกไปควานหาเหรียญสวยๆ ให้พี่ รอสักครู่นะครับ...")
+            # สั่งสแกน 4H ทันที
+            if services["scheduler"]:
+                Thread(target=services["scheduler"]._scan_4h_signals).start()
+        
+        elif text == "/help":
+            msg = (
+                f"📜 *คำสั่งที่ใช้ได้ครับพี่:*\n"
+                f"• `/status` : เช็กว่าบอทยังมีชีวิตไหม\n"
+                f"• `/scan` : สั่งสแกนหาเหรียญทันที\n"
+                f"• `/health` : ดูสุขภาพระบบ"
+            )
+            if bot: bot.send_message(msg)
+
+        return jsonify({"status": "ok"}), 200
+
+    except Exception as e:
+        logger.error(f"❌ Telegram Webhook Error: {e}")
+        return jsonify({"error": str(e)}), 500
+# -----------------------------------------------
 
 if __name__ == "__main__":
     # ลบพวก raw_port = ... และ if raw_port == ... ทิ้งให้หมด
