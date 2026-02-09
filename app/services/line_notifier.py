@@ -194,7 +194,7 @@ class LineNotifier:
 
         # ✅ สีและ strategy ตาม timeframe
         if timeframe == "1d":
-            header_emoji = "🔵⚡"
+            header_emoji = "🔵⚡ CDC ALERT ⚡🔵"
             strategy_name = "1D SWING"
             
             # 1D indicators (CDC ActionZone)
@@ -210,7 +210,7 @@ class LineNotifier:
 📊 RSI: {rsi.get('value', 50):.1f}"""
             
         elif timeframe == "4h":
-            header_emoji = "🟢⚡"
+            header_emoji = "🟢⚡ SQUEEZE ALERT ⚡🟢"
             strategy_name = "4H SWING"
             
             # 4H indicators
@@ -224,7 +224,7 @@ class LineNotifier:
 📊 RSI: {rsi.get('value', 50):.1f}"""
             
         else:  # 15m or other
-            header_emoji = "🟡⚡"
+            header_emoji = "🟡⚡ REBOUND ALERT ⚡🟡"
             strategy_name = "15m SCALP (Rebound)"
             
             # 15m rebound indicators
