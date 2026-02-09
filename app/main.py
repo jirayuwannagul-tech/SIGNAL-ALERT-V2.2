@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+import requests
 from threading import Thread
 from flask import Flask, jsonify, request
 
@@ -850,8 +851,9 @@ def telegram_webhook():
             return jsonify({"status": "unauthorized"}), 200
 
         # 🤖 ระบบตอบโต้ภาษาไทย
-        bot = services.get("scheduler").telegram_notifier if services.get("scheduler") else None
-        
+        bot_token = services["config_manager"].get("telegram_bot_token")
+        api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+
         if text == "/status":
             summary = services["position_manager"].get_positions_summary() if services["position_manager"] else {}
             active = summary.get("active_positions", 0)
@@ -864,11 +866,10 @@ def telegram_webhook():
                 f"━━━━━━━━━━━━━━━\n"
                 f"สั่งสแกนพิมพ์ /scan ได้เลยครับ"
             )
-            if bot: bot.send_message(msg)
+            requests.post(api_url, json={"chat_id": chat_id, "text": msg, "parse_mode": "Markdown"})
 
         elif text == "/scan":
-            if bot: bot.send_message("🔍 *รับทราบครับ!* กำลังออกไปควานหาเหรียญสวยๆ ให้พี่ รอสักครู่นะครับ...")
-            # สั่งสแกน 4H ทันที
+            requests.post(api_url, json={"chat_id": chat_id, "text": "🔍 *รับทราบครับ!* กำลังออกไปควานหาเหรียญสวยๆ ให้พี่ รอสักครู่นะครับ...", "parse_mode": "Markdown"})
             if services["scheduler"]:
                 Thread(target=services["scheduler"]._scan_4h_signals).start()
         
@@ -879,7 +880,7 @@ def telegram_webhook():
                 f"• `/scan` : สั่งสแกนหาเหรียญทันที\n"
                 f"• `/health` : ดูสุขภาพระบบ"
             )
-            if bot: bot.send_message(msg)
+            requests.post(api_url, json={"chat_id": chat_id, "text": msg, "parse_mode": "Markdown"})
 
         return jsonify({"status": "ok"}), 200
 
