@@ -1,12 +1,10 @@
 import requests
 from flask import Flask, request, jsonify
-import logging
+import os, logging
 
 app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# บรรทัดที่พี่ต้องแก้เลขห้อง (ผมใส่เลขใหม่ให้แล้ว)
-AUTHORIZED_CHAT_ID = "-5080904156"
 
 @app.route('/api/telegram/webhook', methods=['POST'])
 def telegram_webhook():
@@ -18,20 +16,22 @@ def telegram_webhook():
     text = message.get('text', '')
     chat_id = str(message.get('chat', {}).get('id', ''))
     
-    # 🔐 เช็คสิทธิ์แบบเด็ดขาด
-    if chat_id != AUTHORIZED_CHAT_ID:
+    # 🔐 ดึงเลขห้องจาก Variables ที่พี่เซตไว้
+    authorized_id = os.getenv("TELEGRAM_CHAT_ID")
+    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    
+    if chat_id.strip() != str(authorized_id).strip():
+        logger.warning(f"Unauthorized ID: {chat_id}")
         return jsonify({"status": "unauthorized"}), 200
 
-    # 🤖 ดึง Token จาก Railway
-    import os
-    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
 
     if text == "/status":
-        msg = "🤖 รายงานตัวครับพี่! บอทจำเฉยในห้องใหม่สแตนบายแล้วครับ"
-        requests.post(api_url, json={"chat_id": chat_id, "text": msg})
+        msg = "🤖 *รายงานตัวครับพี่!*\nบ้านใหม่เลขที่ " + chat_id + " พร้อมสแตนบายครับ"
+        requests.post(api_url, json={"chat_id": chat_id, "text": msg, "parse_mode": "Markdown"})
 
     return jsonify({"status": "ok"}), 200
 
 if __name__ == "__main__":
+    # รัน Flask บนพอร์ต 8080 ตามที่ Railway ต้องการ
     app.run(host='0.0.0.0', port=8080)
