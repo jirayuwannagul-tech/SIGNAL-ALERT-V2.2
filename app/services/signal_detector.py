@@ -144,6 +144,10 @@ class SignalDetector:
                     "rsi": analysis["rsi"],
                 },
                 
+                # ✅ เพิ่ม EMA สำหรับ 1D signals
+                "ema12": signals.get("ema12", 0),
+                "ema26": signals.get("ema26", 0),
+                
                 # Trading signals
                 "signals": signals,
                 
@@ -287,7 +291,7 @@ class SignalDetector:
             if timeframe == "1d":
                 if len(df) < 30:
                     logger.warning(f"Insufficient data: {len(df)} candles")
-                    return {"buy": False, "short": False, "sell": False, "cover": False}
+                    return {"buy": False, "short": False, "sell": False, "cover": False, "ema12": 0, "ema26": 0}
                 
                 # Calculate EMA 12 and 26
                 df['ema12'] = df['close'].ewm(span=12, adjust=False).mean()
@@ -300,7 +304,6 @@ class SignalDetector:
                 ema26_prev = df['ema26'].iloc[-2]
                 price_curr = df['close'].iloc[-1]
                 
-            
                 # CDC ActionZone conditions
                 buy_signal = (ema12_curr > ema26_curr) and (price_curr > ema12_curr)
                 short_signal = (ema12_curr < ema26_curr) and (price_curr < ema12_curr)
@@ -319,11 +322,14 @@ class SignalDetector:
                         f"Price: {price_curr:.2f} < EMA12"
                     )
                 
+                # ✅ เพิ่ม EMA values ใน return
                 return {
                     "buy": buy_signal,
                     "short": short_signal,
                     "sell": False,
-                    "cover": False
+                    "cover": False,
+                    "ema12": float(ema12_curr),
+                    "ema26": float(ema26_curr)
                 }
             
             # ========================================

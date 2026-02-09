@@ -138,9 +138,9 @@ class LineNotifier:
         except Exception as e:
             logger.error(f"Error sending daily summary: {e}")
             return False
-
+    
     def _create_entry_signal_message(self, analysis: Dict) -> str:
-        """Create formatted message for entry signals"""
+        """Create formatted message for entry signals - REBOUND ALERT style"""
         symbol = analysis.get("symbol", "UNKNOWN")
         timeframe = analysis.get("timeframe", "4h")
         current_price = analysis.get("current_price", 0)
@@ -148,19 +148,43 @@ class LineNotifier:
         risk_levels = analysis.get("risk_levels", {})
         signal_strength = analysis.get("signal_strength", 0)
 
-        # Determine signal type and colors
+        # Get risk levels
+        entry_price = risk_levels.get('entry_price', current_price)
+        sl_price = risk_levels.get('stop_loss', 0)
+        tp1_price = risk_levels.get('take_profit_1', 0)
+        tp2_price = risk_levels.get('take_profit_2', 0)
+        tp3_price = risk_levels.get('take_profit_3', 0)
+        rr_ratio = risk_levels.get('risk_reward_ratio', 0)
+
+        # Determine direction
         if signals.get("buy"):
-            signal_type = "🟢 LONG"
             direction = "LONG"
-            signal_emoji = "📈"
+            direction_emoji = "📈"
+            # Calculate percentages for LONG
+            sl_pct = ((sl_price - entry_price) / entry_price) * 100
+            tp1_pct = ((tp1_price - entry_price) / entry_price) * 100
+            tp2_pct = ((tp2_price - entry_price) / entry_price) * 100
+            tp3_pct = ((tp3_price - entry_price) / entry_price) * 100
         elif signals.get("short"):
-            signal_type = "🔴 SHORT"
             direction = "SHORT"
-            signal_emoji = "📉"
+            direction_emoji = "📉"
+            # Calculate percentages for SHORT
+            sl_pct = ((sl_price - entry_price) / entry_price) * 100  # ✅ แก้แล้ว!
+            tp1_pct = ((entry_price - tp1_price) / entry_price) * 100
+            tp2_pct = ((entry_price - tp2_price) / entry_price) * 100
+            tp3_pct = ((entry_price - tp3_price) / entry_price) * 100
         else:
-            signal_type = "⚫ UNKNOWN"
             direction = "UNKNOWN"
-            signal_emoji = "❓"
+            direction_emoji = "❓"
+            sl_pct = tp1_pct = tp2_pct = tp3_pct = 0
+
+        # Calculate R:R ratios for each TP
+        if sl_pct != 0:
+            rr1 = abs(tp1_pct / sl_pct)
+            rr2 = abs(tp2_pct / sl_pct)
+            rr3 = abs(tp3_pct / sl_pct)
+        else:
+            rr1 = rr2 = rr3 = 0
 
         # Get indicator values
         indicators = analysis.get("indicators", {})
@@ -168,34 +192,123 @@ class LineNotifier:
         macd = indicators.get("macd", {})
         rsi = indicators.get("rsi", {})
 
+        # ✅ สีและ strategy ตาม timeframe
+        if timeframe == "1d":
+            header_emoji = "🔵⚡"
+            strategy_name = "1D SWING"
+            
+            # 1D indicators (CDC ActionZone)
+            ema12 = analysis.get("ema12", 0)
+            ema26 = analysis.get("ema26", 0)
+            
+            if ema12 > ema26:
+                trend_status = "GREEN Trend"
+            else:
+                trend_status = "RED Trend"
+            
+            indicator_line = f"""📊 CDC: {trend_status}
+📊 RSI: {rsi.get('value', 50):.1f}"""
+            
+        elif timeframe == "4h":
+            header_emoji = "🟢⚡"
+            strategy_name = "4H SWING"
+            
+            # 4H indicators
+            squeeze_status = "OFF ✅" if squeeze.get('squeeze_off') else "ON ❌"
+            momentum = squeeze.get('momentum_direction', 'NEUTRAL')
+            macd_cross = macd.get('cross_direction', 'NONE')
+            
+            indicator_line = f"""📊 Squeeze: {squeeze_status}
+📊 Momentum: {momentum}
+📊 MACD: {macd_cross} Cross
+📊 RSI: {rsi.get('value', 50):.1f}"""
+            
+        else:  # 15m or other
+            header_emoji = "🟡⚡"
+            strategy_name = "15m SCALP"
+            
+            # 15m indicators (simplified)
+            rsi_status = "Oversold" if rsi.get('value', 50) < 35 else "Overbought" if rsi.get('value', 50) > 65 else "Neutral"
+            
+            indicator_line = f"""📊 RSI: {rsi.get('value', 50):.1f} ({rsi_status})
+⚠️ Quick Scalp - Exit Fast!"""
+
         # Create formatted message
-        message = f"""🤖 SQUEEZE BOT SIGNAL v2.2
-
-{signal_emoji} {signal_type}
-Symbol: {symbol}
-Timeframe: {timeframe.upper()}
-Price: ${current_price:.4f}
-Strength: {signal_strength}%
-
-📊 INDICATORS:
-- Squeeze: {"OFF ✅" if squeeze.get('squeeze_off') else "ON ❌"}
-- Momentum: {squeeze.get('momentum_direction', 'NEUTRAL')}
-- MACD: {macd.get('cross_direction', 'NONE')} Cross
-- RSI: {rsi.get('value', 50):.1f}
-
-🎯 TRADE SETUP:
-- Entry: ${risk_levels.get('entry_price', current_price):.4f}
-- SL: ${risk_levels.get('stop_loss', 0):.4f}
-- TP1: ${risk_levels.get('take_profit_1', 0):.4f}
-- TP2: ${risk_levels.get('take_profit_2', 0):.4f}
-- TP3: ${risk_levels.get('take_profit_3', 0):.4f}
-
-⚖️ R:R = {risk_levels.get('risk_reward_ratio', 0):.2f}
+        message = f"""{header_emoji} REBOUND ALERT {header_emoji}
+━━━━━━━━━━━━━━━━━
+📊 Strategy: {strategy_name}
+🪙 {symbol} - {direction} {direction_emoji}
+💵 Entry: {entry_price:,.2f}
+🛑 SL: {sl_price:,.2f} ({sl_pct:+.1f}%)
+🎯 TP1: {tp1_price:,.2f} ({tp1_pct:+.1f}%) [{rr1:.1f}:1]
+🎯 TP2: {tp2_price:,.2f} ({tp2_pct:+.1f}%) [{rr2:.1f}:1]
+🎯 TP3: {tp3_price:,.2f} ({tp3_pct:+.1f}%) [{rr3:.1f}:1]
+{indicator_line}
 🕐 {datetime.now().strftime('%H:%M:%S')}
-
-#{symbol} #{timeframe.upper()} #{direction} #v2"""
+🤖 SIGNAL-ALERT v2.2
+━━━━━━━━━━━━━━━━━"""
 
         return message
+```
+
+---
+
+## 🎯 ผลลัพธ์ที่คาดหวัง
+
+### **1D Signal (น้ำเงิน):**
+```
+🔵⚡ REBOUND ALERT ⚡🔵
+━━━━━━━━━━━━━━━━━
+📊 Strategy: 1D SWING
+🪙 BTCUSDT - LONG 📈
+💵 Entry: 69,200.00
+🛑 SL: 67,124.00 (-3.0%)
+🎯 TP1: 72,656.00 (+5.0%) [1.7:1]
+🎯 TP2: 74,344.00 (+7.0%) [2.3:1]
+🎯 TP3: 76,032.00 (+9.0%) [3.0:1]
+📊 CDC: GREEN Trend
+📊 RSI: 55.2
+🕐 20:30:00
+🤖 SIGNAL-ALERT v2.2
+━━━━━━━━━━━━━━━━━
+```
+
+### **4H Signal (เขียว):**
+```
+🟢⚡ REBOUND ALERT ⚡🟢
+━━━━━━━━━━━━━━━━━
+📊 Strategy: 4H SWING
+🪙 ETHUSDT - SHORT 📉
+💵 Entry: 2,500.00
+🛑 SL: 2,537.50 (+1.5%)
+🎯 TP1: 2,470.00 (-1.2%) [0.8:1]
+🎯 TP2: 2,462.50 (-1.5%) [1.0:1]
+🎯 TP3: 2,450.00 (-2.0%) [1.3:1]
+📊 Squeeze: OFF ✅
+📊 Momentum: DOWN
+📊 MACD: DOWN Cross
+📊 RSI: 45.3
+🕐 20:30:00
+🤖 SIGNAL-ALERT v2.2
+━━━━━━━━━━━━━━━━━
+```
+
+### **15m Signal (เหลือง):**
+```
+🟡⚡ REBOUND ALERT ⚡🟡
+━━━━━━━━━━━━━━━━━
+📊 Strategy: 15m SCALP
+🪙 SOLUSDT - LONG 📈
+💵 Entry: 150.00
+🛑 SL: 149.25 (-0.5%)
+🎯 TP1: 151.50 (+1.0%) [2.0:1]
+🎯 TP2: 153.00 (+2.0%) [4.0:1]
+🎯 TP3: 154.50 (+3.0%) [6.0:1]
+📊 RSI: 32.5 (Oversold)
+⚠️ Quick Scalp - Exit Fast!
+🕐 20:30:00
+🤖 SIGNAL-ALERT v2.2
+━━━━━━━━━━━━━━━━━
 
     def _create_position_update_message(self, update_data: Dict) -> str:
         """Create formatted message for position updates"""
