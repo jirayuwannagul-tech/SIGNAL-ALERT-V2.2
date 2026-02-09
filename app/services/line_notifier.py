@@ -245,6 +245,12 @@ class LineNotifier:
                 indicator_line = f"""📊 RSI: {rsi_value:.1f} ({rsi_status})
 ⚠️ Quick Entry/Exit - Scalp Only!"""
 
+        if timeframe == "1d":
+            alert_title = "CDC TREND ALERT"
+        elif timeframe == "4h":
+            alert_title = "SQUEEZE BREAKOUT"
+        else:
+            alert_title = "QUICK REBOUND"
         # Create formatted message
         message = f"""{header_emoji} REBOUND ALERT {header_emoji}
 ━━━━━━━━━━━━━━━━━
