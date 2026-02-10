@@ -58,7 +58,7 @@ class TelegramNotifier:
     # 📢 LAYER 2: Signal Alerts (ส่วนพ่นสัญญาณเทรด - โค้ดเดิมของคุณ)
     # ================================================================
 
-    def send_signal_alert(self, analysis: Dict):
+    def send_signal_alert(self, analysis: Dict, topic_id: str = None):
         """พ่นสัญญาณเทรดหน้าตาเดียวกับ LINE (แยกห้อง Spot/Futures)"""
         try:
             symbol = analysis.get("symbol", "UNKNOWN")
@@ -72,7 +72,7 @@ class TelegramNotifier:
             # ถ้าเป็น Futures (ใช้โค้ดเดิมที่ทำไว้) ส่งเข้าห้อง VIP
             # ถ้าเป็น Spot (ในอนาคต) ส่งเข้าห้องธรรมดา
             # ปัจจุบันกำหนดให้ Futures ทั้งหมดเข้า VIP ตามที่คุณแจ้ง
-            target_thread = self.topics["vip"]
+            target_thread = topic_id or self.topics["vip"]
 
             # ดึงค่า Risk Levels
             entry = risk.get('entry_price', current_price)

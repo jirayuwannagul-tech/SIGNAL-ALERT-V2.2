@@ -23,6 +23,8 @@ class SignalDetector:
         self.position_manager = config["position_manager"]
         self.config_manager = config["config_manager"]
         self.line_notifier = config.get("line_notifier")
+        self.telegram_notifier = config.get("telegram_notifier")
+
         
         # Initialize utilities
         self.indicators = TechnicalIndicators()
@@ -171,7 +173,14 @@ class SignalDetector:
                 logger.info(f"Analysis complete for {symbol}: {result['recommendation']}")
                 if position_created:
                     logger.info(f"🆕 Created position for {symbol} {timeframe}")
-            
+
+                # 🔔 ส่งเข้า Telegram
+                if self.telegram_notifier:
+                    self.telegram_notifier.send_signal_alert(
+                        result,
+                        topic_id=self.config_manager.get("TOPIC_VIP_ID")
+                    )
+         
             return result
 
         except Exception as e:
