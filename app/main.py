@@ -187,6 +187,7 @@ def initialize_services_background():
             logger.error(f"❌ SignalDetector initialization failed: {e}")
             services["signal_detector"] = None
         
+        
         # Step 6: Initialize Scheduler with new architecture (V2.2 Update)
         try:
             scheduler_config = services["config_manager"].get_all()
