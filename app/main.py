@@ -90,6 +90,11 @@ def initialize_services_background():
     try:
         logger.info(f"🚀 Starting SIGNAL-ALERT {VERSION} service initialization...")
         
+        # 📂 สร้างโฟลเดอร์ data เพื่อป้องกัน DB Error (V2.2 Update)
+        if not os.path.exists('data'):
+            os.makedirs('data')
+            logger.info("📁 Created 'data' directory for member database")
+        
         # Step 1: Initialize ConfigManager (Singleton)
         services["config_manager"] = ConfigManager()
         logger.info("✅ ConfigManager initialized")
@@ -218,7 +223,7 @@ def initialize_services_background():
             services["performance_analyzer"] = None
         
         # Step 8: Start automatic position monitoring
-        if services["position_manager"] and services["sheets_logger"]:
+        if services["position_manager"]:
             try:
                 # Start background position monitoring thread
                 monitor_thread = Thread(
