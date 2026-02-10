@@ -119,12 +119,12 @@ class TelegramNotifier:
                 f"{header}\n"
                 f"━━━━━━━━━━━━━━━━\n"
                 f"🪙 *{symbol}* {side} {emoji}\n"
-                f"⏱ TF: `{tf_text}`\n"   # ✅ เพิ่มบรรทัดนี้
-                f"💵 Entry: `{entry:,.2f}`\n"
-                f"🛑 SL: `{sl:,.2f}` ({sl_pct:+.1f}%)\n"
-                f"🎯 TP1: `{tp1:,.2f}` ({tp1_pct:+.1f}%)\n"
-                f"🎯 TP2: `{tp2:,.2f}` ({tp2_pct:+.1f}%)\n"
-                f"🎯 TP3: `{tp3:,.2f}` ({tp3_pct:+.1f}%)\n"
+                f"⏱ TF: `{tf_text}`\n"
+                f"💵 Entry: `{entry:,.6f}`\n"
+                f"🛑 SL: `{sl:,.6f}` ({sl_pct:+.1f}%)\n"
+                f"🎯 TP1: `{tp1:,.6f}` ({tp1_pct:+.1f}%)\n"
+                f"🎯 TP2: `{tp2:,.6f}` ({tp2_pct:+.1f}%)\n"
+                f"🎯 TP3: `{tp3:,.6f}` ({tp3_pct:+.1f}%)\n"
                 f"💪 Strength: `{strength}%`\n"
                 f"🕐 `{datetime.now().strftime('%H:%M:%S')}`"
             )
