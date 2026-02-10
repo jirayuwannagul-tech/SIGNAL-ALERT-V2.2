@@ -83,6 +83,15 @@ class TelegramNotifier:
 
             target_thread = topic_id or self.topics["vip"]
 
+            # ---- TF (support list) ----
+            tfs = analysis.get("timeframes") or analysis.get("tf_list") or analysis.get("tf") or analysis.get("timeframe") or "1D / 4H / 15m"
+            if isinstance(tfs, list):
+                tf_text = " / ".join(tfs)
+            else:
+                tf_text = str(tfs).strip() if str(tfs).strip() else "1D / 4H / 15m"
+            # ---------------------------
+
+
             # Direction (support signals + explicit direction)
             direction = analysis.get("direction", "").upper()
             is_long = bool(signals.get("buy")) or direction == "LONG"
