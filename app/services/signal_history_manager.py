@@ -1,5 +1,5 @@
 """Signal History Manager - Persistent storage for 1D signals"""
-
+import os
 import json
 import logging
 from pathlib import Path
@@ -9,15 +9,14 @@ from typing import Dict, Optional
 logger = logging.getLogger(__name__)
 
 
+import os  # ✅ เพิ่มบรรทัดนี้บนสุด (ถ้ายังไม่มี)
+
 class SignalHistoryManager:
-    """Manage 1D signal history with persistent JSON storage"""
-    
-    def __init__(self, data_dir: str = "/data"):
-        """Initialize signal history manager
-        
-        Args:
-            data_dir: Directory for storing signal history (default: /data for Railway Volume)
-        """
+    def __init__(self, data_dir: str = None):
+        # ✅ ใช้ DATA_DIR ก่อน, ไม่งั้นใช้ ./data
+        if data_dir is None:
+            data_dir = os.getenv("DATA_DIR", "data")
+
         self.data_dir = Path(data_dir)
         self.data_dir.mkdir(parents=True, exist_ok=True)
         

@@ -83,8 +83,12 @@ class TelegramNotifier:
 
             target_thread = topic_id or self.topics["vip"]
 
-            # Direction
-            if signals.get("buy"):
+            # Direction (support signals + explicit direction)
+            direction = analysis.get("direction", "").upper()
+            is_long = bool(signals.get("buy")) or direction == "LONG"
+            is_short = bool(signals.get("short")) or direction == "SHORT"
+
+            if is_long and not is_short:
                 side = "LONG"
                 emoji = "🟢"
                 header = "🟢⚡ SIGNAL ALERT ⚡🟢"
@@ -101,10 +105,12 @@ class TelegramNotifier:
                 tp2_pct = -((entry - tp2) / entry) * 100 if entry else 0
                 tp3_pct = -((entry - tp3) / entry) * 100 if entry else 0
 
+
             message = (
                 f"{header}\n"
                 f"━━━━━━━━━━━━━━━━\n"
                 f"🪙 *{symbol}* {side} {emoji}\n"
+                f"⏱ TF: `{tf_text}`\n"   # ✅ เพิ่มบรรทัดนี้
                 f"💵 Entry: `{entry:,.2f}`\n"
                 f"🛑 SL: `{sl:,.2f}` ({sl_pct:+.1f}%)\n"
                 f"🎯 TP1: `{tp1:,.2f}` ({tp1_pct:+.1f}%)\n"

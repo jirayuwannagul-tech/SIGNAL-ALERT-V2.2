@@ -451,9 +451,11 @@ def receive_signal_from_outside():
             "symbol": symbol,
             "timeframe": data.get('timeframe', '4H'),
             "current_price": price,
+            "direction": direction,   # 👈 เพิ่มบรรทัดนี้
             "signals": {
                 "buy": True if direction == "LONG" else False,
                 "short": True if direction == "SHORT" else False
+
             },
             "risk_levels": {
                 "entry_price": entry,

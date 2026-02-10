@@ -106,6 +106,20 @@ class ConfigManager:
             'timeout': 30,
             'rate_limit': 1200
         }
+    def get_line_config(self) -> Dict[str, Any]:
+        """ดึงค่า LINE (optional)"""
+        return {
+            'channel_access_token': self._config.get('LINE_CHANNEL_ACCESS_TOKEN', ''),
+            'channel_secret': self._config.get('LINE_CHANNEL_SECRET', ''),
+            'user_id': self._config.get('LINE_USER_ID', '')
+        }
+
+    def get_google_config(self) -> Dict[str, Any]:
+        """ดึงค่า Google Sheets (optional)"""
+        return {
+            'sheets_id': self._config.get('GOOGLE_SHEETS_ID', ''),
+            'credentials_path': self._config.get('GOOGLE_APPLICATION_CREDENTIALS', '/app/credentials.json')
+        }
 
     # ================================================================
     # 🛡️ LAYER 5: Validation & Helpers

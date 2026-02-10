@@ -174,13 +174,13 @@ class SignalDetector:
                 if position_created:
                     logger.info(f"🆕 Created position for {symbol} {timeframe}")
 
-                # 🔔 ส่งเข้า Telegram
+                # 🔔 ส่งเข้า Telegram           
                 if self.telegram_notifier:
                     self.telegram_notifier.send_signal_alert(
                         result,
-                        topic_id=self.config_manager.get("TOPIC_VIP_ID")
+                        topic_id=18   # VIP SIGNAL
                     )
-         
+                         
             return result
 
         except Exception as e:
