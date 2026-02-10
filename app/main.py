@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+import requests
 from threading import Thread
 from flask import Flask, jsonify, request
 
@@ -9,6 +10,9 @@ from app.services.config_manager import ConfigManager
 from app.services.data_manager import DataManager
 from app.services.position_manager import PositionManager
 from app.services.websocket_manager import WebSocketManager
+from app.models.database import Database
+from app.services.member_manager import MemberManager
+from app.services.telegram_notifier import TelegramNotifier
 
 # Legacy services (will be refactored)
 from app.services.signal_detector import SignalDetector
@@ -66,7 +70,12 @@ services = {
     "position_manager": None,
     "websocket_manager": None,
     
-    # Legacy services (to be updated)
+    # 👤 Added for Telegram VIP System
+    "database": None,
+    "member_manager": None,
+    "telegram_notifier": None,
+    
+    # Legacy services (จะยังอยู่ครบเหมือนเดิม)
     "signal_detector": None,
     "scheduler": None,
     "line_notifier": None,
@@ -76,7 +85,6 @@ services = {
     "initialized": False,
 }
 
-
 def initialize_services_background():
     """Initialize all services with new refactored architecture"""
     try:
@@ -85,6 +93,15 @@ def initialize_services_background():
         # Step 1: Initialize ConfigManager (Singleton)
         services["config_manager"] = ConfigManager()
         logger.info("✅ ConfigManager initialized")
+
+        try:
+            services["database"] = Database()
+            tg_config = services["config_manager"].get_telegram_config()
+            services["telegram_notifier"] = TelegramNotifier(tg_config['token'], tg_config['chat_id'])
+            services["member_manager"] = MemberManager(services["telegram_notifier"])
+            logger.info("✅ Telegram & Member System Ready")
+        except Exception as e:
+            logger.error(f"❌ Membership Init Error: {e}")
         
         # Step 2: Initialize DataManager (replaces PriceFetcher + DataUpdater)
         services["data_manager"] = DataManager()
@@ -165,7 +182,7 @@ def initialize_services_background():
             logger.error(f"❌ SignalDetector initialization failed: {e}")
             services["signal_detector"] = None
         
-        # Step 6: Initialize Scheduler with new architecture
+        # Step 6: Initialize Scheduler with new architecture (V2.2 Update)
         try:
             scheduler_config = services["config_manager"].get_all()
             services["scheduler"] = SignalScheduler(scheduler_config)
@@ -175,8 +192,10 @@ def initialize_services_background():
                 signal_detector=services["signal_detector"],
                 position_manager=services["position_manager"],
                 line_notifier=services["line_notifier"],
-                sheets_logger=services["sheets_logger"]
+                sheets_logger=services["sheets_logger"],
+                member_manager=services["member_manager"]  # 🎯 ใส่บรรทัดนี้บรรทัดเดียวพอครับ
             )
+            
             logger.info("✅ SignalScheduler initialized with refactored services")
             
             # Auto-start scheduler
@@ -402,6 +421,7 @@ def line_webhook():
 
 @app.route('/receive-signal', methods=['POST'])
 def receive_signal_from_outside():
+    """รับสัญญาณเทรดจากภายนอก ประมวลผล R:R และแจ้งเตือนผ่าน LINE/Telegram"""
     try:
         data = request.get_json()
         symbol = data.get('symbol', 'UNKNOWN')
@@ -409,7 +429,7 @@ def receive_signal_from_outside():
         price = data.get('current_price', 0)
         risk = data.get('risk_levels', {})
         
-        # --- เพิ่มส่วนคำนวณ R:R ตรงนี้ครับพี่ ---
+        # 1. คำนวณ Risk:Reward (R:R)
         entry = risk.get('entry_price', price)
         sl = risk.get('stop_loss', 0)
         tp1 = risk.get('take_profit_1', 0)
@@ -419,8 +439,8 @@ def receive_signal_from_outside():
             risk_amt = abs(entry - sl)
             reward_amt = abs(tp1 - entry)
             rr_ratio = reward_amt / risk_amt if risk_amt > 0 else 0
-        # -----------------------------------
 
+        # 2. จัดรูปแบบข้อมูลสำหรับส่งแจ้งเตือน
         analysis = {
             "symbol": symbol,
             "timeframe": data.get('timeframe', '4H'),
@@ -435,7 +455,7 @@ def receive_signal_from_outside():
                 "take_profit_1": tp1,
                 "take_profit_2": risk.get('take_profit_2', 0),
                 "take_profit_3": risk.get('take_profit_3', 0),
-                "risk_reward_ratio": rr_ratio  # ส่งค่าที่คำนวณแล้วไปให้บอท
+                "risk_reward_ratio": rr_ratio
             },
             "indicators": {
                 "squeeze": {"squeeze_off": True, "momentum_direction": "UP" if direction == "LONG" else "DOWN"},
@@ -445,12 +465,34 @@ def receive_signal_from_outside():
             "signal_strength": data.get('signal_strength', 100)
         }
         
+        # 3. ส่งแจ้งเตือนเข้า LINE
         if services["line_notifier"]:
             services["line_notifier"].send_signal_alert(analysis)
+            logger.info(f"✅ Signal sent to LINE: {symbol}")
+
+        # 4. ส่งแจ้งเตือนเข้า Telegram (บอทจำเฉย)
+        try:
+            from app.services.telegram_notifier import TelegramNotifier
+            tg_token = os.getenv("TELEGRAM_BOT_TOKEN")
+            tg_chat_id = os.getenv("TELEGRAM_CHAT_ID")
             
-        return jsonify({"status": "success", "message": "Signal processed", "rr": rr_ratio}), 200
+            if tg_token and tg_chat_id:
+                tg_bot = TelegramNotifier(tg_token, tg_chat_id)
+                tg_bot.send_signal_alert(analysis)
+                logger.info(f"✅ พ่นสัญญาณลง Telegram สำเร็จแล้วครับพี่!")
+            else:
+                logger.warning("⚠️ ข้าม Telegram: ไม่พบ TOKEN หรือ CHAT_ID ใน Variables")
+        except Exception as e:
+            logger.error(f"❌ บอทพ่นสัญญาณลง Telegram ไม่สำเร็จ: {e}")
+            
+        return jsonify({
+            "status": "success", 
+            "message": "Signal processed and sent to all channels", 
+            "rr": rr_ratio
+        }), 200
+
     except Exception as e:
-        logger.error(f"❌ Error: {e}")
+        logger.error(f"❌ Error in receive_signal: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
         
 @app.route("/startup")
