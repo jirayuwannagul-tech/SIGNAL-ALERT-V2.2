@@ -7,18 +7,19 @@ from typing import Dict, Optional
 logger = logging.getLogger(__name__)
 
 class TelegramNotifier:
-    def __init__(self, token: str, chat_id: str):
-        self.token = token
-        self.chat_id = chat_id
-        self.api_url = f"https://api.telegram.org/bot{self.token}"
-        
-        # 🌐 LAYER 0: Topic Configuration (ดึงค่าจาก Config/Env)
-        self.topics = {
-            "normal": os.getenv("TOPIC_NORMAL_ID"),   # ห้องสัญญาณธรรมดา
-            "vip": os.getenv("TOPIC_VIP_ID"),         # ห้องสัญญาณ VIP
-            "chat": os.getenv("TOPIC_CHAT_ID"),       # ห้องพูดคุย
-            "member": os.getenv("TOPIC_MEMBER_ID")    # ห้องสมัครสมาชิก
-        }
+    def _to_int(v):
+    try:
+        return int(v) if v is not None and str(v).strip() != "" else None
+    except:
+        return None
+
+    self.topics = {
+        "normal": _to_int(os.getenv("TOPIC_NORMAL_ID")),
+        "vip": _to_int(os.getenv("TOPIC_VIP_ID")),
+        "chat": _to_int(os.getenv("TOPIC_CHAT_ID")),
+        "member": _to_int(os.getenv("TOPIC_MEMBER_ID")),
+    }
+
         logger.info("บอทจำเฉย (Telegram) v2.2 - ระบบแยกห้องและจัดการสมาชิกเปิดใช้งาน")
 
     # ================================================================
