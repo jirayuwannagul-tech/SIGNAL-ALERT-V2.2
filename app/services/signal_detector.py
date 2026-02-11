@@ -119,24 +119,26 @@ class SignalDetector:
 
             # Calculate all indicators
             analysis = self.indicators.analyze_all_indicators(df, self.indicator_settings)
+            current_price = float(df["close"].iloc[-1])
 
             # Detect trading signals with CONSERVATIVE logic
             signals = self._detect_signals_improved_fixed(analysis, timeframe, df, trend_1d=trend_1d)
 
             # Calculate risk management levels  
-            risk_levels = self._calculate_risk_levels(analysis["current_price"], timeframe, signals, symbol)
+            risk_levels = self._calculate_risk_levels(current_price, timeframe, signals, symbol)
 
             # Handle position creation with duplicate prevention
             position_created = self._handle_signal_position_fixed(
-                symbol, timeframe, signals, analysis["current_price"], risk_levels
+                symbol, timeframe, signals, current_price, risk_levels
             )
+
 
             # Create comprehensive result
             result = {
                 "symbol": symbol,
                 "timeframe": timeframe,
                 "timestamp": datetime.now().isoformat(),
-                "current_price": analysis["current_price"],
+                "current_price": current_price,
                 "version": "2.0-conservative",
                 
                 # Indicator values
@@ -211,11 +213,12 @@ class SignalDetector:
                         logger.debug(f"Found active position by ID: {position_id}")
                         return True
             
-            # Check 3: In active_positions set
-            if symbol in self.active_positions:
-                logger.debug(f"Found in active_positions set: {symbol}")
+            # Check 3: In active_positions set (by prefix)
+            prefix = f"{symbol}_{timeframe}_"
+            if any(pos_id.startswith(prefix) for pos_id in self.active_positions):
+                logger.debug(f"Found in active_positions set: {prefix}")
                 return True
-            
+ 
             return False
             
         except Exception as e:
@@ -235,8 +238,11 @@ class SignalDetector:
                 return False
         
             # Check if active position exists (no cooldown check)
-            if symbol in self.active_positions:
-                logger.warning(f"⚠️ {symbol} already in active positions set")
+            direction = "LONG" if signals.get("buy") else "SHORT"
+            position_key = f"{symbol}_{timeframe}_{direction}"
+
+            if position_key in self.active_positions:
+                logger.warning(f"⚠️ {position_key} already in active positions set")
                 return False
 
             # Check via PositionManager strictly
@@ -270,7 +276,7 @@ class SignalDetector:
                 logger.info(f"✅ Created {direction} position: {symbol} {timeframe} @ {current_price}")
             
                 # Update tracking (no cooldown timestamp)
-                self.active_positions.add(symbol)
+                self.active_positions.add(position_key)
             
                 return True
             else:
@@ -360,17 +366,30 @@ class SignalDetector:
                 rsi_prev = df['rsi'].iloc[-2]
                 rsi_ma_prev = df['rsi_ma'].iloc[-2]
                 
-                # MACD values
-                macd_data = analysis.get("macd", {})
-                macd_cross = macd_data.get("cross_direction", "NONE")
-                macd_line = macd_data.get("macd_line", 0)
-                
-                # Calculate MACD previous value
+                # MACD (ใช้ชุดเดียวทั้งหมด)
                 from ta.trend import MACD
+
                 macd_indicator = MACD(df['close'], window_slow=17, window_fast=8, window_sign=9)
-                df['macd'] = macd_indicator.macd()
-                macd_prev = df['macd'].iloc[-2] if len(df) > 1 else macd_line
-                
+                df['macd_line'] = macd_indicator.macd()
+                df['macd_signal'] = macd_indicator.macd_signal()
+
+                macd_line = float(df['macd_line'].iloc[-1])
+                macd_prev = float(df['macd_line'].iloc[-2])
+
+                signal_curr = float(df['macd_signal'].iloc[-1])
+                signal_prev = float(df['macd_signal'].iloc[-2])
+
+                # หา MACD cross จากชุดเดียวกัน
+                diff_curr = macd_line - signal_curr
+                diff_prev = macd_prev - signal_prev
+
+                if diff_prev <= 0 and diff_curr > 0:
+                    macd_cross = "UP"
+                elif diff_prev >= 0 and diff_curr < 0:
+                    macd_cross = "DOWN"
+                else:
+                    macd_cross = "NONE"
+
                 # Squeeze
                 squeeze_data = analysis.get("squeeze", {})
                 squeeze_off = squeeze_data.get("squeeze_off", False)
@@ -607,7 +626,6 @@ class SignalDetector:
     def analyze_rebound(self, kline_data: Dict) -> Optional[Dict]:
         """
         Analyze 15m rebound signals from WebSocket data
-        Entry: Use real-time price from WebSocket stream
         """
         try:
             if not kline_data.get('is_closed'):
@@ -620,40 +638,50 @@ class SignalDetector:
                 logger.warning(f"analyze_rebound called with wrong timeframe: {timeframe}")
                 return None
             
-            # Use real-time price from WebSocket
-            current_price = float(kline_data.get('close', 0))
-            
-            logger.info(f"🔍 15m Rebound analysis: {symbol} @ {current_price}")
-            
-            # Get historical data for indicators (100 candles)
+            # Get historical data
             df = self.data_manager.get_klines(symbol, timeframe, limit=100)
-            
+
             if df is None or not self.data_converter.validate_dataframe(df):
                 logger.warning(f"Invalid data for {symbol} {timeframe}")
                 return None
-            
+
+            # Use close price from last closed candle
+            current_price = float(df["close"].iloc[-1])
+
+            logger.info(f"🔍 15m Rebound analysis: {symbol} @ {current_price}")
+
             # Detect rebound signals
             signals = self._detect_rebound_signals_15m(df, current_price)
-            
+
             if not (signals.get("buy") or signals.get("short")):
                 return None
-            
+
+            signal_type = "LONG" if signals.get("buy") else "SHORT"
+
+            should_notify = self.signal_history.should_notify(
+                symbol, timeframe, signal_type, current_price
+            )
+
+            if not should_notify:
+                return None
+
+            self.signal_history.record_signal(symbol, timeframe, signal_type, current_price)
+            self.signal_history.clear_opposite_signal(symbol, timeframe, signal_type)
+
             # Calculate risk levels
             risk_levels = self._calculate_risk_levels(current_price, timeframe, signals, symbol)
-            
+
             # Handle position creation
             position_created = self._handle_signal_position_fixed(
                 symbol, timeframe, signals, current_price, risk_levels
             )
-            
-            # Create result
+
             result = {
                 "symbol": symbol,
                 "timeframe": timeframe,
                 "timestamp": datetime.now().isoformat(),
                 "current_price": current_price,
                 "version": "2.2-rebound",
-                
                 "indicators": {
                     "rsi": {
                         "value": signals.get("rsi", 50),
@@ -665,27 +693,27 @@ class SignalDetector:
                         "middle": signals.get("bb_middle", 0)
                     }
                 },
-                
                 "signals": signals,
                 "risk_levels": risk_levels,
-                "signal_strength": 100,  # Rebound signals are binary
+                "signal_strength": 100,
                 "recommendation": "LONG" if signals.get("buy") else "SHORT",
                 "position_created": position_created,
                 "has_active_position": self._has_active_position_strict(symbol, timeframe),
             }
-            
+
             result = self.data_converter.sanitize_signal_data(result)
-            
+
             if result.get('recommendation'):
                 logger.info(f"✅ 15m Rebound signal: {symbol} {result['recommendation']}")
                 if position_created:
                     logger.info(f"🆕 Created 15m rebound position: {symbol}")
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"Error in rebound analysis: {e}", exc_info=True)
             return None
+
 
     def _check_market_trend_enhanced(self, df) -> str:
         """Conservative trend detection using MA20 and MA50"""
@@ -1011,9 +1039,11 @@ class SignalDetector:
             
             if success:
                 # Remove from tracking
-                if symbol in self.active_positions:
-                    self.active_positions.remove(symbol)
-                
+                for direction in ["LONG", "SHORT"]:
+                    key = f"{symbol}_{timeframe}_{direction}"
+                    if key in self.active_positions:
+                        self.active_positions.remove(key)
+
                 return {
                     "success": True, 
                     "message": f"Closed position for {symbol} {timeframe}",
