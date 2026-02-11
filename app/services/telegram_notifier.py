@@ -37,7 +37,30 @@ class TelegramNotifier:
             "member": _to_int(os.getenv("TOPIC_MEMBER_ID")),
         }
 
+        # =========================
+        # ✅ ADDED: 15m Topic Support (NO CHANGE TO EXISTING KEYS)
+        # =========================
+        self.topics["rebound_15m"] = _to_int(os.getenv("TOPIC_15M_ID"))
+
         logger.info("TelegramNotifier ready")
+
+    # =========================
+    # ✅ ADDED: Resolve Topic By Timeframe
+    # (เพิ่มฟังก์ชันใหม่ ไม่แตะโค้ดเดิม)
+    # =========================
+    def resolve_topic_id(self, timeframe: str, fallback: Optional[int] = None) -> Optional[int]:
+        tf = (timeframe or "").lower().strip()
+
+        if tf in ("15m", "15"):
+            return self.topics.get("rebound_15m") or fallback
+
+        if tf in ("1d", "1day", "d"):
+            return self.topics.get("normal") or fallback
+
+        if tf in ("4h", "4hr", "h4"):
+            return self.topics.get("vip") or fallback
+
+        return fallback
 
     # =========================
     # Core Send
@@ -129,7 +152,14 @@ class TelegramNotifier:
                 header = f"{emoji}⚡ REBOUND ALERT ⚡{emoji}"
                 strategy = "15m SCALP (Rebound)"
 
+            # =========================
+            # ✅ ADDED: Auto route by timeframe when topic_id not provided
+            # (เพิ่มโค้ดใหม่ ไม่ลบ/ไม่แก้โค้ดเดิม)
+            # =========================
             target_thread = topic_id or self.topics["vip"]
+            if topic_id is None:
+                resolved = self.resolve_topic_id(timeframe, fallback=target_thread)
+                target_thread = resolved
 
             message = (
                 f"{header}\n"
@@ -152,7 +182,7 @@ class TelegramNotifier:
 
         except Exception as e:
             logger.error(f"Telegram Alert Error: {e}")
-    
+
 
     # =========================
     # Membership Room

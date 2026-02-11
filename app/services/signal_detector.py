@@ -582,115 +582,155 @@ class SignalDetector:
 
     def _detect_rebound_signals_15m(self, df, current_price: float) -> Dict[str, bool]:
         """
-        15m Rebound Strategy: RSI + Bollinger Bands Combo
-        LONG: RSI < 35 AND Price <= Lower BB
-        SHORT: RSI > 65 AND Price >= Upper BB
+        15m Rebound Strategy (Layered)
+        - Indicators: RSI(14) + BollingerBands(20,2)
+        - LONG: RSI < 35 AND (Low touches near Lower BB) AND (Close back above Lower BB)
+        - SHORT: RSI > 65 AND (High touches near Upper BB) AND (Close back below Upper BB)
         """
         try:
             import pandas as pd
             from ta.momentum import RSIIndicator
             from ta.volatility import BollingerBands
-            
+
+            # =========================
+            # L1) Validate Input Layer
+            # =========================
             if df is None or len(df) < 30:
                 logger.warning("Insufficient data for rebound analysis")
                 return {"buy": False, "short": False, "sell": False, "cover": False}
-            
-            # Calculate RSI
-            rsi_indicator = RSIIndicator(df['close'], window=14)
-            df['rsi'] = rsi_indicator.rsi()
-            rsi_current = df['rsi'].iloc[-1]
-            
-            # Calculate Bollinger Bands
-            bb_indicator = BollingerBands(df['close'], window=20, window_dev=2.0)
-            df['bb_upper'] = bb_indicator.bollinger_hband()
-            df['bb_lower'] = bb_indicator.bollinger_lband()
-            df['bb_middle'] = bb_indicator.bollinger_mavg()
-            
-            bb_upper = df['bb_upper'].iloc[-1]
-            bb_lower = df['bb_lower'].iloc[-1]
-            bb_middle = df['bb_middle'].iloc[-1]
-            
-            # Check for NaN
-            if pd.isna(rsi_current) or pd.isna(bb_lower) or pd.isna(bb_upper):
+
+            required_cols = {"close", "high", "low"}
+            if not required_cols.issubset(set(df.columns)):
+                logger.warning(f"Missing columns for rebound: required={required_cols}, got={set(df.columns)}")
+                return {"buy": False, "short": False, "sell": False, "cover": False}
+
+            # =========================
+            # L2) Indicators Layer
+            # =========================
+            rsi_indicator = RSIIndicator(df["close"], window=14)
+            df["rsi"] = rsi_indicator.rsi()
+            rsi_current = float(df["rsi"].iloc[-1])
+
+            bb_indicator = BollingerBands(df["close"], window=20, window_dev=2.0)
+            df["bb_upper"] = bb_indicator.bollinger_hband()
+            df["bb_lower"] = bb_indicator.bollinger_lband()
+            df["bb_middle"] = bb_indicator.bollinger_mavg()
+
+            bb_upper = float(df["bb_upper"].iloc[-1])
+            bb_lower = float(df["bb_lower"].iloc[-1])
+            bb_middle = float(df["bb_middle"].iloc[-1])
+
+            # =========================
+            # L3) NaN Guard Layer
+            # =========================
+            if pd.isna(rsi_current) or pd.isna(bb_lower) or pd.isna(bb_upper) or pd.isna(bb_middle):
                 logger.warning("NaN values in rebound indicators")
                 return {"buy": False, "short": False, "sell": False, "cover": False}
-            
-            # LONG Signal: RSI oversold + Price at lower BB
-            buy_signal = (
-                rsi_current < 35 and 
-                current_price <= bb_lower and
-                current_price > bb_lower * 0.998  # ไม่ต่ำเกินไป
-            )
-            
-            # SHORT Signal: RSI overbought + Price at upper BB
-            short_signal = (
-                rsi_current > 65 and 
-                current_price >= bb_upper and
-                current_price < bb_upper * 1.002  # ไม่สูงเกินไป
-            )
-            
-            # Logging
+
+            # =========================
+            # L4) Signal Logic Layer
+            # =========================
+            c_low = float(df["low"].iloc[-1])
+            c_high = float(df["high"].iloc[-1])
+            c_close = float(current_price)  # ใช้ current_price ที่ส่งเข้ามาให้ชัดเจน
+
+            # แตะ band ด้วยไส้เทียน + buffer
+            buf = 0.005  # 0.5% ปรับได้
+            touched_lower = c_low <= bb_lower * (1 + buf)
+            touched_upper = c_high >= bb_upper * (1 - buf)
+
+            # Confirm ปิดกลับเข้ากรอบ (กันไหลต่อ)
+            closed_back_above_lower = c_close > bb_lower
+            closed_back_below_upper = c_close < bb_upper
+
+            buy_signal = (rsi_current < 35) and touched_lower and closed_back_above_lower
+            short_signal = (rsi_current > 65) and touched_upper and closed_back_below_upper
+
+            # =========================
+            # L5) Logging Layer
+            # =========================
             if buy_signal:
                 logger.info(
                     f"🟡 15m REBOUND LONG | "
-                    f"RSI: {rsi_current:.1f} (<35) | "
-                    f"Price: {current_price:.2f} <= BB_Lower: {bb_lower:.2f}"
+                    f"RSI: {rsi_current:.1f} | "
+                    f"Low: {c_low:.2f} vs BB_L: {bb_lower:.2f} | "
+                    f"Close: {c_close:.2f} (back above L)"
                 )
             elif short_signal:
                 logger.info(
                     f"🟡 15m REBOUND SHORT | "
-                    f"RSI: {rsi_current:.1f} (>65) | "
-                    f"Price: {current_price:.2f} >= BB_Upper: {bb_upper:.2f}"
+                    f"RSI: {rsi_current:.1f} | "
+                    f"High: {c_high:.2f} vs BB_U: {bb_upper:.2f} | "
+                    f"Close: {c_close:.2f} (back below U)"
                 )
             else:
                 logger.debug(
-                    f"15m No rebound | RSI: {rsi_current:.1f}, "
-                    f"Price: {current_price:.2f}, BB: [{bb_lower:.2f}, {bb_upper:.2f}]"
+                    f"15m No rebound | RSI: {rsi_current:.1f} | "
+                    f"Close: {c_close:.2f} | "
+                    f"BB: [{bb_lower:.2f}, {bb_upper:.2f}] | "
+                    f"touchL={touched_lower} touchU={touched_upper}"
                 )
-            
+
+            # =========================
+            # L6) Output Layer
+            # =========================
             return {
-                "buy": buy_signal,
-                "short": short_signal,
+                "buy": bool(buy_signal),
+                "short": bool(short_signal),
                 "sell": False,
                 "cover": False,
                 "rsi": float(rsi_current),
                 "bb_upper": float(bb_upper),
                 "bb_lower": float(bb_lower),
-                "bb_middle": float(bb_middle)
+                "bb_middle": float(bb_middle),
             }
-            
+
         except Exception as e:
             logger.error(f"Error in rebound signal detection: {e}", exc_info=True)
             return {"buy": False, "short": False, "sell": False, "cover": False}
 
+
     def analyze_rebound(self, kline_data: Dict) -> Optional[Dict]:
         """
-        Analyze 15m rebound signals from WebSocket data
+        Analyze 15m rebound signals from WebSocket data (Layered)
+        Flow: Validate -> Fetch -> Detect -> (NO any-TF block) -> History -> Risk -> Position -> Result
         """
         try:
-            if not kline_data.get('is_closed'):
+            # =========================
+            # L1) Validate Input Layer
+            # =========================
+            if not kline_data.get("is_closed"):
                 return None
-            
-            symbol = kline_data['symbol']
-            timeframe = kline_data['timeframe']
-            
-            if timeframe != '15m':
+
+            symbol = kline_data.get("symbol")
+            timeframe = kline_data.get("timeframe")
+
+            if not symbol or not timeframe:
+                logger.warning("analyze_rebound missing symbol/timeframe")
+                return None
+
+            if timeframe != "15m":
                 logger.warning(f"analyze_rebound called with wrong timeframe: {timeframe}")
                 return None
-            
-            # Get historical data
+
+            # =========================
+            # L2) Fetch Data Layer
+            # =========================
             df = self.data_manager.get_klines(symbol, timeframe, limit=100)
 
             if df is None or not self.data_converter.validate_dataframe(df):
                 logger.warning(f"Invalid data for {symbol} {timeframe}")
                 return None
 
-            # Use close price from last closed candle
+            # =========================
+            # L3) Compute Context Layer
+            # =========================
             current_price = float(df["close"].iloc[-1])
-
             logger.info(f"🔍 15m Rebound analysis: {symbol} @ {current_price}")
 
-            # Detect rebound signals
+            # =========================
+            # L4) Detect Signal Layer
+            # =========================
             signals = self._detect_rebound_signals_15m(df, current_price)
 
             if not (signals.get("buy") or signals.get("short")):
@@ -698,24 +738,35 @@ class SignalDetector:
 
             signal_type = "LONG" if signals.get("buy") else "SHORT"
 
+            # =========================
+            # L5) History / Dedup Layer
+            # (ปล่อยให้ 15m ทำงานได้ แม้มี position 4H/1D อยู่)
+            # =========================
             should_notify = self.signal_history.should_notify(
                 symbol, timeframe, signal_type, current_price
             )
-
             if not should_notify:
                 return None
 
             self.signal_history.record_signal(symbol, timeframe, signal_type, current_price)
             self.signal_history.clear_opposite_signal(symbol, timeframe, signal_type)
 
-            # Calculate risk levels
+            # =========================
+            # L6) Risk Layer
+            # =========================
             risk_levels = self._calculate_risk_levels(current_price, timeframe, signals, symbol)
 
-            # Handle position creation
+            # =========================
+            # L7) Position Layer
+            # (กันซ้ำเฉพาะ 15m ด้วย _has_active_position_strict / PositionManager ภายในฟังก์ชันนี้)
+            # =========================
             position_created = self._handle_signal_position_fixed(
                 symbol, timeframe, signals, current_price, risk_levels
             )
 
+            # =========================
+            # L8) Output / Result Layer
+            # =========================
             result = {
                 "symbol": symbol,
                 "timeframe": timeframe,
@@ -725,13 +776,17 @@ class SignalDetector:
                 "indicators": {
                     "rsi": {
                         "value": signals.get("rsi", 50),
-                        "status": "Oversold" if signals.get("rsi", 50) < 35 else "Overbought" if signals.get("rsi", 50) > 65 else "Neutral"
+                        "status": (
+                            "Oversold" if signals.get("rsi", 50) < 35
+                            else "Overbought" if signals.get("rsi", 50) > 65
+                            else "Neutral"
+                        ),
                     },
                     "bb": {
                         "upper": signals.get("bb_upper", 0),
                         "lower": signals.get("bb_lower", 0),
-                        "middle": signals.get("bb_middle", 0)
-                    }
+                        "middle": signals.get("bb_middle", 0),
+                    },
                 },
                 "signals": signals,
                 "risk_levels": risk_levels,
@@ -743,7 +798,10 @@ class SignalDetector:
 
             result = self.data_converter.sanitize_signal_data(result)
 
-            if result.get('recommendation'):
+            # =========================
+            # L9) Logging Layer
+            # =========================
+            if result.get("recommendation"):
                 logger.info(f"✅ 15m Rebound signal: {symbol} {result['recommendation']}")
                 if position_created:
                     logger.info(f"🆕 Created 15m rebound position: {symbol}")
@@ -753,7 +811,6 @@ class SignalDetector:
         except Exception as e:
             logger.error(f"Error in rebound analysis: {e}", exc_info=True)
             return None
-
 
     def _check_market_trend_enhanced(self, df) -> str:
         """Conservative trend detection using MA20 and MA50"""
