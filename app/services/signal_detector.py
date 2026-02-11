@@ -324,43 +324,59 @@ class SignalDetector:
                 return {"buy": False, "short": False, "sell": False, "cover": False}
             
             # ========================================
-            # 1D: CDC ACTIONZONE (EMA CROSSOVER)
+            # 1D: CDC ACTIONZONE (CROSS + PULLBACK)
             # ========================================
             if timeframe == "1d":
                 if len(df) < 30:
                     logger.warning(f"Insufficient data: {len(df)} candles")
                     return {"buy": False, "short": False, "sell": False, "cover": False, "ema12": 0, "ema26": 0}
-                
+
                 # Calculate EMA 12 and 26
                 df['ema12'] = df['close'].ewm(span=12, adjust=False).mean()
                 df['ema26'] = df['close'].ewm(span=26, adjust=False).mean()
-                
-                # Current values
+
+                # Current / Previous values
                 ema12_curr = df['ema12'].iloc[-1]
                 ema26_curr = df['ema26'].iloc[-1]
                 ema12_prev = df['ema12'].iloc[-2]
                 ema26_prev = df['ema26'].iloc[-2]
                 price_curr = df['close'].iloc[-1]
-                
-                # CDC ActionZone conditions
-                buy_signal = (ema12_curr > ema26_curr) and (price_curr > ema12_curr)
-                short_signal = (ema12_curr < ema26_curr) and (price_curr < ema12_curr)
-                
+
+                # -------------------------
+                # 1) Cross Entry (เริ่มเทรนด์)
+                # -------------------------
+                cross_up   = (ema12_prev <= ema26_prev) and (ema12_curr > ema26_curr)
+                cross_down = (ema12_prev >= ema26_prev) and (ema12_curr < ema26_curr)
+
+                cross_buy   = cross_up and (price_curr > ema12_curr)
+                cross_short = cross_down and (price_curr < ema12_curr)
+
+                # -------------------------
+                # 2) Pullback Entry (เทรนด์เดิม)
+                # -------------------------
+                trend_up   = ema12_curr > ema26_curr
+                trend_down = ema12_curr < ema26_curr
+
+                pullback_buy   = trend_up and (price_curr > ema12_curr) and not cross_up
+                pullback_short = trend_down and (price_curr < ema12_curr) and not cross_down
+
+                # -------------------------
+                # Final Signal
+                # -------------------------
+                buy_signal   = cross_buy or pullback_buy
+                short_signal = cross_short or pullback_short
+
                 # Log
-                if buy_signal:
-                    logger.info(
-                        f"🟢 1D CDC BUY | "
-                        f"EMA12: {ema12_curr:.2f} > EMA26: {ema26_curr:.2f} | "
-                        f"Price: {price_curr:.2f} > EMA12"
-                    )
-                elif short_signal:
-                    logger.info(
-                        f"🔴 1D CDC SELL | "
-                        f"EMA12: {ema12_curr:.2f} < EMA26: {ema26_curr:.2f} | "
-                        f"Price: {price_curr:.2f} < EMA12"
-                    )
-                
-                # ✅ เพิ่ม EMA values ใน return
+                if cross_buy:
+                    logger.info(f"🟢 1D CROSS BUY | EMA12 crossed above EMA26")
+                elif pullback_buy:
+                    logger.info(f"🟢 1D PULLBACK BUY | Uptrend pullback")
+
+                elif cross_short:
+                    logger.info(f"🔴 1D CROSS SELL | EMA12 crossed below EMA26")
+                elif pullback_short:
+                    logger.info(f"🔴 1D PULLBACK SELL | Downtrend pullback")
+
                 return {
                     "buy": buy_signal,
                     "short": short_signal,
@@ -369,6 +385,7 @@ class SignalDetector:
                     "ema12": float(ema12_curr),
                     "ema26": float(ema26_curr)
                 }
+
             
             # ========================================
             # 4H: IMPROVED SIGNALS
