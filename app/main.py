@@ -416,12 +416,19 @@ def telegram_webhook():
             if chat_id.strip() == str(target_chat_id).strip():
                 if text == "/status":
                     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+
+                    msg = f"STATUS OK | {VERSION}"   # หรือข้อความที่ต้องการ
+                    safe = msg.replace("```", "'''")
+                    wrapped = f"```\n{safe}\n```"
+
                     payload = {
                         "chat_id": chat_id,
-                        "text": f"🤖 *จำเฉยรายงานตัวครับพี่!*\n\n✅ สถานะ: Online\n🔢 เวอร์ชัน: {VERSION}\n📊 ระบบเทรด: Ready\n🏠 ห้อง: {chat_id}",
-                        "parse_mode": "Markdown"
+                        "text": wrapped,
+                        "parse_mode": "Markdown",
+                        "disable_web_page_preview": True,
                     }
-                    requests.post(url, json=payload)
+                    requests.post(url, json=payload, timeout=10)
+
                     logger.info(f"✅ Sent status reply to {chat_id}")
 
         return jsonify({"status": "ok"}), 200
