@@ -243,15 +243,36 @@ class PositionManager:
     def get_active_positions(self) -> Dict:
         """Get all active positions"""
         return {k: v for k, v in self.positions.items() if v['status'] == 'ACTIVE'}
+
+    def has_active_position_any_tf(self, symbol: str) -> bool:
+        symbol = (symbol or "").upper()
+        for p in self.positions.values():
+            if p.get("symbol") == symbol and p.get("status") == "ACTIVE":
+                return True
+        return False
+    
+        
+    def _norm_tf(self, tf: str) -> str:
+        if not tf:
+            return ""
+        tf = str(tf).strip().lower()
+        tf = tf.replace(" ", "")
+        tf = tf.replace("4h", "4h").replace("4hour", "4h")
+        tf = tf.replace("1d", "1d").replace("1day", "1d")
+        tf = tf.replace("15m", "15m").replace("30m", "30m").replace("1h", "1h")
+        return tf    
     
     def get_position_status(self, symbol: str, timeframe: str) -> Optional[Dict]:
-        """Get position status for symbol/timeframe"""
+        symbol = (symbol or "").upper()
+        tf = self._norm_tf(timeframe)
+
         for position in self.positions.values():
-            if (position['symbol'] == symbol and 
-                position['timeframe'] == timeframe and 
-                position['status'] == 'ACTIVE'):
+            if (position.get('symbol') == symbol and
+                self._norm_tf(position.get('timeframe')) == tf and
+                position.get('status') == 'ACTIVE'):
                 return position
         return None
+
     
     @ErrorHandler.service_error_handler("PositionManager")
     def close_position(self, position_id: str, reason: str = 'MANUAL') -> bool:

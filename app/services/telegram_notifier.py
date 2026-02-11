@@ -47,11 +47,14 @@ class TelegramNotifier:
         try:
             url = f"{self.api_url}/sendMessage"
 
+            safe = text.replace("```", "'''")
+            wrapped = f"```\n{safe}\n```"
+
             payload = {
                 "chat_id": self.chat_id,
-                "text": text,
+                "text": wrapped,
                 "parse_mode": "Markdown",
-                "disable_web_page_preview": True
+                "disable_web_page_preview": True,
             }
 
             if thread_id:
@@ -62,6 +65,7 @@ class TelegramNotifier:
 
         except Exception as e:
             logger.error(f"Telegram Send Error: {e}")
+
 
     # =========================
     # Signal Alert (VIP)

@@ -176,20 +176,29 @@ class SignalDetector:
                 if position_created:
                     logger.info(f"🆕 Created position for {symbol} {timeframe}")
 
-                # ====== NEW: prevent duplicate alert ======
+                # ====== prevent duplicate alert + hard block + create position ======
                 signal_type = "LONG" if signals.get("buy") else "SHORT" if signals.get("short") else None
                 should_notify = False
+
                 if signal_type:
+                    # HARD BLOCK: if still ACTIVE (not hit SL / not hit TP3), never notify again
+                    if self.position_manager and self.position_manager.has_active_position_any_tf(symbol):
+                        logger.info(f"⛔ SKIP duplicate (ACTIVE any TF): {symbol} {timeframe} {signal_type}")
+                        return result
+
+                    # soft block by history
                     if not self.signal_history.should_notify(symbol, timeframe, signal_type, current_price):
                         logger.warning(f"⛔ DUPLICATE ALERT BLOCKED: {symbol} {timeframe} {signal_type}")
                         return result
 
+                    # pass => allow notify
+                    should_notify = True
                     self.signal_history.record_signal(symbol, timeframe, signal_type, current_price)
                     self.signal_history.clear_opposite_signal(symbol, timeframe, signal_type)
 
                 if self.telegram_notifier and should_notify:
                     self.telegram_notifier.send_signal_alert(result, topic_id=18)  # VIP SIGNAL
-                # ==========================================
+                # ===================================================================
 
             return result
 
