@@ -247,41 +247,104 @@ def initialize_services_background():
 def start_position_monitoring():
     """Background thread for continuous position monitoring"""
     monitor_interval = 30  # 30 seconds
-    
+
+    def _mark_tp(hit: bool) -> str:
+        return "⬜…✅" if hit else "⬜"
+
+    def _mark_sl(hit: bool) -> str:
+        return "❌" if hit else "⬜"
+
+    def _build_tp_sl_message(position: dict, title: str) -> str:
+        tp_hit = position.get("tp_hit", {})
+        tp_levels = position.get("tp_levels", {})
+
+        return (
+            f"{title}\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"🪙 {position.get('symbol')} {position.get('timeframe')} {position.get('direction')}\n"
+            f"💵 Entry: {position.get('entry_price')}\n"
+            f"📍 Price: {position.get('current_price')}\n"
+            f"🎯 TP1 {_mark_tp(tp_hit.get('TP1', False))}: {tp_levels.get('TP1')}\n"
+            f"🎯 TP2 {_mark_tp(tp_hit.get('TP2', False))}: {tp_levels.get('TP2')}\n"
+            f"🎯 TP3 {_mark_tp(tp_hit.get('TP3', False))}: {tp_levels.get('TP3')}\n"
+            f"🛑 SL {_mark_sl(position.get('sl_hit', False))}: {position.get('sl_level')}\n"
+            f"📌 ID: {position.get('id')}"
+        )
+
+
     while True:
         try:
             if services["initialized"] and services["position_manager"]:
                 updates = services["position_manager"].update_positions()
-                
+
                 if updates:
                     logger.info(f"📊 Updated {len(updates)} positions")
-                    
-                    # Log to sheets if available
-                    if services["sheets_logger"]:
-                        try:
-                            for position_id, update_info in updates.items():
-                                if update_info.get('position_closed'):
-                                    position = services["position_manager"].positions.get(position_id)
-                                    if position:
-                                        services["sheets_logger"].log_position_close(position)
-                                
-                                # ✅ แก้ indent ให้อยู่ใน for loop เดียวกัน
-                                for tp_level in ['TP1', 'TP2', 'TP3']:
-                                    tp_key = f'{tp_level}_hit'
-                                    if tp_key in update_info and update_info[tp_key].get('hit'):
-                                        position = services["position_manager"].positions.get(position_id)
-                                        if position:
-                                            services["sheets_logger"].log_tp_hit(position, update_info[tp_key])
-                                            logger.info(f"Logged {tp_level} hit for {position_id}")
-                                        
-                        except Exception as e:
-                            logger.error(f"Error logging to sheets: {e}")
-                            
+
+                    for position_id, update_info in updates.items():
+                        position = services["position_manager"].positions.get(position_id)
+                        if not position:
+                            continue
+
+                        # ✅ เตือน TP (จะไม่ซ้ำ เพราะ update_info มีเฉพาะตอน hit ครั้งแรก)
+                        for tp_level in ["TP1", "TP2", "TP3"]:
+                            tp_key = f"{tp_level}_hit"
+                            if tp_key in update_info and update_info[tp_key].get("hit"):
+                                msg = _build_tp_sl_message(position, f"🎯 {tp_level} HIT")
+                                try:
+                                    if services.get("line_notifier"):
+                                        services["line_notifier"].send_position_update({
+                                            "position": position,
+                                            "events": [f"{tp_level} hit"],
+                                            "updates": update_info
+                                        })
+                                    if services.get("telegram_notifier"):
+                                        services["telegram_notifier"].send_message(msg)
+                                    logger.info(f"✅ Notified {tp_level} hit for {position_id}")
+                                except Exception as e:
+                                    logger.error(f"Notify {tp_level} error: {e}")
+
+                        # ✅ เตือน SL
+                        if "sl_hit" in update_info and update_info["sl_hit"].get("hit"):
+                            msg = _build_tp_sl_message(position, "🛑 SL HIT")
+                            try:
+                                if services.get("line_notifier"):
+                                    services["line_notifier"].send_position_update({
+                                        "position": position,
+                                        "events": ["SL hit"],
+                                        "updates": update_info
+                                    })
+                                if services.get("telegram_notifier"):
+                                    services["telegram_notifier"].send_message(msg)
+                                logger.info(f"✅ Notified SL hit for {position_id}")
+                            except Exception as e:
+                                logger.error(f"Notify SL error: {e}")
+
+
+                        # ✅ ปิดโพสิชัน (TP3 หรือ SL) = แจ้งเตือนปิดเพิ่ม (ถ้าต้องการ)
+                        if update_info.get("position_closed"):
+                            logger.info(f"📌 Position closed: {position_id}")
+
+                        # Log to sheets if available
+                        if services["sheets_logger"]:
+                            try:
+                                if update_info.get("position_closed"):
+                                    services["sheets_logger"].log_position_close(position)
+
+                                for tp_level in ["TP1", "TP2", "TP3"]:
+                                    tp_key = f"{tp_level}_hit"
+                                    if tp_key in update_info and update_info[tp_key].get("hit"):
+                                        services["sheets_logger"].log_tp_hit(position, update_info[tp_key])
+                                        logger.info(f"Logged {tp_level} hit for {position_id}")
+
+                            except Exception as e:
+                                logger.error(f"Error logging to sheets: {e}")
+
             time.sleep(monitor_interval)
-            
+
         except Exception as e:
             logger.error(f"Error in position monitoring thread: {e}")
             time.sleep(monitor_interval)
+
 
 
 # Start background initialization

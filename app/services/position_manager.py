@@ -191,11 +191,12 @@ class PositionManager:
                 sl_hit = False
                 
                 if direction == 'LONG':
-                    sl_threshold = sl_level * (1 + self.PRICE_TOLERANCE)
+                    sl_threshold = sl_level * (1 - self.PRICE_TOLERANCE)
                     sl_hit = current_price <= sl_threshold
                 else:  # SHORT
-                    sl_threshold = sl_level * (1 - self.PRICE_TOLERANCE)
+                    sl_threshold = sl_level * (1 + self.PRICE_TOLERANCE)
                     sl_hit = current_price >= sl_threshold
+
                 
                 if sl_hit:
                     position['sl_hit'] = True
