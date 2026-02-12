@@ -139,14 +139,72 @@ class TelegramNotifier:
             header = f"{emoji}⚡ CDC ALERT ⚡{emoji}"
             strategy = "1D SWING"
 
-            # =========================
-            # ✅ ADDED: Auto route by timeframe when topic_id not provided
-            # (เพิ่มโค้ดใหม่ ไม่ลบ/ไม่แก้โค้ดเดิม)
-            # =========================
-            target_thread = topic_id or self.topics["vip"]
-            if topic_id is None:
-                resolved = self.resolve_topic_id(timeframe, fallback=target_thread)
-                target_thread = resolved
+            # =========================================================
+            # ROUTING RULES (5 ห้อง) - ใช้กับ send_signal_alert เท่านั้น
+            #
+            # Priority:
+            # 1) ถ้าส่ง topic_id มา => ใช้ topic_id นั้นเสมอ (override)
+            # 2) ถ้าไม่ส่ง topic_id:
+            #    2.1) ถ้ามี analysis["route"] => route map ตามนี้
+            #         - "signal_1d"  -> VIP (TOPIC_VIP_ID)
+            #         - "signal_15m" -> 15M (TOPIC_15M_ID)
+            #         - "tp_sl"      -> CHAT (TOPIC_CHAT_ID)
+            #         - "normal"/"cross" -> NORMAL (TOPIC_NORMAL_ID)
+            #         - "member"     -> MEMBER (TOPIC_MEMBER_ID)
+            #    2.2) ถ้าไม่มี route => ใช้ timeframe:
+            #         - 1d  -> VIP
+            #         - 15m -> 15M
+            #         - อื่นๆ -> NORMAL
+            #
+            # Debug:
+            # ตั้ง ENV DEBUG_TELEGRAM_ROUTE=1 เพื่อดู log routing
+            # =========================================================
+            route = (analysis.get("route") or "").lower().strip()
+
+            # override เสมอ ถ้า caller ส่งมา
+            if topic_id is not None:
+                target_thread = topic_id
+                route_reason = f"override topic_id={topic_id}"
+            else:
+                # default fallback = ห้องทั่วไป
+                fallback_thread = self.topics.get("normal")
+
+                if route in ("tp_sl", "tpsl", "sl_tp", "sl/tp"):
+                    target_thread = self.topics.get("chat") or fallback_thread
+                    route_reason = f"route='{route}' -> chat"
+
+                elif route in ("signal_1d", "entry_1d", "vip"):
+                    target_thread = self.topics.get("vip") or fallback_thread
+                    route_reason = f"route='{route}' -> vip"
+
+                elif route in ("signal_15m", "entry_15m", "15m"):
+                    target_thread = self.topics.get("15m") or self.topics.get("chat") or fallback_thread
+                    route_reason = f"route='{route}' -> 15m"
+
+                elif route in ("cross", "normal"):
+                    target_thread = self.topics.get("normal") or fallback_thread
+                    route_reason = f"route='{route}' -> normal"
+
+                elif route in ("member", "membership"):
+                    target_thread = self.topics.get("member") or fallback_thread
+                    route_reason = f"route='{route}' -> member"
+
+                else:
+                    # ไม่มี route -> route จาก timeframe
+                    tf = (timeframe or "").lower().strip()
+                    if tf in ("1d", "1day", "d"):
+                        target_thread = self.topics.get("vip") or fallback_thread
+                        route_reason = f"timeframe='{tf}' -> vip"
+                    elif tf in ("15m", "15min", "m15"):
+                        target_thread = self.topics.get("15m") or self.topics.get("chat") or fallback_thread
+                        route_reason = f"timeframe='{tf}' -> 15m"
+                    else:
+                        target_thread = fallback_thread
+                        route_reason = f"timeframe='{tf}' -> normal(fallback)"
+
+            if os.getenv("DEBUG_TELEGRAM_ROUTE") == "1":
+                logger.info(f"[ROUTE] symbol={symbol} tf={timeframe} route={route or '-'} -> thread={target_thread} ({route_reason})")
+
 
             # ✅ ใส่ logic สร้างข้อความแบบ LONG/SHORT ในก้อนนี้เลย
             is_long = str(side).upper() == "LONG"
