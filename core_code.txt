@@ -70,7 +70,7 @@ line-bot-sdk==3.13.0
 # Technical Analysis
 ta==0.11.0
 pandas==2.2.3
-numpy==2.0.2
+numpy==1.26.4
 
 # Data Processing
 pytz==2024.2
@@ -83,7 +83,7 @@ pytest-cov==6.0.0
 click==8.1.8
 gunicorn==22.0.0
 websocket-client==1.7.0
-websocket-client==1.7.0
+
 [
   {
     "insertId": "68df52750007f3bd45d15db3",
@@ -11058,4 +11058,4 @@ def test_send():
             print(f"❗ เกิดข้อผิดพลาดที่ {room_name}: {e}")
 
 if __name__ == "__main__":
-    test_send()69
+    test_send()77

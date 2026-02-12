@@ -91,9 +91,46 @@ class SignalScheduler:
     def _scan_1d_signals(self):
         try:
             symbols = getattr(Config, 'DEFAULT_SYMBOLS', ["BTCUSDT", "ETHUSDT"])
-            active_signals = self.signal_detector.get_active_signals(symbols, ["1d"])
-            for signal in active_signals:
-                self._process_signal_refactored(signal, "1d")
+            results = self.signal_detector.scan_multiple_symbols(symbols, ["1d"])
+            
+            for r in results:
+                symbol = r.get("symbol")
+                sig = r.get("signals", {})
+                
+                # ====== 1) CROSS ALERT (แจ้งเตือนรอ pullback) ======
+                if sig.get("cross_up") or sig.get("cross_down"):
+                    direction = "CROSS_UP" if sig.get("cross_up") else "CROSS_DOWN"
+                    if not self._is_duplicate_signal(symbol, "1d", direction):
+                        if self.telegram_notifier:
+                            if sig.get("cross_up"):
+                                msg = (
+                                    f"🟢 ว้าว! EMA ตัดกันแล้วจ้า~\n"
+                                    f"━━━━━━━━━━━━━━━\n"
+                                    f"🪙 {symbol} (1D)\n"
+                                    f"📈 EMA12 วิ่งแซง EMA26 ไปแล้วจ้า!\n"
+                                    f"🚀 กระทิงตื่นนอน... เตรียมตัว!\n"
+                                    f"⏳ ใจเย็นๆ รอ PULLBACK ก่อนนะ\n"
+                                    f"💡 อย่าเพิ่ง FOMO เด้อ~\n"
+                                    f"━━━━━━━━━━━━━━━"
+                                )
+                            else:
+                                msg = (
+                                    f"🔴 โอ้โห! EMA ตัดลงแล้วว~\n"
+                                    f"━━━━━━━━━━━━━━━\n"
+                                    f"🪙 {symbol} (1D)\n"
+                                    f"📉 EMA12 ดิ่งลงใต้ EMA26 แล้ว!\n"
+                                    f"🐻 หมีตื่น... ระวังหัวนะจ๊ะ!\n"
+                                    f"⏳ ใจเย็นๆ รอ PULLBACK ก่อน\n"
+                                    f"💡 อย่าเพิ่งกระโดดลงเหวนะ~\n"
+                                    f"━━━━━━━━━━━━━━━"
+                                )
+                            self.telegram_notifier.send_message(msg, thread_id=2)
+                        self._record_signal(symbol, "1d", direction)
+                
+                # ====== 2) PULLBACK ENTRY (ส่งสัญญาณเข้าเทรด) ======
+                if sig.get("buy") or sig.get("short"):
+                    self._process_signal_refactored(r, "1d")
+                    
         except Exception as e:
             logger.error(f"Error in 1d scan: {e}")
 
@@ -117,7 +154,7 @@ class SignalScheduler:
 
             # ===== ส่ง ENTRY SIGNAL (1D only) =====
             if self.telegram_notifier:
-                thread_id = int(os.getenv("TOPIC_VIP_ID", 0))
+                thread_id = 249
                 self.telegram_notifier.send_signal_alert(signal, thread_id=thread_id)
 
             # ช่องทางสำรองอื่นๆ

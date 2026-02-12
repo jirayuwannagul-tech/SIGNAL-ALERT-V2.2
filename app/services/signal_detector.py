@@ -369,8 +369,8 @@ class SignalDetector:
                 # -------------------------
                 # Final Signal
                 # -------------------------
-                buy_signal   = cross_buy or pullback_buy
-                short_signal = cross_short or pullback_short
+                buy_signal   = pullback_buy
+                short_signal = pullback_short
 
                 # Log
                 if cross_buy:
@@ -389,7 +389,9 @@ class SignalDetector:
                     "sell": False,
                     "cover": False,
                     "ema12": float(ema12_curr),
-                    "ema26": float(ema26_curr)
+                    "ema26": float(ema26_curr),
+                    "cross_up": bool(cross_buy),
+                    "cross_down": bool(cross_short)
                 }
         
         except Exception as e:

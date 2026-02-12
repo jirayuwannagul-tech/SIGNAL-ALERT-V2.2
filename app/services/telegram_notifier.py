@@ -144,28 +144,42 @@ class TelegramNotifier:
                 resolved = self.resolve_topic_id(timeframe, fallback=target_thread)
                 target_thread = resolved
 
+            # ✅ ใส่ logic สร้างข้อความแบบ LONG/SHORT ในก้อนนี้เลย
+            is_long = str(side).upper() == "LONG"
+            emoji = "🐂" if is_long else "🐻"
+
+            if is_long:
+                header = "🟢🚀 ปู๊น ปู๊น! รถไฟขาขึ้นมาแล้วจ้า~"
+                entry_label = "💰 ขึ้นรถตรงนี้เลย"
+                sl_label = "🛑 ถ้าร่วงมาถึงนี่... บ๊ายบาย"
+                tp1_suffix, tp2_suffix, tp3_suffix = "กินก่อน~", "อร่อยอีก~", "ฟินสุดๆ~"
+                footer_tip = "💡 ได้กำไรอย่าลืมกันข้าวบอทด้วยนะ 555~"
+            else:
+                header = "🔴📉 ระวัง! หมีออกล่าแล้วจ้า~"
+                entry_label = "💰 กระโดดลงตรงนี้"
+                sl_label = "🛑 ถ้าดีดขึ้นมานี่... หนีเลย"
+                tp1_suffix, tp2_suffix, tp3_suffix = "จิ้มก่อน~", "ลึกอีก~", "ถึงก้นเหว~"
+                footer_tip = "💡 ขาดทุนอย่าโทษบอทนะ ฮิ้วววว~"
+
             message = (
                 f"{header}\n"
                 f"━━━━━━━━━━━━━━━━━\n"
                 f"📊 Strategy: {strategy}\n"
-                f"🪙 {symbol} - {side} {emoji}\n"
-                f"💵 Entry: {entry:,.4f}\n"
-                f"🛑 SL: {sl:,.4f} ({sl_pct:+.1f}%)\n"
-                f"🎯 TP1: {tp1:,.4f} ({tp1_pct:+.1f}%) {rr1:.1f}:1\n"
-                f"🎯 TP2: {tp2:,.4f} ({tp2_pct:+.1f}%) {rr2:.1f}:1\n"
-                f"🎯 TP3: {tp3:,.4f} ({tp3_pct:+.1f}%) {rr3:.1f}:1\n"
+                f"🪙 {symbol} ({timeframe}) - {side} {emoji}\n"
+                f"{entry_label}: {entry:,.4f}\n"
+                f"{sl_label}: {sl:,.4f} ({sl_pct:+.1f}%)\n"
+                f"🎯 เป้า 1: {tp1:,.4f} ({tp1_pct:+.1f}%) {rr1:.1f}:1 {tp1_suffix}\n"
+                f"🎯 เป้า 2: {tp2:,.4f} ({tp2_pct:+.1f}%) {rr2:.1f}:1 {tp2_suffix}\n"
+                f"🎯 เป้า 3: {tp3:,.4f} ({tp3_pct:+.1f}%) {rr3:.1f}:1 {tp3_suffix}\n"
                 f"💪 Strength: {strength}%\n"
                 f"━━━━━━━━━━━━━━━━━\n"
                 f"🕐 {now_th}\n"
-                f"🤖 SIGNAL-ALERT v2.2"
+                f"🤖 บอทจำเฉย v2.2\n"
+                f"{footer_tip}"
             )
 
             self.send_message(message, thread_id=target_thread)
             logger.info(f"Telegram signal sent: {symbol}")
-
-        except Exception as e:
-            logger.error(f"Telegram Alert Error: {e}")
-
 
     # =========================
     # Membership Room
