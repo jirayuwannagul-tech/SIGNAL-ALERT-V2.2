@@ -256,10 +256,12 @@ class SignalScheduler:
     def get_scheduler_status(self) -> Dict:
         """Used by /api/scheduler/status and tests. Must not raise."""
         try:
+            running = bool(self.running)
             return {
                 "ok": True,
-                "running": bool(self.running),
+                "running": running,
+                "status": "running" if running else "stopped",
                 "jobs": len(self.scheduler.get_jobs()) if self.scheduler else 0,
             }
         except Exception as e:
-            return {"ok": False, "running": False, "error": str(e)}
+            return {"ok": False, "running": False, "status": "error", "error": str(e)}
