@@ -252,15 +252,80 @@ class SignalScheduler:
 
     def _send_daily_summary(self):
         try:
-            summary = {"date": datetime.now().strftime("%Y-%m-%d"), "status": "Active"}
-            if self.telegram_notifier:
-                self.telegram_notifier.send_message(
-                    f"📅 *Daily Report {summary['date']}*\nระบบทำงานปกติ พร้อมดูแลห้อง VIP และห้องธรรมดาครับ",
-                    thread_id=18
-                )
+            if not self.telegram_notifier:
+                return
+
+            tz = ZoneInfo("Asia/Bangkok")
+            today_th = datetime.now(tz).date()
+
+            entries_today = 0
+            tp1_today = 0
+            tp2_today = 0
+            tp3_today = 0
+            sl_today = 0
+
+            active_now = 0
+            closed_today = 0
+
+            pm = getattr(self, "position_manager", None)
+            positions = getattr(pm, "positions", {}) if pm else {}
+
+            for _pid, p in (positions or {}).items():
+                try:
+                    # active now
+                    if p.get("status") == "ACTIVE":
+                        active_now += 1
+
+                    # entries today (เปิดไม้วันนี้)
+                    et = p.get("entry_time")
+                    if et:
+                        dt = datetime.fromisoformat(et).astimezone(tz) if "+" in et else datetime.fromisoformat(et).replace(tzinfo=tz)
+                        if dt.date() == today_th:
+                            entries_today += 1
+
+                    # closed today
+                    ct = p.get("close_time")
+                    if ct:
+                        dtc = datetime.fromisoformat(ct).astimezone(tz) if "+" in ct else datetime.fromisoformat(ct).replace(tzinfo=tz)
+                        if dtc.date() == today_th:
+                            closed_today += 1
+
+                    # TP/SL today (จาก events)
+                    ev = p.get("events") or {}
+                    for k in ("TP1", "TP2", "TP3", "SL"):
+                        e = ev.get(k)
+                        if not e:
+                            continue
+                        ts = e.get("timestamp")
+                        if not ts:
+                            continue
+                        dte = datetime.fromisoformat(ts).astimezone(tz) if "+" in ts else datetime.fromisoformat(ts).replace(tzinfo=tz)
+                        if dte.date() != today_th:
+                            continue
+
+                        if k == "TP1": tp1_today += 1
+                        elif k == "TP2": tp2_today += 1
+                        elif k == "TP3": tp3_today += 1
+                        elif k == "SL": sl_today += 1
+
+                except Exception:
+                    continue
+
+            msg = (
+                f"📅 DAILY SUMMARY {today_th.isoformat()} (TH)\n"
+                f"━━━━━━━━━━━━━━━━━\n"
+                f"📌 เข้าไม้วันนี้: {entries_today}\n"
+                f"🎯 TP1: {tp1_today} | TP2: {tp2_today} | TP3: {tp3_today}\n"
+                f"🛑 SL: {sl_today}\n"
+                f"━━━━━━━━━━━━━━━━━\n"
+                f"🟢 Active ตอนนี้: {active_now}\n"
+                f"🔒 ปิดวันนี้: {closed_today}\n"
+            )
+
+            self.telegram_notifier.send_message(msg)
+
         except Exception as e:
             logger.error(f"Summary error: {e}")
-
 
     # ================================================================
     # 🛠️ LAYER 5: Service Injection & History
