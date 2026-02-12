@@ -41,15 +41,16 @@ class SignalDetector:
     def _load_risk_config(self) -> Dict:
         """Load risk management configuration from Config"""
         try:
-            # ✅ อ่านจาก Config class
             from config.settings import Config
             return Config.RISK_MANAGEMENT
         except Exception as e:
             logger.warning(f"Error loading risk config, using defaults: {e}")
             return {
-                "4h": {"tp_levels": [1.2, 1.5, 2.0], "sl_level": 1.5},
-                "1d": {"tp_levels": [3.0, 5.0, 7.0], "sl_level": 3.0}
+                "15m": {"tp_levels": [1.0, 1.5, 2.0], "sl_level": 2.0},
+                "4h": {"tp_levels": [3.0, 5.0, 7.0], "sl_level": 3.0},
+                "1d": {"tp_levels": [5.0, 8.0, 12.0], "sl_level": 4.0},
             }
+
     
     def _load_indicator_config(self) -> Dict:
         try:
@@ -95,6 +96,7 @@ class SignalDetector:
         """Analyze symbol using refactored data flow"""
         try:
             logger.info(f"🔍 Analyzing {symbol} on {timeframe} (CONSERVATIVE)")
+            logger.info(f"[RISK-CFG] tf={timeframe} cfg={self.risk_management.get(timeframe)}")
 
             # Get data from DataManager
             df = self.data_manager.get_klines(symbol, timeframe, limit=100)
@@ -126,6 +128,7 @@ class SignalDetector:
 
             # Calculate risk management levels  
             risk_levels = self._calculate_risk_levels(current_price, timeframe, signals, symbol)
+            logger.info(f"[RISK-TEST] called for {symbol} {timeframe}")
 
             # Handle position creation with duplicate prevention
             position_created = self._handle_signal_position_fixed(
@@ -197,7 +200,8 @@ class SignalDetector:
                     self.signal_history.clear_opposite_signal(symbol, timeframe, signal_type)
 
                 if self.telegram_notifier and should_notify:
-                    self.telegram_notifier.send_signal_alert(result, topic_id=18)  # VIP SIGNAL
+                    logger.info(f"✅ should_notify=True (skip direct send; scheduler will handle): {symbol} {timeframe}")
+
                 # ===================================================================
 
             return result
@@ -635,7 +639,7 @@ class SignalDetector:
             c_close = float(current_price)  # ใช้ current_price ที่ส่งเข้ามาให้ชัดเจน
 
             # แตะ band ด้วยไส้เทียน + buffer
-            buf = 0.005  # 0.5% ปรับได้
+            buf = 0.01
             touched_lower = c_low <= bb_lower * (1 + buf)
             touched_upper = c_high >= bb_upper * (1 - buf)
 
@@ -643,8 +647,8 @@ class SignalDetector:
             closed_back_above_lower = c_close > bb_lower
             closed_back_below_upper = c_close < bb_upper
 
-            buy_signal = (rsi_current < 35) and touched_lower and closed_back_above_lower
-            short_signal = (rsi_current > 65) and touched_upper and closed_back_below_upper
+            buy_signal = (rsi_current < 45) and touched_lower
+            short_signal = (rsi_current > 55) and touched_upper
 
             # =========================
             # L5) Logging Layer
@@ -734,6 +738,7 @@ class SignalDetector:
             signals = self._detect_rebound_signals_15m(df, current_price)
 
             if not (signals.get("buy") or signals.get("short")):
+                logger.info(f"15m No rebound: {symbol}")
                 return None
 
             signal_type = "LONG" if signals.get("buy") else "SHORT"
@@ -875,23 +880,11 @@ class SignalDetector:
                 timeframe, self.risk_management.get("4h", {})
             )
 
-            tp_percentages = risk_config.get("tp_levels", [3.0, 5.0, 7.0])
-            
-            # --- 🆕 เริ่มส่วนที่แก้ไขใหม่: คำนวณ SL ตามความซิ่ง (Volatility) ---
-            # ดึงข้อมูล 10 แท่งล่าสุดมาดูระยะเหวี่ยง (ใช้ข้อมูลจาก signals หรือ symbol ที่เกี่ยวข้อง)
-            symbol = symbol
-            df_recent = self.data_manager.get_klines(symbol, timeframe, limit=10)
-            
-            if df_recent is not None and not df_recent.empty:
-                # คำนวณความเหวี่ยงเฉลี่ยเป็น % (High-Low)
-                volatility = ((df_recent['high'] - df_recent['low']) / df_recent['close']).mean() * 100
-                # ใช้ 1.5 เท่าของความเหวี่ยง แต่ไม่ต่ำกว่า 2% และไม่เกิน 5%
-                sl_percentage = min(max(volatility * 1.5, 2.0), 5.0)
-                logger.info(f"🛡️ Dynamic SL set at {sl_percentage:.2f}% (Volatility: {volatility:.2f}%)")
-            else:
-                # ถ้าดึงข้อมูลไม่ได้ ให้ใช้ค่าจาก Config ตามเดิม
-                sl_percentage = risk_config.get("sl_level", 3.0)
-            # -----------------------------------------------------------
+            default_cfg = self.risk_management.get(timeframe) or self.risk_management.get("4h", {})
+            tp_percentages = risk_config.get("tp_levels", default_cfg.get("tp_levels", [3.0, 5.0, 7.0]))
+            sl_percentage = risk_config.get("sl_level", default_cfg.get("sl_level", 3.0))
+            logger.info(f"[RISK] tf={timeframe} tp={tp_percentages} sl={sl_percentage}")
+
 
             risk_levels = {"timeframe": timeframe, "entry_price": current_price}
 

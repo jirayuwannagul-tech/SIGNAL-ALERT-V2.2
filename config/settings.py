@@ -121,24 +121,25 @@ class Config:
 
     RISK_MANAGEMENT = {
         "15m": {
-            "tp_levels": [0.5, 1.0, 1.5],
-            "sl_level": 0.5,
+            "tp_levels": [1.0, 1.5, 2.0],
+            "sl_level": 2.0,
             "max_risk_per_trade": 2.0,
             "max_open_trades": 5
         },
         "4h": {
-            "tp_levels": [2.0, 4.0, 6.0],
-            "sl_level": 1.5,
+            "tp_levels": [3.0, 5.0, 7.0],
+            "sl_level": 3.0,
             "max_risk_per_trade": 3.0,
             "max_open_trades": 3
         },
         "1d": {
-            "tp_levels": [5.0, 7.0, 9.0],
-            "sl_level": 5.0,
+            "tp_levels": [5.0, 8.0, 12.0],
+            "sl_level": 4.0,
             "max_risk_per_trade": 3.0,
             "max_open_trades": 2
         }
     }
+
 
     # ================================================================
     # 🔄 LAYER 6: Signal Filtering (COMPLETE with liquidity checks)

@@ -168,17 +168,21 @@ class SignalScheduler:
                     # แจ้งเตือนปิดออเดอร์/Hit TP/SL
                     if self.telegram_notifier: 
                         msg = f"📊 *Update:* {pid} Closed\nStatus: {upinfo.get('close_reason', 'N/A')}"
-                        self.telegram_notifier.send_message(msg)
+                        self.telegram_notifier.send_message(msg, thread_id=18)
         except Exception as e:
             logger.error(f"Update error: {e}")
 
     def _send_daily_summary(self):
         try:
             summary = {"date": datetime.now().strftime("%Y-%m-%d"), "status": "Active"}
-            if self.telegram_notifier: 
-                self.telegram_notifier.send_message(f"📅 *Daily Report {summary['date']}*\nระบบทำงานปกติ พร้อมดูแลห้อง VIP และห้องธรรมดาครับ")
+            if self.telegram_notifier:
+                self.telegram_notifier.send_message(
+                    f"📅 *Daily Report {summary['date']}*\nระบบทำงานปกติ พร้อมดูแลห้อง VIP และห้องธรรมดาครับ",
+                    thread_id=18
+                )
         except Exception as e:
             logger.error(f"Summary error: {e}")
+
 
     # ================================================================
     # 🛠️ LAYER 5: Service Injection & History

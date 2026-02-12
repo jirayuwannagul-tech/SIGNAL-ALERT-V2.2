@@ -298,7 +298,7 @@ def start_position_monitoring():
                                             "updates": update_info
                                         })
                                     if services.get("telegram_notifier"):
-                                        services["telegram_notifier"].send_message(msg)
+                                        services["telegram_notifier"].send_message(msg, thread_id=18)
                                     logger.info(f"✅ Notified {tp_level} hit for {position_id}")
                                 except Exception as e:
                                     logger.error(f"Notify {tp_level} error: {e}")
@@ -314,7 +314,7 @@ def start_position_monitoring():
                                         "updates": update_info
                                     })
                                 if services.get("telegram_notifier"):
-                                    services["telegram_notifier"].send_message(msg)
+                                    services["telegram_notifier"].send_message(msg, thread_id=18)
                                 logger.info(f"✅ Notified SL hit for {position_id}")
                             except Exception as e:
                                 logger.error(f"Notify SL error: {e}")
@@ -556,7 +556,8 @@ def receive_signal_from_outside():
             
             if tg_token and tg_chat_id:
                 tg_bot = TelegramNotifier(tg_token, tg_chat_id)
-                tg_bot.send_signal_alert(analysis)
+                # ✅ disabled: prevent duplicate TG alerts (scheduler will handle)
+                # tg_bot.send_signal_alert(analysis)
                 logger.info(f"✅ พ่นสัญญาณลง Telegram สำเร็จแล้วครับพี่!")
             else:
                 logger.warning("⚠️ ข้าม Telegram: ไม่พบ TOKEN หรือ CHAT_ID ใน Variables")
