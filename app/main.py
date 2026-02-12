@@ -140,16 +140,17 @@ def initialize_services_background():
                 "data_manager": services["data_manager"],
                 "position_manager": services["position_manager"],
                 "config_manager": services["config_manager"],
-                "line_notifier": services["line_notifier"]
+                "line_notifier": services["line_notifier"],
+                "telegram_notifier": services.get("telegram_notifier"),
             }
+
             services["signal_detector"] = SignalDetector(signal_config)
             logger.info("✅ SignalDetector initialized with refactored services")
             
         except Exception as e:
-            logger.error(f"❌ SignalDetector initialization failed: {e}")
+            logger.exception("❌ SignalDetector initialization failed")
             services["signal_detector"] = None
-        
-        
+
         # Step 6: Initialize Scheduler with new architecture (V2.2 Update)
         try:
             scheduler_config = services["config_manager"].get_all()

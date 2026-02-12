@@ -94,8 +94,7 @@ class SignalDetector:
         """Analyze symbol using refactored data flow"""
         try:
 
-            if timeframe != "1d":
-                return None
+            if timeframe not in ("1d","15m"): return None
 
             logger.info(f"🔍 Analyzing {symbol} on {timeframe} (CONSERVATIVE)")
             logger.info(f"[RISK-CFG] tf={timeframe} cfg={self.risk_management.get(timeframe)}")
@@ -319,7 +318,6 @@ class SignalDetector:
     def _detect_signals_improved_fixed(self, analysis: Dict, timeframe: str = "1d", df=None, trend_1d=None) -> Dict[str, bool]:
         """
         1D: CDC ActionZone (EMA 12/26 Crossover)
-        4H: RSI + MACD + Enhanced filters + STRONG MOMENTUM MODE + PULLBACK MODE
         """
         try:
             import pandas as pd
@@ -393,7 +391,30 @@ class SignalDetector:
                     "cross_up": bool(cross_buy),
                     "cross_down": bool(cross_short)
                 }
-        
+
+            # ========================================
+            # 15m: MACD Histogram + RSI (simple)
+            # ========================================
+            if timeframe == "15m":
+                if analysis is None:
+                    return {"buy": False, "short": False, "sell": False, "cover": False}
+
+                rsi = float(analysis["rsi"]["value"])
+                macd_hist = float(analysis["macd"]["histogram"])
+
+                buy_signal = (macd_hist > 0) and (rsi < 60)
+                short_signal = (macd_hist < 0) and (rsi > 40)
+
+                return {
+                    "buy": bool(buy_signal),
+                    "short": bool(short_signal),
+                    "sell": False,
+                    "cover": False
+                }
+
+            # default
+            return {"buy": False, "short": False, "sell": False, "cover": False} 
+
         except Exception as e:
             logger.error(f"Error detecting signals: {e}", exc_info=True)
             return {"buy": False, "short": False, "sell": False, "cover": False}
