@@ -118,17 +118,20 @@ class SignalScheduler:
             symbol = signal.get("symbol")
             signals = signal.get("signals", {})
             direction = "LONG" if signals.get("buy") else "SHORT" if signals.get("short") else None
-            
+
             if not symbol or not direction or signal.get("signal_strength", 0) < 75:
                 return False
+
             if self._is_duplicate_signal(symbol, timeframe, direction):
                 return False
+
+            # เดิม: ถ้า position_created=False จะ record แล้ว return False -> ทำให้ไม่ส่ง TG
+            # ใหม่: record ไว้ได้ แต่ "ไม่หยุด" ให้ส่งต่อได้เลย
             if not signal.get("position_created", False):
                 self._record_signal(symbol, timeframe, direction)
-                return False
-            
+
             # ===== ส่ง ENTRY SIGNAL ตาม TF =====
-            tf = timeframe.lower()
+            tf = (timeframe or "").lower().strip()
 
             if self.telegram_notifier:
                 if tf == "15m":
@@ -136,20 +139,22 @@ class SignalScheduler:
                 else:
                     thread_id = int(os.getenv("TOPIC_VIP_ID", 0))
 
-                self.telegram_notifier.send_signal_alert(
-                    signal,
-                    thread_id=thread_id
-                )
+                self.telegram_notifier.send_signal_alert(signal, thread_id=thread_id)
 
             # ช่องทางสำรองอื่นๆ
-            if self.line_notifier: self.line_notifier.send_signal_alert(signal)
-            if self.sheets_logger: self.sheets_logger.log_trading_journal(signal)
-            
+            if self.line_notifier:
+                self.line_notifier.send_signal_alert(signal)
+            if self.sheets_logger:
+                self.sheets_logger.log_trading_journal(signal)
+
+            # กันพลาด: บันทึกสัญญาณหลังส่งด้วย
             self._record_signal(symbol, timeframe, direction)
             return True
+
         except Exception as e:
             logger.error(f"Process error: {e}")
             return False
+
 
     # ================================================================
     # 👤 LAYER 3: Membership Management (ระบบตรวจสอบสมาชิกหมดอายุ)
@@ -188,7 +193,9 @@ class SignalScheduler:
                                 f"Price: {upinfo[tp].get('price')}\n"
                                 f"Target: {upinfo[tp].get('target_price')}"
                             )
-                            self.telegram_notifier.send_message(msg, thread_id=18)
+                            thread_id = int(os.getenv("TOPIC_CHAT_ID", 0))
+                            self.telegram_notifier.send_message(msg, thread_id=thread_id)
+
 
                 # ===== แจ้ง SL =====
                 if upinfo.get("sl_hit"):
@@ -199,7 +206,9 @@ class SignalScheduler:
                             f"Price: {upinfo['sl_hit'].get('price')}\n"
                             f"Target: {upinfo['sl_hit'].get('target_price')}"
                         )
-                        self.telegram_notifier.send_message(msg, thread_id=18)
+                        thread_id = int(os.getenv("TOPIC_CHAT_ID", 0))
+                        self.telegram_notifier.send_message(msg, thread_id=thread_id)
+
 
                 # ===== แจ้งปิด position =====
                 if self.telegram_notifier:
