@@ -48,28 +48,42 @@ class SignalScheduler:
         """เริ่มการทำงานของ Job ทั้งหมด"""
         if self.running: return
         
-        # Job: ตรวจสอบสัญญาณเทรด 1D (ทุก 4 ชั่วโมง)
+        # Job: ตรวจสอบสัญญาณเทรด 1D (07:05 ไทย = 00:05 UTC)
         self.scheduler.add_job(
-            func=self._scan_1d_signals, trigger="cron", hour="0,4,8,12,16,20", minute=0,
-            id="scan_1d_signals", replace_existing=True
+            func=self._scan_1d_signals,
+            trigger="cron",
+            hour=0,
+            minute=5,
+            id="scan_1d_signals",
+            replace_existing=True
         )
-        
+
         # Job: อัปเดตสถานะ Position (ทุก 2 นาที)
         self.scheduler.add_job(
-            func=self._update_positions_refactored, trigger=IntervalTrigger(minutes=2),
-            id="update_positions", replace_existing=True
+            func=self._update_positions_refactored,
+            trigger=IntervalTrigger(minutes=2),
+            id="update_positions",
+            replace_existing=True
         )
 
         # Job: ตรวจสอบสมาชิกหมดอายุ (ทุกวัน เวลา 00:05)
         self.scheduler.add_job(
-            func=self._check_membership_expiry, trigger="cron", hour=0, minute=5,
-            id="check_membership", replace_existing=True
+            func=self._check_membership_expiry,
+            trigger="cron",
+            hour=0,
+            minute=5,
+            id="check_membership",
+            replace_existing=True
         )
-        
-        # Job: รายงานสรุปประจำวัน (ทุกเที่ยงคืน)
+
+        # Job: รายงานสรุปประจำวัน (20:00 ไทย = 13:00 UTC)
         self.scheduler.add_job(
-            func=self._send_daily_summary, trigger="cron", hour=0, minute=0,
-            id="daily_summary", replace_existing=True
+            func=self._send_daily_summary,
+            trigger="cron",
+            hour=13,
+            minute=0,
+            id="daily_summary",
+            replace_existing=True
         )
 
         self.scheduler.start()
