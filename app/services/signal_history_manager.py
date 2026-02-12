@@ -30,6 +30,10 @@ class SignalHistoryManager:
         # L3) Load Layer
         # =========================
         self.signal_history = self._load_history()
+
+        for k, v in self.signal_history.items():
+            logger.info(f"📌 {k} => {v}")
+
         logger.info(f"✅ SignalHistoryManager initialized (File: {self.history_file})")
 
     def _load_history(self) -> Dict:
