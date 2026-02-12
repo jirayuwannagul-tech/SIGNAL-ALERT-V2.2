@@ -660,7 +660,18 @@ def get_signals():
         
         for symbol in symbols_list:
             for timeframe in timeframes_list:
-                signal = services["signal_detector"].analyze_symbol(symbol, timeframe)
+                tf = (timeframe or "").lower().strip()
+
+                # ✅ 15m => use Rebound analyzer (instead of analyze_symbol)
+                if tf in ("15m", "15"):
+                    signal = services["signal_detector"].analyze_rebound({
+                        "is_closed": True,
+                        "symbol": symbol,
+                        "timeframe": "15m",
+                    })
+                else:
+                    signal = services["signal_detector"].analyze_symbol(symbol, tf)
+
                 if signal:
                     signals_found.append(signal)
         
@@ -675,7 +686,6 @@ def get_signals():
     except Exception as e:
         logger.error(f"Error in get_signals: {e}")
         return jsonify({"error": str(e), "version": VERSION}), 500
-
 
 @app.route("/api/positions")
 @require_services
@@ -980,7 +990,6 @@ def debug_positions():
     except Exception as e:
         logger.error(f"Error in debug positions: {e}")
         return jsonify({"error": str(e)}), 500
-
 
 if __name__ == "__main__":
     # ลบพวก raw_port = ... และ if raw_port == ... ทิ้งให้หมด
