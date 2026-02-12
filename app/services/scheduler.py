@@ -70,8 +70,8 @@ class SignalScheduler:
         self.scheduler.add_job(
             func=self._check_membership_expiry,
             trigger="cron",
-            hour=0,
-            minute=5,
+            hour=10,   # 17:00 ไทย
+            minute=0,
             id="check_membership",
             replace_existing=True
         )
