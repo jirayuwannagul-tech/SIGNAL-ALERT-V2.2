@@ -180,6 +180,8 @@ class TelegramNotifier:
 
             self.send_message(message, thread_id=target_thread)
             logger.info(f"Telegram signal sent: {symbol}")
+        except Exception as e:
+            logger.error(f"Telegram Alert Error: {e}")
 
     # =========================
     # Membership Room
