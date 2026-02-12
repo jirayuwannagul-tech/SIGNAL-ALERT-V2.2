@@ -168,8 +168,8 @@ class SignalScheduler:
 
             # ===== ส่ง ENTRY SIGNAL (1D only) =====
             if self.telegram_notifier:
-                thread_id = 249
-                self.telegram_notifier.send_signal_alert(signal, thread_id=thread_id)
+                # ✅ ไม่ส่ง thread_id เพื่อให้ TelegramNotifier route ตาม timeframe เอง
+                self.telegram_notifier.send_signal_alert(signal)
 
             # ช่องทางสำรองอื่นๆ
             if self.line_notifier:
@@ -240,11 +240,12 @@ class SignalScheduler:
                         self.telegram_notifier.send_message(msg, thread_id=thread_id)
 
 
-                # ===== แจ้งปิด position =====
-                if self.telegram_notifier:
-                    thread_id = int(os.getenv("TOPIC_CHAT_ID", 0))
-                    msg = f"📊 *Update:* {pid} Closed\nStatus: {upinfo.get('close_reason', 'N/A')}"
-                    self.telegram_notifier.send_message(msg, thread_id=thread_id)
+                # ===== แจ้งปิด position (ส่งเฉพาะตอนปิดจริง) =====
+                if upinfo.get("position_closed"):
+                    if self.telegram_notifier:
+                        thread_id = int(os.getenv("TOPIC_CHAT_ID", 0))
+                        msg = f"📊 *Update:* {pid} Closed\nReason: {upinfo.get('close_reason', 'N/A')}"
+                        self.telegram_notifier.send_message(msg, thread_id=thread_id)
 
         except Exception as e:
             logger.error(f"Update error: {e}")

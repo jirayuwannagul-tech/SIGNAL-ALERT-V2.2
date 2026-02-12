@@ -35,7 +35,9 @@ class TelegramNotifier:
             "vip": _to_int(os.getenv("TOPIC_VIP_ID")),
             "chat": _to_int(os.getenv("TOPIC_CHAT_ID")),
             "member": _to_int(os.getenv("TOPIC_MEMBER_ID")),
+            "15m": _to_int(os.getenv("TOPIC_15M_ID")),  # ✅ เพิ่ม
         }
+
 
         logger.info("TelegramNotifier ready")
 
@@ -49,6 +51,8 @@ class TelegramNotifier:
         if tf in ("1d", "1day", "d"):
             return self.topics.get("vip") or fallback
 
+        if tf in ("15m", "15min", "m15"):
+            return self.topics.get("15m") or fallback
 
         return fallback
 
