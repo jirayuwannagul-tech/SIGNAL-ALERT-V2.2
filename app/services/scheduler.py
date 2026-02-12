@@ -47,12 +47,6 @@ class SignalScheduler:
     def start_scheduler(self):
         """เริ่มการทำงานของ Job ทั้งหมด"""
         if self.running: return
-
-        # Job: ตรวจสอบสัญญาณเทรด 4H (ทุก 15 นาที)
-        self.scheduler.add_job(
-            func=self._scan_4h_signals, trigger="cron", hour="*", minute="*/15",
-            id="scan_4h_signals", replace_existing=True
-        )
         
         # Job: ตรวจสอบสัญญาณเทรด 1D (ทุก 4 ชั่วโมง)
         self.scheduler.add_job(
@@ -94,15 +88,6 @@ class SignalScheduler:
     # 📢 LAYER 2: Trading Signal Logic (ตรรกะการวิเคราะห์และพ่นสัญญาณ)
     # ================================================================
 
-    def _scan_4h_signals(self):
-        try:
-            symbols = getattr(Config, 'DEFAULT_SYMBOLS', ["BTCUSDT", "ETHUSDT"])
-            active_signals = self.signal_detector.get_active_signals(symbols, ["4h"])
-            for signal in active_signals:
-                self._process_signal_refactored(signal, "4h")
-        except Exception as e:
-            logger.error(f"Error in 4h scan: {e}")
-
     def _scan_1d_signals(self):
         try:
             symbols = getattr(Config, 'DEFAULT_SYMBOLS', ["BTCUSDT", "ETHUSDT"])
@@ -130,15 +115,9 @@ class SignalScheduler:
             if not signal.get("position_created", False):
                 self._record_signal(symbol, timeframe, direction)
 
-            # ===== ส่ง ENTRY SIGNAL ตาม TF =====
-            tf = (timeframe or "").lower().strip()
-
+            # ===== ส่ง ENTRY SIGNAL (1D only) =====
             if self.telegram_notifier:
-                if tf == "15m":
-                    thread_id = int(os.getenv("TOPIC_15M_ID", 0))
-                else:
-                    thread_id = int(os.getenv("TOPIC_VIP_ID", 0))
-
+                thread_id = int(os.getenv("TOPIC_VIP_ID", 0))
                 self.telegram_notifier.send_signal_alert(signal, thread_id=thread_id)
 
             # ช่องทางสำรองอื่นๆ
@@ -273,3 +252,14 @@ class SignalScheduler:
     def _record_signal(self, symbol: str, timeframe: str, direction: str):
         self.last_signals[f"{symbol}_{timeframe}_{direction}"] = datetime.now()
         self._save_signal_history()
+
+    def get_scheduler_status(self) -> Dict:
+        """Used by /api/scheduler/status and tests. Must not raise."""
+        try:
+            return {
+                "ok": True,
+                "running": bool(self.running),
+                "jobs": len(self.scheduler.get_jobs()) if self.scheduler else 0,
+            }
+        except Exception as e:
+            return {"ok": False, "running": False, "error": str(e)}

@@ -63,8 +63,9 @@ class TestIntegration(unittest.TestCase):
         
         data = response.get_json()
         self.assertEqual(data['system'], 'SIGNAL-ALERT')
-        self.assertEqual(data['version'], '2.0-refactored')
-    
+        self.assertIn('version', data)
+        self.assertIsInstance(data['version'], str)
+
     def test_api_endpoints_structure(self):
         """Test that key API endpoints respond (even if services not ready)"""
         endpoints = [

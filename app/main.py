@@ -9,7 +9,6 @@ from flask import Flask, jsonify, request
 from app.services.config_manager import ConfigManager
 from app.services.data_manager import DataManager
 from app.services.position_manager import PositionManager
-from app.services.websocket_manager import WebSocketManager
 from app.models.database import Database
 from app.services.member_manager import MemberManager
 from app.services.telegram_notifier import TelegramNotifier
@@ -68,7 +67,6 @@ services = {
     "config_manager": None,
     "data_manager": None, 
     "position_manager": None,
-    "websocket_manager": None,
     
     # 👤 Added for Telegram VIP System
     "database": None,
@@ -107,40 +105,16 @@ def initialize_services_background():
             logger.info("✅ Telegram & Member System Ready")
         except Exception as e:
             logger.error(f"❌ Membership Init Error: {e}")
-        
-        # Step 2: Initialize DataManager (replaces PriceFetcher + DataUpdater)
+
+        # Step 2: Initialize DataManager
         services["data_manager"] = DataManager()
-        logger.info("✅ DataManager initialized (replaces PriceFetcher + DataUpdater)")
-        
-        # Step 3: Initialize PositionManager (replaces PositionTracker + PriceMonitor logic)
+        logger.info("✅ DataManager initialized")
+
+        # Step 3: Initialize PositionManager
         services["position_manager"] = PositionManager(services["data_manager"])
-        logger.info("✅ PositionManager initialized (replaces PositionTracker + PriceMonitor logic)")
-        
-        # Step 3.5: Initialize WebSocketManager for real-time data (Top 5 coins)
-        try:
-            # Create callback with SignalDetector
-            def kline_callback(kline_data):
-                services["data_manager"].process_websocket_kline(
-                    kline_data, 
-                    signal_detector=services.get("signal_detector")
-                )
-            
-            # Top 3 coins for Rebound strategy
-            symbols = ["btcusdt", "ethusdt", "solusdt"]
-            services["websocket_managers"] = []
-            
-            for symbol in symbols:
-                ws = WebSocketManager(symbol=symbol, timeframe="15m")
-                ws.set_kline_callback(kline_callback)
-                ws.connect()
-                services["websocket_managers"].append(ws)
-                logger.info(f"✅ WebSocket connected: {symbol}")
-            
-            logger.info(f"✅ All {len(symbols)} WebSockets initialized")
-        except Exception as e:
-            logger.warning(f"⚠️ WebSocketManager failed to initialize: {e}")
-            services["websocket_managers"] = []
-        
+        logger.info("✅ PositionManager initialized")
+
+
         # Step 4: Initialize notification services with ConfigManager
         try:
             line_config = services["config_manager"].get_line_config()
@@ -171,18 +145,6 @@ def initialize_services_background():
             services["signal_detector"] = SignalDetector(signal_config)
             logger.info("✅ SignalDetector initialized with refactored services")
             
-            # Register 15m rebound callback
-            def on_15m_rebound(kline_data):
-                """Callback for 15m candle close - analyze rebound signals"""
-                try:
-                    result = services["signal_detector"].analyze_rebound(kline_data)
-                    if result and result.get('recommendation'):
-                        services["line_notifier"].send_signal_alert(result)
-                except Exception as e:
-                    logger.error(f"Error in 15m rebound callback: {e}")
-            
-            services["data_manager"].register_rebound_callback(on_15m_rebound)
-            logger.info("✅ Registered 15m rebound callback")
         except Exception as e:
             logger.error(f"❌ SignalDetector initialization failed: {e}")
             services["signal_detector"] = None
@@ -261,7 +223,7 @@ def start_position_monitoring():
         return (
             f"{title}\n"
             f"━━━━━━━━━━━━━━━━\n"
-            f"🪙 {position.get('symbol')} {position.get('timeframe')} {position.get('direction')}\n"
+            f"🪙 {position.get('symbol')} {position.get('direction')}\n"
             f"💵 Entry: {position.get('entry_price')}\n"
             f"📍 Price: {position.get('current_price')}\n"
             f"🎯 TP1 {_mark_tp(tp_hit.get('TP1', False))}: {tp_levels.get('TP1')}\n"
@@ -519,7 +481,7 @@ def receive_signal_from_outside():
         # 2. จัดรูปแบบข้อมูลสำหรับส่งแจ้งเตือน
         analysis = {
             "symbol": symbol,
-            "timeframe": data.get('timeframe', '4H'),
+            "timeframe": data.get("timeframe", "1d"),
             "current_price": price,
             "direction": direction,   # 👈 เพิ่มบรรทัดนี้
             "signals": {
@@ -648,33 +610,17 @@ def require_services(f):
 @app.route("/api/signals")
 @require_services
 def get_signals():
-    """Scan for trading signals with new architecture"""
     symbols = request.args.get("symbols", "BTCUSDT,ETHUSDT")
-    timeframes = request.args.get("timeframes", "4h")
-    
-    symbols_list = [s.strip() for s in symbols.split(",")]
-    timeframes_list = [t.strip() for t in timeframes.split(",")]
-    
+    symbols_list = [s.strip() for s in symbols.split(",") if s.strip()]
+
     try:
         signals_found = []
-        
+
         for symbol in symbols_list:
-            for timeframe in timeframes_list:
-                tf = (timeframe or "").lower().strip()
+            signal = services["signal_detector"].analyze_symbol(symbol, "1d")
+            if signal:
+                signals_found.append(signal)
 
-                # ✅ 15m => use Rebound analyzer (instead of analyze_symbol)
-                if tf in ("15m", "15"):
-                    signal = services["signal_detector"].analyze_rebound({
-                        "is_closed": True,
-                        "symbol": symbol,
-                        "timeframe": "15m",
-                    })
-                else:
-                    signal = services["signal_detector"].analyze_symbol(symbol, tf)
-
-                if signal:
-                    signals_found.append(signal)
-        
         return jsonify({
             "status": "success",
             "signals": signals_found,
@@ -682,7 +628,7 @@ def get_signals():
             "timestamp": time.time(),
             "version": VERSION
         })
-        
+
     except Exception as e:
         logger.error(f"Error in get_signals: {e}")
         return jsonify({"error": str(e), "version": VERSION}), 500

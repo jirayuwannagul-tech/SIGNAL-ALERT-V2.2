@@ -5,15 +5,13 @@ import pandas as pd
 
 from ..utils.core_utils import JSONManager, ErrorHandler
 from ..utils.data_types import DataConverter
-
+# Step 3: Initialize PositionManager
 try:
     from config.settings import Config
     RISK_MANAGEMENT = Config.RISK_MANAGEMENT
 except Exception:
     # Fallback (should match Config defaults)
     RISK_MANAGEMENT = {
-        "15m": {"tp_levels": [1.0, 1.5, 2.0], "sl_level": 2.0},
-        "4h": {"tp_levels": [3.0, 5.0, 7.0], "sl_level": 3.0},
         "1d": {"tp_levels": [5.0, 8.0, 12.0], "sl_level": 4.0},
     }
 
@@ -276,7 +274,7 @@ class PositionManager:
 
     def _calculate_levels(self, entry_price: float, direction: str, timeframe: str) -> Tuple[Dict, float]:
         """Calculate TP and SL levels"""
-        risk_config = RISK_MANAGEMENT.get(timeframe, RISK_MANAGEMENT['4h'])
+        risk_config = RISK_MANAGEMENT.get(timeframe, RISK_MANAGEMENT['1d'])
         tp_percentages = risk_config['tp_levels']  # [3.0, 5.0, 7.0]
         sl_percentage = risk_config['sl_level']    # 3.0
 
@@ -311,9 +309,7 @@ class PositionManager:
             return ""
         tf = str(tf).strip().lower()
         tf = tf.replace(" ", "")
-        tf = tf.replace("4h", "4h").replace("4hour", "4h")
         tf = tf.replace("1d", "1d").replace("1day", "1d")
-        tf = tf.replace("15m", "15m").replace("30m", "30m").replace("1h", "1h")
         return tf
 
     def get_position_status(self, symbol: str, timeframe: str) -> Optional[Dict]:

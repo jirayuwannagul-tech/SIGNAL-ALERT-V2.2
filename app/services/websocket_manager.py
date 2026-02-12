@@ -11,7 +11,7 @@ import websocket
 logger = logging.getLogger(__name__)
 
 class WebSocketManager:
-    def __init__(self, symbol: str = "btcusdt", timeframe: str = "15m"):
+    def __init__(self, symbol: str = "btcusdt", timeframe: str = "1d"):
         self.symbol = symbol.lower()
         self.timeframe = timeframe.lower()
         self.base_url = "wss://stream.binance.com:9443/ws"
@@ -163,25 +163,3 @@ class WebSocketManager:
         self.stream_name = f"{self.symbol}@kline_{self.timeframe}"
         self.connect()
 
-def test_websocket():
-    def on_kline(data):
-        print(f"📊 {data['symbol']} {data['timeframe']}")
-        print(f"   Close: {data['close']:.2f}")
-        print(f"   Closed: {data['is_closed']}")
-        print()
-    
-    ws_manager = WebSocketManager(symbol="btcusdt", timeframe="15m")
-    ws_manager.set_kline_callback(on_kline)
-    ws_manager.connect()
-    
-    try:
-        print("WebSocket running... Press Ctrl+C to stop")
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        print("\nStopping...")
-    finally:
-        ws_manager.disconnect()
-
-if __name__ == "__main__":
-    test_websocket()

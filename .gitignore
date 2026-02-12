@@ -26,3 +26,21 @@ node_modules/
 .cache/
 credentials.json
 .env
+
+# venv
+.venv/
+venv/
+.venv311/
+__pycache__/
+*.pyc
+.env
+/data/
+
+# venv
+.venv/
+venv/
+.venv311/
+__pycache__/
+*.pyc
+.env
+/data/

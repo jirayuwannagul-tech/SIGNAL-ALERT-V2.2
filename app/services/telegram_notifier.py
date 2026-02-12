@@ -37,11 +37,6 @@ class TelegramNotifier:
             "member": _to_int(os.getenv("TOPIC_MEMBER_ID")),
         }
 
-        # =========================
-        # ✅ ADDED: 15m Topic Support (NO CHANGE TO EXISTING KEYS)
-        # =========================
-        self.topics["rebound_15m"] = _to_int(os.getenv("TOPIC_15M_ID"))
-
         logger.info("TelegramNotifier ready")
 
     # =========================
@@ -51,14 +46,9 @@ class TelegramNotifier:
     def resolve_topic_id(self, timeframe: str, fallback: Optional[int] = None) -> Optional[int]:
         tf = (timeframe or "").lower().strip()
 
-        if tf in ("15m", "15"):
-            return self.topics.get("rebound_15m") or fallback
-
         if tf in ("1d", "1day", "d"):
-            return self.topics.get("normal") or fallback
-
-        if tf in ("4h", "4hr", "h4"):
             return self.topics.get("vip") or fallback
+
 
         return fallback
 
@@ -97,7 +87,7 @@ class TelegramNotifier:
     def send_signal_alert(self, analysis: Dict, topic_id: Optional[int] = None):
         try:
             symbol = analysis.get("symbol", "UNKNOWN")
-            timeframe = (analysis.get("timeframe") or "4h").lower()
+            timeframe = (analysis.get("timeframe") or "1d").lower()
             price = float(analysis.get("current_price", 0) or 0)
 
             signals = analysis.get("signals", {}) or {}
@@ -141,16 +131,9 @@ class TelegramNotifier:
             else:
                 rr1 = rr2 = rr3 = 0.0
 
-            # Header + Strategy ตาม TF
-            if timeframe in ("1d", "1day", "d"):
-                header = f"{emoji}⚡ CDC ALERT ⚡{emoji}"
-                strategy = "1D SWING"
-            elif timeframe in ("4h", "4hr", "h4"):
-                header = f"{emoji}⚡ SQUEEZE ALERT ⚡{emoji}"
-                strategy = "4H SWING"
-            else:
-                header = f"{emoji}⚡ REBOUND ALERT ⚡{emoji}"
-                strategy = "15m SCALP (Rebound)"
+            # Header + Strategy (1D only)
+            header = f"{emoji}⚡ CDC ALERT ⚡{emoji}"
+            strategy = "1D SWING"
 
             # =========================
             # ✅ ADDED: Auto route by timeframe when topic_id not provided

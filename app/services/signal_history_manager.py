@@ -65,16 +65,12 @@ class SignalHistoryManager:
 
     def _get_cooldown_minutes(self, timeframe: str) -> int:
         """
-        Cooldown policy (ให้สอดคล้องกับระบบที่มี 15m rebound / 4h / 1d)
-        - 15m: 30 นาที (กันรัว แต่ยังเล่นเด้งสั้นได้)
-        - 4h: 240 นาที
+        Cooldown policy (1D only)
         - 1d: 1440 นาที
         """
         return {
-            "15m": 30,
-            "4h": 240,
             "1d": 1440,
-        }.get(timeframe, 60)
+        }.get(timeframe, 1440)
 
     def _parse_iso_datetime(self, iso_str: str) -> Optional[datetime]:
         """

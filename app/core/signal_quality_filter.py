@@ -357,7 +357,7 @@ def test_quality_filter():
     print("="*60)
     
     # Create mock data
-    dates = pd.date_range('2025-01-01', periods=100, freq='4h')
+    dates = pd.date_range('2025-01-01', periods=100, freq='1d')
     
     # Uptrend scenario
     prices_up = pd.Series([100 + i*0.5 for i in range(100)])

@@ -140,9 +140,9 @@ class LineNotifier:
             return False
     
     def _create_entry_signal_message(self, analysis: Dict) -> str:
-        """Create formatted message for entry signals - REBOUND ALERT style"""
+        """Create formatted message for entry signals - 1D CDC style"""
         symbol = analysis.get("symbol", "UNKNOWN")
-        timeframe = analysis.get("timeframe", "4h")
+        timeframe = analysis.get("timeframe", "1d")
         current_price = analysis.get("current_price", 0)
         signals = analysis.get("signals", {})
         risk_levels = analysis.get("risk_levels", {})
@@ -196,63 +196,23 @@ class LineNotifier:
         if timeframe == "1d":
             header_emoji = "🔵⚡ CDC ALERT ⚡🔵"
             strategy_name = "1D SWING"
-            
+
             # 1D indicators (CDC ActionZone)
             ema12 = analysis.get("ema12", 0)
             ema26 = analysis.get("ema26", 0)
-            
+
             if ema12 > ema26:
                 trend_status = "GREEN Trend"
             else:
                 trend_status = "RED Trend"
-            
-            indicator_line = f"""📊 CDC: {trend_status}
-📊 RSI: {rsi.get('value', 50):.1f}"""
-            
-        elif timeframe == "4h":
-            header_emoji = "🟢⚡ SQUEEZE ALERT ⚡🟢"
-            strategy_name = "4H SWING"
-            
-            # 4H indicators
-            squeeze_status = "OFF ✅" if squeeze.get('squeeze_off') else "ON ❌"
-            momentum = squeeze.get('momentum_direction', 'NEUTRAL')
-            macd_cross = macd.get('cross_direction', 'NONE')
-            
-            indicator_line = f"""📊 Squeeze: {squeeze_status}
-📊 Momentum: {momentum}
-📊 MACD: {macd_cross} Cross
-📊 RSI: {rsi.get('value', 50):.1f}"""
-            
-        else:  # 15m or other
-            header_emoji = "🟡⚡ REBOUND ALERT ⚡🟡"
-            strategy_name = "15m SCALP (Rebound)"
-            
-            # 15m rebound indicators
-            rsi_value = rsi.get('value', 50)
-            rsi_status = "Oversold" if rsi_value < 35 else "Overbought" if rsi_value > 65 else "Neutral"
-            
-            # BB values if available
-            bb_data = indicators.get("bb", {})
-            bb_upper = bb_data.get('upper', 0)
-            bb_lower = bb_data.get('lower', 0)
-            
-            if bb_upper > 0 and bb_lower > 0:
-                indicator_line = f"""📊 RSI: {rsi_value:.1f} ({rsi_status})
-📊 BB Upper: {bb_upper:.2f}
-�� BB Lower: {bb_lower:.2f}
-⚠️ Quick Entry/Exit - Scalp Only!"""
-            else:
-                indicator_line = f"""📊 RSI: {rsi_value:.1f} ({rsi_status})
-⚠️ Quick Entry/Exit - Scalp Only!"""
 
-        if timeframe == "1d":
-            alert_title = "CDC TREND ALERT"
-        elif timeframe == "4h":
-            alert_title = "SQUEEZE BREAKOUT"
-        else:
-            alert_title = "QUICK REBOUND"
+            indicator_line = f"""📊 CDC: {trend_status}
+            📊 RSI: {rsi.get('value', 50):.1f}"""
+
+        alert_title = "CDC TREND ALERT"
+
         # Create formatted message
-        message = f"""{header_emoji} REBOUND ALERT {header_emoji}
+        message = f"""{header_emoji} {alert_title} {header_emoji}
 ━━━━━━━━━━━━━━━━━
 📊 Strategy: {strategy_name}
 🪙 {symbol} - {direction} {direction_emoji}

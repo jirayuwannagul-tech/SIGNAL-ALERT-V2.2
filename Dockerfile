@@ -3,5 +3,5 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-RUN mkdir -p data/logs storage
+RUN mkdir -p data/logs data/candles storage
 CMD ["python", "-m", "app.main"]

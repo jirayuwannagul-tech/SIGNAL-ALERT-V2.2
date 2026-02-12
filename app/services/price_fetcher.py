@@ -28,7 +28,7 @@ class PriceFetcher:
 
         Args:
             symbol: Trading pair (e.g., 'BTCUSDT')
-            interval: Timeframe ('1h', '4h', '1d')
+            interval: Timeframe ('1d')
             limit: Number of records (max 1000)
 
         Returns:
