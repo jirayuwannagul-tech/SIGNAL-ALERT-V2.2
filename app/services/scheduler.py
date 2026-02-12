@@ -127,10 +127,20 @@ class SignalScheduler:
                 self._record_signal(symbol, timeframe, direction)
                 return False
             
-            # พ่นซิกเข้า Telegram (แยกห้อง VIP/ธรรมดา ใน TelegramNotifier)
-            if self.telegram_notifier: 
-                self.telegram_notifier.send_signal_alert(signal)
-            
+            # ===== ส่ง ENTRY SIGNAL ตาม TF =====
+            tf = timeframe.lower()
+
+            if self.telegram_notifier:
+                if tf == "15m":
+                    thread_id = int(os.getenv("TOPIC_15M_ID", 0))
+                else:
+                    thread_id = int(os.getenv("TOPIC_VIP_ID", 0))
+
+                self.telegram_notifier.send_signal_alert(
+                    signal,
+                    thread_id=thread_id
+                )
+
             # ช่องทางสำรองอื่นๆ
             if self.line_notifier: self.line_notifier.send_signal_alert(signal)
             if self.sheets_logger: self.sheets_logger.log_trading_journal(signal)
@@ -161,14 +171,42 @@ class SignalScheduler:
 
     def _update_positions_refactored(self):
         try:
-            if not self.position_manager: return
+            if not self.position_manager:
+                return
+
             updates = self.position_manager.update_positions()
+
             for pid, upinfo in updates.items():
-                if upinfo.get('position_closed'):
-                    # แจ้งเตือนปิดออเดอร์/Hit TP/SL
-                    if self.telegram_notifier: 
-                        msg = f"📊 *Update:* {pid} Closed\nStatus: {upinfo.get('close_reason', 'N/A')}"
+
+                # ===== แจ้ง TP1 / TP2 / TP3 เฉพาะตอนเพิ่ง HIT =====
+                for tp in ["TP1_hit", "TP2_hit", "TP3_hit"]:
+                    if upinfo.get(tp):
+                        if self.telegram_notifier:
+                            msg = (
+                                f"🎯 *{tp.replace('_hit','')} HIT*\n"
+                                f"ID: {pid}\n"
+                                f"Price: {upinfo[tp].get('price')}\n"
+                                f"Target: {upinfo[tp].get('target_price')}"
+                            )
+                            self.telegram_notifier.send_message(msg, thread_id=18)
+
+                # ===== แจ้ง SL =====
+                if upinfo.get("sl_hit"):
+                    if self.telegram_notifier:
+                        msg = (
+                            f"🛑 *SL HIT*\n"
+                            f"ID: {pid}\n"
+                            f"Price: {upinfo['sl_hit'].get('price')}\n"
+                            f"Target: {upinfo['sl_hit'].get('target_price')}"
+                        )
                         self.telegram_notifier.send_message(msg, thread_id=18)
+
+                # ===== แจ้งปิด position =====
+                if self.telegram_notifier:
+                    thread_id = int(os.getenv("TOPIC_CHAT_ID", 0))
+                    msg = f"📊 *Update:* {pid} Closed\nStatus: {upinfo.get('close_reason', 'N/A')}"
+                    self.telegram_notifier.send_message(msg, thread_id=thread_id)
+
         except Exception as e:
             logger.error(f"Update error: {e}")
 
