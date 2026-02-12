@@ -708,7 +708,6 @@ def get_positions():
         logger.error(f"Error in get_positions: {e}")
         return jsonify({"error": str(e)}), 500
 
-
 @app.route("/api/positions/summary")
 @require_services
 def get_positions_summary():
