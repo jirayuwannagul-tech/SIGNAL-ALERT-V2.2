@@ -7,7 +7,7 @@ from app.services.position_manager import PositionManager
 from app.services.data_manager import DataManager
 
 # =========================================================
-# DAILY SUMMARY SERVICE (FIXED for REAL PositionManager)
+# DAILY SUMMARY SERVICE (SEND TO NORMAL TOPIC ONLY)
 # =========================================================
 
 def _calc_pnl_pct(direction: str, entry: float, current: float) -> float:
@@ -18,33 +18,71 @@ def _calc_pnl_pct(direction: str, entry: float, current: float) -> float:
     return ((entry - current) / entry) * 100
 
 
+def _to_int_env(key: str, default: int = 0) -> int:
+    v = os.getenv(key)
+    try:
+        return int(v) if v is not None else default
+    except Exception:
+        return default
+
+
 def send_daily_summary():
     tg = TelegramNotifier(
         token=os.getenv("TELEGRAM_BOT_TOKEN"),
         chat_id=os.getenv("TELEGRAM_CHAT_ID")
     )
 
-    # ✅ ใช้ DataManager ตัวจริง
     data_manager = DataManager()
     pm = PositionManager(data_manager)
 
     positions = pm.get_active_positions()
 
+    # ✅ normalize: ให้เป็น list[dict] เสมอ
+    if isinstance(positions, dict):
+        positions = list(positions.values())
+    elif isinstance(positions, list):
+        if positions and isinstance(positions[0], str):
+            resolved = []
+            store = getattr(pm, "active_positions", {}) or {}
+            for pid in positions:
+                v = store.get(pid)
+                if isinstance(v, dict):
+                    resolved.append(v)
+            positions = resolved
+    else:
+        positions = []
+
+    # ✅ นับแยก timeframe จาก active positions
+    tf_1d = 0
+    tf_15m = 0
+    for p in positions or []:
+        tf = (p.get("timeframe") or "").lower()
+        if tf == "1d":
+            tf_1d += 1
+        elif tf == "15m":
+            tf_15m += 1
+
     header = [
         "📊 *DAILY SUMMARY*",
         f"📅 `{datetime.now().strftime('%Y-%m-%d')}`",
-        "━━━━━━━━━━━━━━━━━"
+        f"📦 Total Signals: {len(positions) if positions else 0}",
+        f"   • 1D: {tf_1d}",
+        f"   • 15m: {tf_15m}",
+        f"🟢 Active Positions: {len(positions) if positions else 0}",
+        "🔴 Closed Positions: 0",
+        "━━━━━━━━━━━━━━━━━",
     ]
+
+    topic_normal = _to_int_env("TOPIC_NORMAL_ID", 0)
 
     if not positions:
         tg.send_message(
             "\n".join(header + ["❌ ไม่มี Position วันนี้"]),
-            thread_id=os.getenv("TOPIC_CHAT_ID")
+            thread_id=topic_normal
         )
         return
 
-    vip_blocks = []
-    free_blocks = []
+    blocks = []
 
     for p in positions:
         symbol = p.get("symbol")
@@ -81,27 +119,14 @@ def send_daily_summary():
             f"🪙 *{symbol}* `{tf}` {direction}\n"
             f"💵 Entry: `{entry:,.2f}`\n"
             f"🛑 SL: `{sl:,.2f}`\n"
-            f"�� TP1: `{tp1:,.2f}`\n"
+            f"🎯 TP1: `{tp1:,.2f}`\n"
             f"🎯 TP2: `{tp2:,.2f}`\n"
             f"🎯 TP3: `{tp3:,.2f}`\n"
             f"{emoji} *PnL:* `{pnl:+.2f}%`\n"
             f"📌 Status: {' | '.join(hit)}\n"
             f"━━━━━━━━━━━━━━━━━"
         )
+        blocks.append(block)
 
-        if p.get("is_vip", True):
-            vip_blocks.append(block)
-        else:
-            free_blocks.append(block)
-
-    if vip_blocks:
-        tg.send_message(
-            "\n".join(header + vip_blocks),
-            thread_id=os.getenv("TOPIC_VIP_ID")
-        )
-
-    if free_blocks:
-        tg.send_message(
-            "\n".join(header + free_blocks),
-            thread_id=os.getenv("TOPIC_NORMAL_ID")
-        )
+    # ✅ ส่งครั้งเดียวไปห้องคุยทั่วไป
+    tg.send_message("\n".join(header + blocks), thread_id=topic_normal)

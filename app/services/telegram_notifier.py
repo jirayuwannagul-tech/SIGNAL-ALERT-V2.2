@@ -31,13 +31,12 @@ class TelegramNotifier:
 
         # Topic IDs (Forum Threads)
         self.topics = {
-            "normal": _to_int(os.getenv("TOPIC_NORMAL_ID")),
-            "vip": _to_int(os.getenv("TOPIC_VIP_ID")),
-            "chat": _to_int(os.getenv("TOPIC_CHAT_ID")),
-            "member": _to_int(os.getenv("TOPIC_MEMBER_ID")),
-            "15m": _to_int(os.getenv("TOPIC_15M_ID")),  # ✅ เพิ่ม
+            "normal": int(os.getenv("TOPIC_NORMAL_ID", "2")),   # คุยทั่วไป
+            "vip": int(os.getenv("TOPIC_VIP_ID", "18")),          # 1D signals
+            "chat": int(os.getenv("TOPIC_CHAT_ID", "375")),       # TP/SL ทุก TF
+            "15m": int(os.getenv("TOPIC_15M_ID", "249")),         # 15m signals
+            "member": int(os.getenv("TOPIC_MEMBER_ID", "4")),     # อธิบาย
         }
-
 
         logger.info("TelegramNotifier ready")
 
