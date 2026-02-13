@@ -978,28 +978,22 @@ def debug_create_position():
     position_data = services["position_manager"].positions.get(pid, {})
     
     # ✅ สร้าง data สำหรับ Telegram (รวม TP/SL)
-    # ✅ สร้าง data สำหรับ Telegram (รวม TP/SL)
     telegram_data = {
         "symbol": symbol,
         "timeframe": timeframe,
         "direction": direction,
         "current_price": price,
-        "risk_levels": {
-            "entry_price": price,
-            "stop_loss": position_data.get("sl_level", 0),
-            "take_profit_1": position_data.get("tp_levels", {}).get("TP1", 0),
-            "take_profit_2": position_data.get("tp_levels", {}).get("TP2", 0),
-            "take_profit_3": position_data.get("tp_levels", {}).get("TP3", 0),
-        },
+        "tp_levels": position_data.get("tp_levels", {}),
+        "sl_level": position_data.get("sl_level", 0),
         "signal_strength": 100,
     }
 
-    # ✅ ส่ง Telegram ทดสอบ (ใช้ notifier ที่มีอยู่ใน services)
+    # ✅ ส่ง Telegram ทดสอบ
     try:
         tn = services.get("telegram_notifier") or services.get("telegram")
         if tn:
             if hasattr(tn, "send_signal_alert"):
-                tn.send_signal_alert(telegram_data)
+                tn.send_signal_alert(telegram_data)  # ← ใช้ telegram_data แทน signal_data
             elif hasattr(tn, "notify_signal"):
                 tn.notify_signal(telegram_data)
             elif hasattr(tn, "send_message"):

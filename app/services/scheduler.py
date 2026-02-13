@@ -345,19 +345,51 @@ class SignalScheduler:
 
     def _load_signal_history(self):
         try:
+            self.last_signals = {}
+            changed = False
+
             if os.path.exists(self.signal_history_file):
-                with open(self.signal_history_file, 'r') as f:
-                    data = json.load(f)
-                self.last_signals = {k: datetime.fromisoformat(v) for k, v in data.items()}
+                with open(self.signal_history_file, "r") as f:
+                    data = json.load(f) or {}
+
+                if isinstance(data, dict):
+                    for k, v in data.items():
+                        try:
+                            # ✅ legacy: {key: "timestamp"}
+                            if isinstance(v, str):
+                                self.last_signals[k] = datetime.fromisoformat(v)
+                                changed = True
+
+                            # ✅ new: {key: {"date": "...", "notified": True}}
+                            elif isinstance(v, dict):
+                                date_str = v.get("date")
+                                if date_str:
+                                    self.last_signals[k] = datetime.fromisoformat(date_str)
+
+                        except Exception:
+                            continue
+
+            # ✅ persist migration once (convert old str -> dict format)
+            if changed:
+                self._save_signal_history()
+
         except Exception as e:
             logger.error(f"Load history error: {e}")
+
 
     def _save_signal_history(self):
         try:
             os.makedirs(os.path.dirname(self.signal_history_file), exist_ok=True)
-            data = {k: v.isoformat() for k, v in self.last_signals.items()}
-            with open(self.signal_history_file, 'w') as f:
+
+            # ✅ always save in new format
+            data = {
+                k: {"date": dt.isoformat(), "notified": True}
+                for k, dt in self.last_signals.items()
+            }
+
+            with open(self.signal_history_file, "w") as f:
                 json.dump(data, f, indent=2)
+
         except Exception as e:
             logger.error(f"Save history error: {e}")
 
