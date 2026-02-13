@@ -253,11 +253,75 @@ class TelegramNotifier:
             logger.error(f"Telegram Alert Error: {e}")
 
     # =========================
+    # ✅ TP/SL Alert (15m / 1D routing + Status ครบ)
+    # =========================
+    def send_tp_sl_alert(self, payload: Dict, topic_id: Optional[int] = None):
+        try:
+            symbol = payload.get("symbol", "UNKNOWN")
+            timeframe = (payload.get("timeframe") or "15m").lower().strip()
+            side = (payload.get("side") or "").upper().strip()
+            system_name = payload.get("system_name") or "SYSTEM"
+
+            entry = float(payload.get("entry", 0) or 0)
+            tp_levels = payload.get("tp_levels") or {}
+            sl_level = float(payload.get("sl_level", 0) or 0)
+
+            tp_hit = payload.get("tp_hit") or {}
+            sl_hit = bool(payload.get("sl_hit", False))
+            event = (payload.get("event") or "").upper().strip()
+
+            now_th = datetime.now(ZoneInfo("Asia/Bangkok")).strftime("%H:%M:%S")
+
+            # Header
+            header = f"🟢✅ TAKE PROFIT {event}" if event.startswith("TP") else "🔴🛑 STOP LOSS"
+
+            # Marks
+            def _mark_tp(k: str) -> str:
+                return "✅" if bool(tp_hit.get(k)) else "⬜️"
+
+            def _mark_sl() -> str:
+                return "❌" if (sl_hit or event == "SL") else "⬜️"
+
+            tp1 = float(tp_levels.get("TP1", 0) or 0)
+            tp2 = float(tp_levels.get("TP2", 0) or 0)
+            tp3 = float(tp_levels.get("TP3", 0) or 0)
+
+            message = (
+                f"{header}\n\n"
+                f"🧩 System: {system_name} | TF: {timeframe}\n"
+                f"🪙 {symbol} | {side}\n\n"
+                f"💰 Entry: {entry:,.4f}\n\n"
+                f"Status:\n"
+                f"{_mark_tp('TP1')} TP1: {tp1:,.4f}\n"
+                f"{_mark_tp('TP2')} TP2: {tp2:,.4f}\n"
+                f"{_mark_tp('TP3')} TP3: {tp3:,.4f}\n"
+                f"{_mark_sl()} SL : {sl_level:,.4f}\n\n"
+                f"🕐 {now_th}"
+            )
+
+            # ✅ Routing แยก 15m / 1d
+            if topic_id is not None:
+                thread = topic_id
+            else:
+                if timeframe in ("1d", "1day", "d"):
+                    thread = self.topics.get("vip") or self.topics.get("normal")
+                elif timeframe in ("15m", "15min", "m15"):
+                    thread = self.topics.get("15m") or self.topics.get("chat") or self.topics.get("normal")
+                else:
+                    thread = self.topics.get("chat") or self.topics.get("normal")
+
+            self.send_message(message, thread_id=thread)
+            logger.info(f"TP/SL sent: {symbol} {timeframe} {side} event={event}")
+
+        except Exception as e:
+            logger.error(f"TP/SL Alert Error: {e}")   
+
+    # =========================
     # Membership Room
     # =========================
 
     def send_membership_alert(self, text: str):
-        self.send_message(text, thread_id=self.topics["member"])
+        self.send_message(text, thread_id=self.topics["member"])         
 
     # =========================
     # DM User
