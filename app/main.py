@@ -284,7 +284,7 @@ def start_position_monitoring():
                                             "updates": update_info
                                         })
                                     if services.get("telegram_notifier"):
-                                        services["telegram_notifier"].send_message(msg, thread_id=18)
+                                       services["telegram_notifier"].send_message(msg, thread_id=int(os.getenv("TOPIC_CHAT_ID", "375")))
                                     logger.info(f"✅ Notified {tp_level} hit for {position_id}")
                                 except Exception as e:
                                     logger.error(f"Notify {tp_level} error: {e}")
@@ -300,7 +300,7 @@ def start_position_monitoring():
                                         "updates": update_info
                                     })
                                 if services.get("telegram_notifier"):
-                                    services["telegram_notifier"].send_message(msg, thread_id=18)
+                                    services["telegram_notifier"].send_message(msg, thread_id=int(os.getenv("TOPIC_CHAT_ID", "375")))
                                 logger.info(f"✅ Notified SL hit for {position_id}")
                             except Exception as e:
                                 logger.error(f"Notify SL error: {e}")
@@ -977,7 +977,6 @@ def debug_create_position():
     # ✅ ดึง position data ที่มี TP/SL ครบ
     position_data = services["position_manager"].positions.get(pid, {})
     
-    # ✅ สร้าง data สำหรับ Telegram (รวม TP/SL)
     # ✅ สร้าง data สำหรับ Telegram (รวม TP/SL)
     telegram_data = {
         "symbol": symbol,
