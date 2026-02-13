@@ -172,12 +172,11 @@ def initialize_services_background():
             services["scheduler"].start_scheduler()
             logger.info("✅ Scheduler auto-started")
 
-                        # Auto-start scheduler
-            services["scheduler"].start_scheduler()
-            logger.info("✅ Scheduler auto-started")
-
-            # === Start WebSocket 15m (5 symbols) ===
-            symbols_15m = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"]
+            # === Start WebSocket 15m (10 symbols) ===
+            symbols_15m = [
+                "BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "SOLUSDT",
+                "ADAUSDT", "DOGEUSDT", "AVAXUSDT", "LINKUSDT", "DOTUSDT"
+            ]
             services["ws_15m"] = []
 
             for sym in symbols_15m:
@@ -191,7 +190,7 @@ def initialize_services_background():
                 ws.connect()
                 services["ws_15m"].append(ws)
 
-            logger.info("✅ WebSocket 15m started for 5 symbols")
+            logger.info("✅ WebSocket 15m started for 10 symbols")
             
         except Exception as e:
             logger.error(f"❌ SignalScheduler initialization failed: {e}")
