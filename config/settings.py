@@ -15,12 +15,12 @@ class Config:
     # ================================================================
 
     # System version and identification
-    VERSION = "2.0-refactored"
+    VERSION = "2.2-refactored"
     DEBUG = os.getenv("DEBUG", "false").lower() == "true"
     
     # Basic settings
     CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", "900"))  # 15 minutes
-    TIMEFRAMES = ["4h", "1d"]
+    TIMEFRAMES = ["15m", "1d"]
     MAX_CONCURRENT_REQUESTS = int(os.getenv("MAX_CONCURRENT_REQUESTS", "10"))
     
     # Refactored service settings
