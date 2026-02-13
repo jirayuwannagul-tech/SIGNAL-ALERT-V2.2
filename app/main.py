@@ -4,6 +4,8 @@ import time
 import requests
 from threading import Thread
 from flask import Flask, jsonify, request
+from dotenv import load_dotenv
+load_dotenv()
 
 # New refactored services
 from app.services.config_manager import ConfigManager

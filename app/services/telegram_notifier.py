@@ -299,22 +299,16 @@ class TelegramNotifier:
                 f"🕐 {now_th}"
             )
 
-            # ✅ Routing แยก 15m / 1d
-            if topic_id is not None:
-                thread = topic_id
+            # ✅ Routing: TP/SL ทุก TF ไปห้อง แจ้ง TP SL (TOPIC_CHAT_ID)
+            thread = self.topics.get("chat") or self.topics.get("normal")
+
+            if thread:
+                self.send_message(message, thread_id=int(thread))
             else:
-                if timeframe in ("1d", "1day", "d"):
-                    thread = self.topics.get("vip") or self.topics.get("normal")
-                elif timeframe in ("15m", "15min", "m15"):
-                    thread = self.topics.get("15m") or self.topics.get("chat") or self.topics.get("normal")
-                else:
-                    thread = self.topics.get("chat") or self.topics.get("normal")
-
-            self.send_message(message, thread_id=thread)
-            logger.info(f"TP/SL sent: {symbol} {timeframe} {side} event={event}")
-
+                self.send_message(message)
+                            
         except Exception as e:
-            logger.error(f"TP/SL Alert Error: {e}")   
+            logger.error(f"TP/SL Alert Error: {e}")
 
     # =========================
     # Membership Room
