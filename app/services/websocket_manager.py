@@ -65,7 +65,7 @@ class WebSocketManager:
         logger.info("WebSocket disconnected")
 
     def _on_message(self, ws, message):
-        logger.info("🔔 Message received")
+        # logger.info("🔔 Message received")
         try:
             data = json.loads(message)
             

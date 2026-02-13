@@ -281,34 +281,47 @@ class DataManager:
 
     def process_websocket_kline(self, kline_data: Dict, signal_detector=None):
         """Process real-time kline from WebSocket"""
-        self.logger.info("🎯 DataManager.process_websocket_kline() called")
         try:
-            symbol = kline_data['symbol']
-            timeframe = kline_data['timeframe']
+            symbol = kline_data["symbol"]
+            timeframe = kline_data["timeframe"]
             cache_key = f"{symbol}_{timeframe}_realtime"
-            
+
+            # ✅ log แค่ทุก 1 นาที (ต่อ symbol+timeframe)
+            now = datetime.now()
+            minute_key = f"{symbol}_{timeframe}"
+            last_ts = getattr(self, "_last_minute_log", {}).get(minute_key)
+
+            if last_ts is None or (now - last_ts).total_seconds() >= 60:
+                # สร้าง dict ครั้งแรกถ้ายังไม่มี
+                if not hasattr(self, "_last_minute_log"):
+                    self._last_minute_log = {}
+                self._last_minute_log[minute_key] = now
+
+                self.logger.info("🎯 DataManager.process_websocket_kline() called")
+                self.logger.info(
+                    f"📊 {symbol} {timeframe} | C: {float(kline_data.get('close', 0)):.2f} | Closed: {bool(kline_data.get('is_closed'))}"
+                )
+
             # Update real-time cache
             self.cache[cache_key] = {
-                'data': kline_data,
-                'timestamp': datetime.now()
+                "data": kline_data,
+                "timestamp": now,
             }
-            
-            # Debug log every update
-            self.logger.info(
-                f"📊 {symbol} {timeframe} | "
-                f"C: {kline_data['close']:.2f} | "
-                f"Closed: {kline_data.get('is_closed')}"
-            )
-            
+
             # When candle closes
-            if kline_data.get('is_closed'):
+            if kline_data.get("is_closed"):
                 self.logger.info(
                     f"📊 Candle closed: {symbol} {timeframe} "
-                    f"C: {kline_data['close']:.2f}"
+                    f"C: {float(kline_data.get('close', 0)):.2f}"
                 )
-                
-                # TODO: Forward to SignalDetector for analysis
-            
+
+                # Forward to SignalDetector for analysis (only on close)
+                if signal_detector is not None:
+                    try:
+                        signal_detector.analyze_realtime(kline_data)
+                    except Exception as e:
+                        self.logger.error(f"Error forwarding to SignalDetector: {e}")
+
         except Exception as e:
             self.logger.error(f"Error processing WebSocket kline: {e}")
 
