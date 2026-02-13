@@ -139,6 +139,17 @@ class TelegramNotifier:
             header = f"{emoji}⚡ CDC ALERT ⚡{emoji}"
             strategy = "1D SWING"
 
+            # =========================
+            # System Name by Timeframe
+            # =========================
+            tf = (timeframe or "").lower().strip()
+            if tf in ("1d", "1day", "d"):
+                system_name = "CDC ACTIONZONE+PULLBAC"
+            elif tf in ("15m", "15min", "m15"):
+                system_name = "EBRAV-15"
+            else:
+                system_name = "SYSTEM"
+
             # =========================================================
             # ROUTING RULES (5 ห้อง) - ใช้กับ send_signal_alert เท่านั้น
             #
@@ -224,20 +235,16 @@ class TelegramNotifier:
                 footer_tip = "💡 ขาดทุนอย่าโทษบอทนะ ฮิ้วววว~"
 
             message = (
-                f"{header}\n"
-                f"━━━━━━━━━━━━━━━━━\n"
-                f"📊 Strategy: {strategy}\n"
-                f"🪙 {symbol} ({timeframe}) - {side} {emoji}\n"
-                f"{entry_label}: {entry:,.4f}\n"
-                f"{sl_label}: {sl:,.4f} ({sl_pct:+.1f}%)\n"
-                f"🎯 เป้า 1: {tp1:,.4f} ({tp1_pct:+.1f}%) {rr1:.1f}:1 {tp1_suffix}\n"
-                f"🎯 เป้า 2: {tp2:,.4f} ({tp2_pct:+.1f}%) {rr2:.1f}:1 {tp2_suffix}\n"
-                f"🎯 เป้า 3: {tp3:,.4f} ({tp3_pct:+.1f}%) {rr3:.1f}:1 {tp3_suffix}\n"
+                f"{'🟢🚀 LONG SIGNAL' if is_long else '🔴📉 SHORT SIGNAL'}\n\n"
+                f"🧩 System: {system_name} | TF: {timeframe}\n"
+                f"🪙 {symbol}\n\n"
+                f"💰 Entry: {entry:,.4f}\n\n"
+                f"🎯 TP1: {tp1:,.4f} ({tp1_pct:+.1f}%) {rr1:.1f}:1\n"
+                f"🎯 TP2: {tp2:,.4f} ({tp2_pct:+.1f}%) {rr2:.1f}:1\n"
+                f"🎯 TP3: {tp3:,.4f} ({tp3_pct:+.1f}%) {rr3:.1f}:1\n\n"
+                f"🛑 STOP LOSS: {sl:,.4f} ({sl_pct:+.1f}%)\n\n"
                 f"💪 Strength: {strength}%\n"
-                f"━━━━━━━━━━━━━━━━━\n"
-                f"🕐 {now_th}\n"
-                f"🤖 บอทจำเฉย v2.2\n"
-                f"{footer_tip}"
+                f"🕐 {now_th}"
             )
 
             self.send_message(message, thread_id=target_thread)

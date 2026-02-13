@@ -12,8 +12,9 @@ try:
 except Exception:
     # Fallback (should match Config defaults)
     RISK_MANAGEMENT = {
-        "1d": {"tp_levels": [5.0, 8.0, 12.0], "sl_level": 4.0},
-    }
+    "1d": {"tp_levels": [3.0, 5.0, 7.0], "sl_level": 3.0},
+    "15m": {"tp_levels": [1.0, 2.0, 3.0], "sl_level": 1.0},
+}
 
 class PositionManager:
     """Centralized position management - รวม PositionTracker + PriceMonitor logic"""

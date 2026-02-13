@@ -936,28 +936,26 @@ def debug_services():
         logger.error(f"Error in debug services: {e}")
         return jsonify({"error": str(e)}), 500
 
-
-@app.route("/api/debug/positions")
+@app.route("/api/debug/create_position", methods=["POST"])
 @require_services
-def debug_positions():
-    """Debug positions in detail"""
-    try:
-        active_positions = services["position_manager"].get_active_positions()
-        summary = services["position_manager"].get_positions_summary()
-        
-        return jsonify({
-            "version": VERSION,
-            "total_positions": summary["total_positions"],
-            "active_positions": summary["active_positions"],
-            "closed_positions": summary["closed_positions"],
-            "win_rate_pct": summary["win_rate_pct"],
-            "total_pnl_pct": summary["total_pnl_pct"],
-            "active_positions_detail": active_positions
-        })
-        
-    except Exception as e:
-        logger.error(f"Error in debug positions: {e}")
-        return jsonify({"error": str(e)}), 500
+def debug_create_position():
+    data = request.get_json()
+
+    symbol = data.get("symbol")
+    timeframe = data.get("timeframe")
+    direction = data.get("direction")
+    price = float(data.get("price"))
+
+    signal_data = {
+        "symbol": symbol,
+        "timeframe": timeframe,
+        "direction": direction,
+        "current_price": price
+    }
+
+    pid = services["position_manager"].create_position(signal_data)
+
+    return jsonify({"status": "ok", "position_id": pid})
 
 if __name__ == "__main__":
     # ลบพวก raw_port = ... และ if raw_port == ... ทิ้งให้หมด

@@ -59,10 +59,10 @@ class SignalScheduler:
             replace_existing=True
         )
 
-        # Job: อัปเดตสถานะ Position (ทุก 2 นาที)
+        # Job: อัปเดตสถานะ Position (ทุก 1 นาที)
         self.scheduler.add_job(
             func=self._update_positions_refactored,
-            trigger=IntervalTrigger(minutes=2),
+            trigger=IntervalTrigger(minutes=1),
             id="update_positions",
             replace_existing=True
         )
@@ -224,7 +224,7 @@ class SignalScheduler:
                                 f"Price: {upinfo[tp].get('price')}\n"
                                 f"Target: {upinfo[tp].get('target_price')}"
                             )
-                            thread_id = int(os.getenv("TOPIC_CHAT_ID", 0))
+                            thread_id = int(os.getenv("TOPIC_CHAT_ID", 1))
                             self.telegram_notifier.send_message(msg, thread_id=thread_id)
 
 
@@ -237,14 +237,14 @@ class SignalScheduler:
                             f"Price: {upinfo['sl_hit'].get('price')}\n"
                             f"Target: {upinfo['sl_hit'].get('target_price')}"
                         )
-                        thread_id = int(os.getenv("TOPIC_CHAT_ID", 0))
+                        thread_id = int(os.getenv("TOPIC_CHAT_ID", 1))
                         self.telegram_notifier.send_message(msg, thread_id=thread_id)
 
 
                 # ===== แจ้งปิด position (ส่งเฉพาะตอนปิดจริง) =====
                 if upinfo.get("position_closed"):
                     if self.telegram_notifier:
-                        thread_id = int(os.getenv("TOPIC_CHAT_ID", 0))
+                        thread_id = int(os.getenv("TOPIC_CHAT_ID", 1))
                         msg = f"📊 *Update:* {pid} Closed\nReason: {upinfo.get('close_reason', 'N/A')}"
                         self.telegram_notifier.send_message(msg, thread_id=thread_id)
 
