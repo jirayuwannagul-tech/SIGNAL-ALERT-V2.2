@@ -393,17 +393,55 @@ class SignalDetector:
                 }
 
             # ========================================
-            # 15m: MACD Histogram + RSI (simple)
+            # 15m: EMA50/200 + BB(mid) + RSI + ADX + Volume (strict) + RSI cross-confirm
             # ========================================
             if timeframe == "15m":
                 if analysis is None:
                     return {"buy": False, "short": False, "sell": False, "cover": False}
 
+                price = float(analysis.get("price", df["close"].iloc[-1]))
+                ema50 = float(analysis["ema50"]["value"])
+                ema200 = float(analysis["ema200"]["value"])
+                bb_mid = float(analysis["bb"]["middle"])
                 rsi = float(analysis["rsi"]["value"])
-                macd_hist = float(analysis["macd"]["histogram"])
+                adx = float(analysis["adx"]["value"])
+                vol = float(analysis["volume"]["value"])
+                vol_avg = float(analysis["volume"]["avg"])
 
-                buy_signal = (macd_hist > 0) and (rsi < 60)
-                short_signal = (macd_hist < 0) and (rsi > 40)
+                # ✅ RSI previous candle (confirm turning)
+                rsi_prev, _, _ = self.indicators.rsi_extreme(
+                    df.iloc[:-1],
+                    period=14,
+                    low_threshold=35,
+                    high_threshold=65,
+                )
+                rsi_prev = float(rsi_prev)
+
+                ADX_MIN, ADX_MAX = 20.0, 40.0
+                RSI_BUY_MIN, RSI_BUY_MAX = 35.0, 45.0
+                RSI_SELL_MIN, RSI_SELL_MAX = 55.0, 65.0
+                VOL_MULT = 0.7
+                NEAR_PCT = 0.003
+
+                def is_near(a: float, b: float) -> bool:
+                    return abs(a - b) / max(1e-9, b) <= NEAR_PCT
+
+                # 1) ADX filter
+                if not (ADX_MIN <= adx <= ADX_MAX):
+                    return {"buy": False, "short": False, "sell": False, "cover": False}
+
+                # 2) Volume confirm
+                vol_ok = (vol > (vol_avg * 0.7)) or ((vol > (vol_avg * 0.4)) and (adx >= 25.0))
+                if not vol_ok:
+                    return {"buy": False, "short": False, "sell": False, "cover": False}
+
+                # 3) Pullback zone
+                if not (is_near(price, ema50) or is_near(price, bb_mid)):
+                    return {"buy": False, "short": False, "sell": False, "cover": False}
+
+                # 4) Trend gate + RSI timing + RSI turning confirm
+                buy_signal = (ema50 > ema200) and (RSI_BUY_MIN <= rsi <= RSI_BUY_MAX) and (rsi_prev < rsi)
+                short_signal = (ema50 < ema200) and (RSI_SELL_MIN <= rsi <= RSI_SELL_MAX) and (rsi_prev > rsi)
 
                 return {
                     "buy": bool(buy_signal),

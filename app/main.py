@@ -19,6 +19,7 @@ from app.services.scheduler import SignalScheduler
 from app.services.sheets_logger import SheetsLogger
 from app.services.line_notifier import LineNotifier
 from app.services.performance_analyzer import PerformanceAnalyzer
+from app.services.websocket_manager import WebSocketManager
 
 # Configure logging
 logging.basicConfig(
@@ -170,6 +171,27 @@ def initialize_services_background():
             # Auto-start scheduler
             services["scheduler"].start_scheduler()
             logger.info("✅ Scheduler auto-started")
+
+                        # Auto-start scheduler
+            services["scheduler"].start_scheduler()
+            logger.info("✅ Scheduler auto-started")
+
+            # === Start WebSocket 15m (5 symbols) ===
+            symbols_15m = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"]
+            services["ws_15m"] = []
+
+            for sym in symbols_15m:
+                ws = WebSocketManager(symbol=sym, timeframe="15m")
+                ws.set_kline_callback(
+                    lambda k, sd=services["signal_detector"]:
+                        services["data_manager"].process_websocket_kline(
+                            k, signal_detector=sd
+                        )
+                )
+                ws.connect()
+                services["ws_15m"].append(ws)
+
+            logger.info("✅ WebSocket 15m started for 5 symbols")
             
         except Exception as e:
             logger.error(f"❌ SignalScheduler initialization failed: {e}")

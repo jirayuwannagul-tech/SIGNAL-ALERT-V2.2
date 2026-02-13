@@ -281,22 +281,16 @@ class TechnicalIndicators:
 
     @staticmethod
     def analyze_all_indicators(df: pd.DataFrame, config: Dict) -> Dict:
-        """
-        Calculate all indicators and return comprehensive analysis.
-        ปรับปรุงให้ใช้ RSI threshold ใหม่ (40/60) เป็น default
-
-        Args:
-            df: DataFrame with OHLCV data
-            config: Configuration dictionary with indicator settings
-
-        Returns:
-            Dict with all indicator results
-        """
         try:
             # Get indicator settings from config
             squeeze_config = config.get("squeeze", {})
             macd_config = config.get("macd", {})
             rsi_config = config.get("rsi", {})
+
+            close = df["close"]
+            high = df["high"]
+            low = df["low"]
+            volume = df["volume"]
 
             # Calculate Squeeze Momentum
             squeeze_off, momentum_direction, squeeze_details = (
@@ -318,18 +312,75 @@ class TechnicalIndicators:
                 )
             )
 
-            # Calculate RSI Extreme - ⭐ แก้ไข default values เป็น 40/60
+            # Calculate RSI Extreme
             rsi_value, rsi_extreme, rsi_details = TechnicalIndicators.rsi_extreme(
                 df,
                 period=rsi_config.get("period", 14),
-                low_threshold=rsi_config.get("oversold", 40),   # เปลี่ยนจาก 30 เป็น 40
-                high_threshold=rsi_config.get("overbought", 60), # เปลี่ยนจาก 70 เป็น 60
+                low_threshold=rsi_config.get("oversold", 40),
+                high_threshold=rsi_config.get("overbought", 60),
             )
+
+            # =========================================================
+            # ✅ เพิ่มสำหรับ TF 15m strict: EMA50/200 + BB(mid) + ADX + Volume avg
+            # =========================================================
+
+            # EMA 50/200
+            ema50 = close.ewm(span=50, adjust=False).mean().iloc[-1]
+            ema200 = close.ewm(span=200, adjust=False).mean().iloc[-1]
+
+            # Bollinger Bands middle (20)
+            bb_mid = close.rolling(20, min_periods=1).mean().iloc[-1]
+
+            # Volume avg (20)
+            vol_value = float(volume.iloc[-1])
+            vol_avg = float(volume.rolling(20, min_periods=1).mean().iloc[-1])
+
+            # ADX (14)
+            # True Range
+            prev_close = close.shift(1)
+            tr = pd.concat(
+                [
+                    (high - low),
+                    (high - prev_close).abs(),
+                    (low - prev_close).abs(),
+                ],
+                axis=1,
+            ).max(axis=1)
+
+            # Directional Movement
+            up_move = high.diff()
+            down_move = -low.diff()
+
+            plus_dm = np.where((up_move > down_move) & (up_move > 0), up_move, 0.0)
+            minus_dm = np.where((down_move > up_move) & (down_move > 0), down_move, 0.0)
+
+            # Wilder smoothing (ใช้ rolling mean แบบ min_periods=1 เพื่อไม่ให้ NaN)
+            period = 14
+            atr = tr.rolling(period, min_periods=1).mean()
+            plus_di = 100 * (pd.Series(plus_dm, index=df.index).rolling(period, min_periods=1).mean() / atr.replace(0, np.nan))
+            minus_di = 100 * (pd.Series(minus_dm, index=df.index).rolling(period, min_periods=1).mean() / atr.replace(0, np.nan))
+
+            dx = (100 * (plus_di - minus_di).abs() / (plus_di + minus_di).replace(0, np.nan))
+            adx_value = float(dx.rolling(period, min_periods=1).mean().iloc[-1]) if len(dx) else 0.0
+            if np.isnan(adx_value):
+                adx_value = 0.0
+
+            current_price = float(close.iloc[-1])
 
             # Compile comprehensive analysis
             analysis = {
                 "timestamp": pd.Timestamp.now().isoformat(),
-                "current_price": float(df["close"].iloc[-1]),
+
+                # ✅ ให้มีทั้ง current_price และ price กันสับสนฝั่ง signal_detector
+                "current_price": current_price,
+                "price": current_price,
+
+                "ema50": {"value": float(ema50)},
+                "ema200": {"value": float(ema200)},
+                "bb": {"middle": float(bb_mid)},
+                "adx": {"value": float(adx_value)},
+                "volume": {"value": float(vol_value), "avg": float(vol_avg)},
+
                 "squeeze": {
                     "squeeze_off": squeeze_off,
                     "momentum_direction": momentum_direction,
@@ -354,7 +405,6 @@ class TechnicalIndicators:
         except Exception as e:
             logger.error(f"Error in comprehensive analysis: {e}")
             return {}
-
     # ================================================================
     # 🛠️ LAYER 5: Helper Functions (ฟังก์ชันช่วยเหลือ)
     # ================================================================
