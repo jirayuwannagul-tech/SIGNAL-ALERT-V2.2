@@ -186,10 +186,6 @@ class SignalDetector:
                 should_notify = False
 
                 if signal_type:
-                    # HARD BLOCK: if still ACTIVE (not hit SL / not hit TP3), never notify again
-                    if self.position_manager and self.position_manager.has_active_position_any_tf(symbol):
-                        logger.info(f"⛔ SKIP duplicate (ACTIVE any TF): {symbol} {timeframe} {signal_type}")
-                        return result
 
                     # soft block by history
                     if not self.signal_history.should_notify(symbol, timeframe, signal_type, current_price):
@@ -223,9 +219,14 @@ class SignalDetector:
         try:
             # Check 1: Via PositionManager
             position = self.position_manager.get_position_status(symbol, timeframe)
-            if position is not None:
-                logger.debug(f"Found active position via PositionManager: {symbol} {timeframe}")
-                return True
+
+            if position and isinstance(position, dict):
+                # ถ้ามี key "position" อยู่
+                pos_data = position.get("position", position)
+
+                if pos_data and pos_data.get("status") == "ACTIVE":
+                    logger.debug(f"Found ACTIVE position via PositionManager: {symbol} {timeframe}")
+                    return True
             
             # Check 2: Check all direction combinations
             for direction in ["LONG", "SHORT"]:
