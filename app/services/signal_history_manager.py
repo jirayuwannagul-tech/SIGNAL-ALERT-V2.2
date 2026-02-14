@@ -65,12 +65,14 @@ class SignalHistoryManager:
 
     def _get_cooldown_minutes(self, timeframe: str) -> int:
         """
-        Cooldown policy (1D only)
-        - 1d: 1440 นาที
+        Cooldown policy
+        - 15m: 60 นาที (1 ชั่วโมง)
+        - 1d: 1440 นาที (1 วัน)
         """
         return {
+            "15m": 60,
             "1d": 1440,
-        }.get(timeframe, 1440)
+        }.get(timeframe, 60)
 
     def _parse_iso_datetime(self, iso_str: str) -> Optional[datetime]:
         """

@@ -167,14 +167,8 @@ class SignalScheduler:
             if not signal.get("position_created", False):
                 self._record_signal(symbol, timeframe, direction)
 
-            # ===== ส่ง ENTRY SIGNAL (1D only) =====
-            logger.info(f"📤 Attempting to send Telegram: {signal.get('symbol')} - notifier={self.telegram_notifier is not None}")
-            if self.telegram_notifier:
-                logger.info(f"📤 Sending Telegram alert for {signal.get('symbol')}")
-                self.telegram_notifier.send_signal_alert(signal)
-                logger.info(f"✅ Telegram sent for {signal.get('symbol')}")
-            else:
-                logger.warning(f"❌ telegram_notifier is None!")
+            # ===== Telegram ส่งจาก analyze_symbol() แล้ว ไม่ต้องส่งซ้ำ =====
+            logger.info(f"✅ Signal processed: {signal.get('symbol')} {timeframe} {direction}")
 
             # ช่องทางสำรองอื่นๆ
             if self.line_notifier:
@@ -272,8 +266,24 @@ class SignalScheduler:
             active_now = 0
             closed_today = 0
 
+            # ✅ reload positions from file to ensure sync
             pm = getattr(self, "position_manager", None)
+            if pm and hasattr(pm, "_load_positions"):
+                pm.positions = pm._load_positions()
             positions = getattr(pm, "positions", {}) if pm else {}
+
+            def _parse_dt(dt_str: str):
+                """Parse ISO datetime string to Bangkok timezone"""
+                if not dt_str:
+                    return None
+                try:
+                    dt_str = dt_str.replace("Z", "+00:00")
+                    dt = datetime.fromisoformat(dt_str)
+                    if dt.tzinfo is None:
+                        dt = dt.replace(tzinfo=tz)
+                    return dt.astimezone(tz)
+                except Exception:
+                    return None
 
             for _pid, p in (positions or {}).items():
                 try:
@@ -281,31 +291,24 @@ class SignalScheduler:
                     if p.get("status") == "ACTIVE":
                         active_now += 1
 
-                    # entries today (เปิดไม้วันนี้)
-                    et = p.get("entry_time")
-                    if et:
-                        dt = datetime.fromisoformat(et).astimezone(tz) if "+" in et else datetime.fromisoformat(et).replace(tzinfo=tz)
-                        if dt.date() == today_th:
-                            entries_today += 1
+                    # entries today
+                    et_dt = _parse_dt(p.get("entry_time"))
+                    if et_dt and et_dt.date() == today_th:
+                        entries_today += 1
 
                     # closed today
-                    ct = p.get("close_time")
-                    if ct:
-                        dtc = datetime.fromisoformat(ct).astimezone(tz) if "+" in ct else datetime.fromisoformat(ct).replace(tzinfo=tz)
-                        if dtc.date() == today_th:
-                            closed_today += 1
+                    ct_dt = _parse_dt(p.get("close_time"))
+                    if ct_dt and ct_dt.date() == today_th:
+                        closed_today += 1
 
                     # TP/SL today (จาก events)
                     ev = p.get("events") or {}
                     for k in ("TP1", "TP2", "TP3", "SL"):
                         e = ev.get(k)
-                        if not e:
+                        if not e or not isinstance(e, dict):
                             continue
-                        ts = e.get("timestamp")
-                        if not ts:
-                            continue
-                        dte = datetime.fromisoformat(ts).astimezone(tz) if "+" in ts else datetime.fromisoformat(ts).replace(tzinfo=tz)
-                        if dte.date() != today_th:
+                        ts_dt = _parse_dt(e.get("timestamp"))
+                        if not ts_dt or ts_dt.date() != today_th:
                             continue
 
                         if k == "TP1": tp1_today += 1
@@ -313,7 +316,8 @@ class SignalScheduler:
                         elif k == "TP3": tp3_today += 1
                         elif k == "SL": sl_today += 1
 
-                except Exception:
+                except Exception as ex:
+                    logger.warning(f"Summary parse error for {_pid}: {ex}")
                     continue
 
             msg = (

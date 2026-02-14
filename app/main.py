@@ -284,7 +284,7 @@ def start_position_monitoring():
                                             "updates": update_info
                                         })
                                     if services.get("telegram_notifier"):
-                                       services["telegram_notifier"].send_message(msg, thread_id=int(os.getenv("TOPIC_CHAT_ID", "375")))
+                                       services["telegram_notifier"].send_message(msg, thread_id=int(os.getenv("TOPIC_CHAT_ID", "1")))
                                     logger.info(f"✅ Notified {tp_level} hit for {position_id}")
                                 except Exception as e:
                                     logger.error(f"Notify {tp_level} error: {e}")
@@ -300,7 +300,7 @@ def start_position_monitoring():
                                         "updates": update_info
                                     })
                                 if services.get("telegram_notifier"):
-                                    services["telegram_notifier"].send_message(msg, thread_id=int(os.getenv("TOPIC_CHAT_ID", "375")))
+                                       services["telegram_notifier"].send_message(msg, thread_id=int(os.getenv("TOPIC_CHAT_ID", "1")))
                                 logger.info(f"✅ Notified SL hit for {position_id}")
                             except Exception as e:
                                 logger.error(f"Notify SL error: {e}")

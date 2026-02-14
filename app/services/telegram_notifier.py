@@ -33,12 +33,12 @@ class TelegramNotifier:
         self.topics = {
             "normal": int(os.getenv("TOPIC_NORMAL_ID", "2")),   # คุยทั่วไป
             "vip": int(os.getenv("TOPIC_VIP_ID", "18")),          # 1D signals
-            "chat": int(os.getenv("TOPIC_CHAT_ID", "375")),       # TP/SL ทุก TF
+            "chat": int(os.getenv("TOPIC_CHAT_ID", "1")),         # TP/SL ทุก TF
             "15m": int(os.getenv("TOPIC_15M_ID", "249")),         # 15m signals
             "member": int(os.getenv("TOPIC_MEMBER_ID", "4")),     # อธิบาย
         }
 
-        logger.info("TelegramNotifier ready")
+        logger.info(f"TelegramNotifier ready | topics={self.topics}")
 
     # =========================
     # ✅ ADDED: Resolve Topic By Timeframe
@@ -187,9 +187,9 @@ class TelegramNotifier:
                     target_thread = self.topics.get("vip") or fallback_thread
                     route_reason = f"route='{route}' -> vip"
 
-                elif route in ("signal_15m", "entry_15m", "15m"):
+                elif tf in ("15m", "15min", "m15"):
                     target_thread = self.topics.get("15m") or self.topics.get("chat") or fallback_thread
-                    route_reason = f"route='{route}' -> 15m"
+                    route_reason = f"timeframe='{tf}' -> 15m"
 
                 elif route in ("cross", "normal"):
                     target_thread = self.topics.get("normal") or fallback_thread
