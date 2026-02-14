@@ -229,7 +229,6 @@ def initialize_services_background():
         logger.error(f"💥 Service initialization failed: {e}")
         services["initialized"] = False
 
-
 def start_position_monitoring():
     """Background thread for continuous position monitoring"""
     monitor_interval = 30  # 30 seconds
@@ -257,7 +256,6 @@ def start_position_monitoring():
             f"📌 ID: {position.get('id')}"
         )
 
-
     while True:
         try:
             if services["initialized"] and services["position_manager"]:
@@ -275,7 +273,6 @@ def start_position_monitoring():
                         for tp_level in ["TP1", "TP2", "TP3"]:
                             tp_key = f"{tp_level}_hit"
                             if tp_key in update_info and update_info[tp_key].get("hit"):
-                                msg = _build_tp_sl_message(position, f"🎯 {tp_level} HIT")
                                 try:
                                     if services.get("line_notifier"):
                                         services["line_notifier"].send_position_update({
@@ -284,14 +281,23 @@ def start_position_monitoring():
                                             "updates": update_info
                                         })
                                     if services.get("telegram_notifier"):
-                                       services["telegram_notifier"].send_message(msg, thread_id=int(os.getenv("TOPIC_CHAT_ID", "1")))
+                                        services["telegram_notifier"].send_tp_sl_alert({
+                                            "symbol": position.get("symbol"),
+                                            "timeframe": position.get("timeframe"),
+                                            "side": position.get("direction"),
+                                            "entry": position.get("entry_price"),
+                                            "tp_levels": position.get("tp_levels"),
+                                            "sl_level": position.get("sl_level"),
+                                            "tp_hit": position.get("tp_hit"),
+                                            "sl_hit": position.get("sl_hit"),
+                                            "event": tp_level
+                                        })
                                     logger.info(f"✅ Notified {tp_level} hit for {position_id}")
                                 except Exception as e:
                                     logger.error(f"Notify {tp_level} error: {e}")
 
                         # ✅ เตือน SL
                         if "sl_hit" in update_info and update_info["sl_hit"].get("hit"):
-                            msg = _build_tp_sl_message(position, "🛑 SL HIT")
                             try:
                                 if services.get("line_notifier"):
                                     services["line_notifier"].send_position_update({
@@ -300,11 +306,20 @@ def start_position_monitoring():
                                         "updates": update_info
                                     })
                                 if services.get("telegram_notifier"):
-                                       services["telegram_notifier"].send_message(msg, thread_id=int(os.getenv("TOPIC_CHAT_ID", "1")))
+                                    services["telegram_notifier"].send_tp_sl_alert({
+                                        "symbol": position.get("symbol"),
+                                        "timeframe": position.get("timeframe"),
+                                        "side": position.get("direction"),
+                                        "entry": position.get("entry_price"),
+                                        "tp_levels": position.get("tp_levels"),
+                                        "sl_level": position.get("sl_level"),
+                                        "tp_hit": position.get("tp_hit"),
+                                        "sl_hit": True,
+                                        "event": "SL"
+                                    })
                                 logger.info(f"✅ Notified SL hit for {position_id}")
                             except Exception as e:
                                 logger.error(f"Notify SL error: {e}")
-
 
                         # ✅ ปิดโพสิชัน (TP3 หรือ SL) = แจ้งเตือนปิดเพิ่ม (ถ้าต้องการ)
                         if update_info.get("position_closed"):
@@ -330,8 +345,6 @@ def start_position_monitoring():
         except Exception as e:
             logger.error(f"Error in position monitoring thread: {e}")
             time.sleep(monitor_interval)
-
-
 
 # Start background initialization
 Thread(target=initialize_services_background, daemon=True).start()
