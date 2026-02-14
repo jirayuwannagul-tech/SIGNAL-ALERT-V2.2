@@ -672,6 +672,75 @@ def get_signals():
         logger.error(f"Error in get_signals: {e}")
         return jsonify({"error": str(e), "version": VERSION}), 500
 
+@app.route("/api/signals/latest")
+@require_services
+def get_latest_signals():
+    timeframe = (request.args.get("timeframe", "15m") or "15m").strip()
+    symbols = (request.args.get("symbols", "") or "").strip()
+    symbols_list = [s.strip().upper() for s in symbols.split(",") if s.strip()] if symbols else []
+
+    try:
+        mgr = services.get("signal_history_manager")
+        if not mgr:
+            return jsonify({"status": "success", "signals": [], "signals_found": 0, "version": VERSION})
+
+        # พยายามหา path จาก manager แบบยืดหยุ่น
+        history_path = (
+            getattr(mgr, "history_file", None)
+            or getattr(mgr, "file_path", None)
+            or getattr(mgr, "history_file_path", None)
+            or "data/signal_history_1d.json"
+        )
+
+        if not os.path.exists(history_path):
+            return jsonify({"status": "success", "signals": [], "signals_found": 0, "version": VERSION})
+
+        with open(history_path, "r", encoding="utf-8") as f:
+            data = json.load(f) or {}
+
+        # data มักเป็น dict: key -> record
+        records = list(data.values()) if isinstance(data, dict) else (data if isinstance(data, list) else [])
+
+        # filter timeframe + (optional) symbols + notified
+        filtered = []
+        for r in records:
+            if not isinstance(r, dict):
+                continue
+            if (r.get("timeframe") or "") != timeframe:
+                continue
+            if symbols_list and (r.get("symbol") or "").upper() not in symbols_list:
+                continue
+            if r.get("notified") is False:
+                continue
+            filtered.append(r)
+
+        # sort by date (string) desc แล้วคืนล่าสุดต่อ symbol
+        def _date_key(x):
+            return x.get("date") or ""
+
+        filtered.sort(key=_date_key, reverse=True)
+
+        latest_by_symbol = {}
+        for r in filtered:
+            sym = (r.get("symbol") or "").upper()
+            if sym and sym not in latest_by_symbol:
+                latest_by_symbol[sym] = r
+
+        latest = list(latest_by_symbol.values())
+
+        return jsonify({
+            "status": "success",
+            "signals": latest,
+            "signals_found": len(latest),
+            "timeframe": timeframe,
+            "timestamp": time.time(),
+            "version": VERSION
+        })
+
+    except Exception as e:
+        logger.error(f"Error in get_latest_signals: {e}")
+        return jsonify({"error": str(e), "version": VERSION}), 500        
+
 @app.route("/api/positions")
 @require_services
 def get_positions():
