@@ -198,8 +198,9 @@ class SignalDetector:
                     self.signal_history.clear_opposite_signal(symbol, timeframe, signal_type)
 
                 if self.telegram_notifier and should_notify:
-                    logger.info(f"✅ should_notify=True (skip direct send; scheduler will handle): {symbol} {timeframe}")
-
+                    logger.info(f"📤 Sending Telegram alert: {symbol} {timeframe}")
+                    self.telegram_notifier.send_signal_alert(result)
+                    
                 # ===================================================================
 
             return result
