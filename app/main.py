@@ -643,18 +643,20 @@ def require_services(f):
     wrapper.__name__ = f.__name__
     return wrapper
 
-
 @app.route("/api/signals")
 @require_services
 def get_signals():
     symbols = request.args.get("symbols", "BTCUSDT,ETHUSDT")
     symbols_list = [s.strip() for s in symbols.split(",") if s.strip()]
 
+    # NEW: allow timeframe filter (default 1d)
+    timeframe = (request.args.get("timeframe", "1d") or "1d").strip()
+
     try:
         signals_found = []
 
         for symbol in symbols_list:
-            signal = services["signal_detector"].analyze_symbol(symbol, "1d")
+            signal = services["signal_detector"].analyze_symbol(symbol, timeframe)
             if signal:
                 signals_found.append(signal)
 
