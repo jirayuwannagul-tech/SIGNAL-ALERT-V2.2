@@ -5,6 +5,9 @@ import pandas as pd
 
 from ..utils.core_utils import JSONManager, ErrorHandler
 from ..utils.data_types import DataConverter
+from app.utils.pnl_utils import calculate_pnl_pct
+from app.utils.risk_utils import RiskCalculator
+
 # Step 3: Initialize PositionManager
 try:
     from config.settings import Config
@@ -153,10 +156,7 @@ class PositionManager:
                 entry_price = position['entry_price']
                 direction = position['direction']
 
-                if direction == 'LONG':
-                    pnl_pct = ((current_price - entry_price) / entry_price) * 100
-                else:  # SHORT
-                    pnl_pct = ((entry_price - current_price) / entry_price) * 100
+                pnl_pct = calculate_pnl_pct(direction, entry_price, current_price)
 
                 position['pnl_pct'] = round(pnl_pct, 2)
 
@@ -274,23 +274,26 @@ class PositionManager:
             return None
 
     def _calculate_levels(self, entry_price: float, direction: str, timeframe: str) -> Tuple[Dict, float]:
-        """Calculate TP and SL levels"""
+        """Calculate TP and SL levels (using RiskCalculator)"""
+
         risk_config = RISK_MANAGEMENT.get(timeframe, RISK_MANAGEMENT['1d'])
-        tp_percentages = risk_config['tp_levels']  # [3.0, 5.0, 7.0]
-        sl_percentage = risk_config['sl_level']    # 3.0
+        tp_percentages = risk_config['tp_levels']
+        sl_percentage = risk_config['sl_level']
 
-        tp_levels = {}
+        result = RiskCalculator.calculate_levels(
+            entry=entry_price,
+            direction=direction,
+            sl_pct=sl_percentage,
+            tp_levels=tp_percentages
+        )
 
-        if direction == 'LONG':
-            tp_levels['TP1'] = round(entry_price * (1 + tp_percentages[0] / 100), 8)
-            tp_levels['TP2'] = round(entry_price * (1 + tp_percentages[1] / 100), 8)
-            tp_levels['TP3'] = round(entry_price * (1 + tp_percentages[2] / 100), 8)
-            sl_level = round(entry_price * (1 - sl_percentage / 100), 8)
-        else:  # SHORT
-            tp_levels['TP1'] = round(entry_price * (1 - tp_percentages[0] / 100), 8)
-            tp_levels['TP2'] = round(entry_price * (1 - tp_percentages[1] / 100), 8)
-            tp_levels['TP3'] = round(entry_price * (1 - tp_percentages[2] / 100), 8)
-            sl_level = round(entry_price * (1 + sl_percentage / 100), 8)
+        tp_levels = {
+            "TP1": result.get("take_profit_1"),
+            "TP2": result.get("take_profit_2"),
+            "TP3": result.get("take_profit_3"),
+        }
+
+        sl_level = result.get("stop_loss")
 
         return tp_levels, sl_level
 

@@ -9,6 +9,7 @@ from .indicators import TechnicalIndicators
 from ..utils.core_utils import ErrorHandler
 from ..utils.data_types import DataConverter
 from .signal_history_manager import SignalHistoryManager
+from app.utils.risk_utils import RiskCalculator
 
 logger = logging.getLogger(__name__)
 
@@ -537,24 +538,24 @@ class SignalDetector:
 
             # Calculate levels based on signal direction
             if is_long_signal:
-                risk_levels.update({
-                    "direction": "LONG",
-                    "stop_loss": current_price * (1 - sl_percentage / 100),
-                    "take_profit_1": current_price * (1 + tp_percentages[0] / 100),
-                    "take_profit_2": current_price * (1 + tp_percentages[1] / 100),
-                    "take_profit_3": current_price * (1 + tp_percentages[2] / 100),
-                    "risk_reward_ratio": tp_percentages[0] / sl_percentage,
-                })
-
+                direction = "LONG"
             elif is_short_signal:
-                risk_levels.update({
-                    "direction": "SHORT",
-                    "stop_loss": current_price * (1 + sl_percentage / 100),
-                    "take_profit_1": current_price * (1 - tp_percentages[0] / 100),
-                    "take_profit_2": current_price * (1 - tp_percentages[1] / 100),
-                    "take_profit_3": current_price * (1 - tp_percentages[2] / 100),
-                    "risk_reward_ratio": tp_percentages[0] / sl_percentage,
-                })
+                direction = "SHORT"
+            else:
+                return risk_levels
+
+            calculated = RiskCalculator.calculate_levels(
+                entry=current_price,
+                direction=direction,
+                sl_pct=sl_percentage,
+                tp_levels=tp_percentages
+            )
+
+            risk_levels.update({
+                "direction": direction,
+                **calculated,
+                "risk_reward_ratio": tp_percentages[0] / sl_percentage if sl_percentage else 0
+            })
 
             return risk_levels
 

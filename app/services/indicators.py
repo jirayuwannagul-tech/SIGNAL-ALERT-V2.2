@@ -6,6 +6,7 @@ from typing import Dict, Optional, Tuple
 import numpy as np
 import pandas as pd
 
+from app.utils.data_types import DataConverter
 logger = logging.getLogger(__name__)
 
 
@@ -405,30 +406,6 @@ class TechnicalIndicators:
         except Exception as e:
             logger.error(f"Error in comprehensive analysis: {e}")
             return {}
-    # ================================================================
-    # 🛠️ LAYER 5: Helper Functions (ฟังก์ชันช่วยเหลือ)
-    # ================================================================
-
-    @staticmethod
-    def validate_dataframe(df: pd.DataFrame) -> bool:
-        """
-        ตรวจสอบความถูกต้องของ DataFrame
-        Validate DataFrame for required columns and data quality.
-        """
-        required_columns = ["open", "high", "low", "close", "volume"]
-        
-        if not all(col in df.columns for col in required_columns):
-            logger.error(f"Missing required columns. Required: {required_columns}")
-            return False
-            
-        if df.empty:
-            logger.error("DataFrame is empty")
-            return False
-            
-        if df.isnull().any().any():
-            logger.warning("DataFrame contains null values")
-            
-        return True
 
     @staticmethod
     def get_indicator_summary(analysis: Dict) -> Dict:

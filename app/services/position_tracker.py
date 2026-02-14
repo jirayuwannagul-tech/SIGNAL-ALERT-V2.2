@@ -5,6 +5,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
+from app.utils.pnl_utils import calculate_pnl_pct
 
 logger = logging.getLogger(__name__)
 
@@ -84,18 +85,17 @@ class Position:
         return position
 
     def update_pnl(self, current_price: float) -> float:
-        """Update P&L based on current price."""
-        if self.direction == "LONG":
-            pnl_percent = ((current_price - self.entry_price) / self.entry_price) * 100
-        else:  # SHORT
-            pnl_percent = ((self.entry_price - current_price) / self.entry_price) * 100
+        pnl_percent = calculate_pnl_pct(
+            self.direction,
+            self.entry_price,
+            current_price
+        )
 
         self.current_pnl = pnl_percent
         self.max_pnl = max(self.max_pnl, pnl_percent)
         self.min_pnl = min(self.min_pnl, pnl_percent)
 
         return pnl_percent
-
 
 class PositionTracker:
     """Track active positions and manage entry/exit logic."""

@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 import statistics
 
+from app.utils.pnl_utils import calculate_pnl_pct
 logger = logging.getLogger(__name__)
 
 
@@ -215,18 +216,10 @@ class PerformanceAnalyzer:
                     tp1 = trade["tp1"]
                     
                     if trade["win_loss"] == "WIN":
-                        # สมมติว่าถึง TP1
-                        if trade["direction"] == "LONG":
-                            pnl_percent = ((tp1 - entry) / entry) * 100
-                        else:  # SHORT
-                            pnl_percent = ((entry - tp1) / entry) * 100
-                    else:  # LOSS
-                        # ถึง SL
-                        if trade["direction"] == "LONG":
-                            pnl_percent = ((sl - entry) / entry) * 100
-                        else:  # SHORT
-                            pnl_percent = ((entry - sl) / entry) * 100
-                    
+                        pnl_percent = calculate_pnl_pct(trade["direction"], entry, tp1)
+                    else:
+                        pnl_percent = calculate_pnl_pct(trade["direction"], entry, sl)
+                                        
                     pnl_data.append(pnl_percent)
                     
                 except (ValueError, ZeroDivisionError):

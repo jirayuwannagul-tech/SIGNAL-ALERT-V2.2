@@ -5,18 +5,11 @@ from typing import Dict
 from app.services.telegram_notifier import TelegramNotifier
 from app.services.position_manager import PositionManager
 from app.services.data_manager import DataManager
+from app.utils.pnl_utils import calculate_pnl_pct
 
 # =========================================================
 # DAILY SUMMARY SERVICE (SEND TO NORMAL TOPIC ONLY)
 # =========================================================
-
-def _calc_pnl_pct(direction: str, entry: float, current: float) -> float:
-    if entry == 0:
-        return 0.0
-    if direction == "LONG":
-        return ((current - entry) / entry) * 100
-    return ((entry - current) / entry) * 100
-
 
 def _to_int_env(key: str, default: int = 0) -> int:
     v = os.getenv(key)
@@ -96,7 +89,7 @@ def send_daily_summary():
         tp2 = p.get("take_profit_2", 0)
         tp3 = p.get("take_profit_3", 0)
 
-        pnl = _calc_pnl_pct(direction, entry, current)
+        pnl = calculate_pnl_pct(direction, entry, current)
 
         hit = []
         if direction == "LONG":

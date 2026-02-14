@@ -331,7 +331,7 @@ class SignalScheduler:
                 f"🔒 ปิดวันนี้: {closed_today}\n"
             )
 
-            self.telegram_notifier.send_message(msg, thread_id=self.telegram_notifier.topics.get("normal"))
+            self.telegram_notifier.send_message(msg, thread_id=self.telegram_notifier.topics["normal"])
             
         except Exception as e:
             logger.error(f"Summary error: {e}")
