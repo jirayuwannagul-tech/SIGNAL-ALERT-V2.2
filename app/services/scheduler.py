@@ -168,9 +168,13 @@ class SignalScheduler:
                 self._record_signal(symbol, timeframe, direction)
 
             # ===== ส่ง ENTRY SIGNAL (1D only) =====
+            logger.info(f"📤 Attempting to send Telegram: {signal.get('symbol')} - notifier={self.telegram_notifier is not None}")
             if self.telegram_notifier:
-                # ✅ ไม่ส่ง thread_id เพื่อให้ TelegramNotifier route ตาม timeframe เอง
+                logger.info(f"📤 Sending Telegram alert for {signal.get('symbol')}")
                 self.telegram_notifier.send_signal_alert(signal)
+                logger.info(f"✅ Telegram sent for {signal.get('symbol')}")
+            else:
+                logger.warning(f"❌ telegram_notifier is None!")
 
             # ช่องทางสำรองอื่นๆ
             if self.line_notifier:
