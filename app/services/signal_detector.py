@@ -1,7 +1,5 @@
 """Signal detection logic combining all indicators - CONSERVATIVE MODE v2.0"""
 
-
-
 import logging
 
 from datetime import datetime
@@ -9,8 +7,6 @@ from datetime import datetime
 import time
 
 from typing import Dict, List, Optional, Tuple
-
-
 
 from .indicators import TechnicalIndicators
 
@@ -22,22 +18,13 @@ from .signal_history_manager import SignalHistoryManager
 
 from app.utils.risk_utils import RiskCalculator
 
-
-
 logger = logging.getLogger(__name__)
 
 
-
-
-
 class SignalDetector:
-
     """Detect trading signals using Squeeze + MACD Uncle Cholok + RSI strategy - CONSERVATIVE"""
 
-
-
     def __init__(self, config: Dict):
-
         """Initialize signal detector with refactored services"""
 
         # Extract refactored services
@@ -52,9 +39,7 @@ class SignalDetector:
 
         self.telegram_notifier = config.get("telegram_notifier")
 
-
-
-
+        self.sheets_logger = config.get("sheets_logger")
 
         # Initialize utilities
 
@@ -64,8 +49,6 @@ class SignalDetector:
 
         self.active_positions = set()
 
-
-
         # Get configuration from ConfigManager
 
         self.risk_management = self._load_risk_config()
@@ -74,14 +57,9 @@ class SignalDetector:
 
         self.signal_history = SignalHistoryManager()
 
-
-
         logger.info("✅ SignalDetector initialized - CONSERVATIVE MODE")
 
-
-
     def _load_risk_config(self) -> Dict:
-
         """Load risk management configuration from Config"""
 
         try:
@@ -95,86 +73,54 @@ class SignalDetector:
             logger.warning(f"Error loading risk config, using defaults: {e}")
 
             return {
-
                 "1d": {"tp_levels": [3.0, 5.0, 7.0], "sl_level": 3.0},
-
                 "15m": {"tp_levels": [1.0, 2.0, 3.0], "sl_level": 1.0},
-
             }
-
-
-
-
 
     def _load_indicator_config(self) -> Dict:
 
         try:
 
             return {
-
                 "squeeze": {"length": 20, "bb_mult": 2.0, "kc_mult": 1.5},
-
                 "macd": {"fast": 8, "slow": 17, "signal": 9},
-
                 "rsi": {
-
                     "period": 14,
-
                     "oversold": 35,  # ✅ แก้จาก 40 เป็น 35
-
-                    "overbought": 65 # ✅ แก้จาก 60 เป็น 65
-
-                }
-
+                    "overbought": 65,  # ✅ แก้จาก 60 เป็น 65
+                },
             }
-
-
 
         except Exception as e:
 
             logger.warning(f"Error loading indicator config, using defaults: {e}")
 
             return {
-
                 "squeeze": {"length": 20, "bb_mult": 2.0, "kc_mult": 1.5},
-
                 "macd": {"fast": 8, "slow": 17, "signal": 9},
-
-                "rsi": {"period": 14, "oversold": 40, "overbought": 60}
-
+                "rsi": {"period": 14, "oversold": 40, "overbought": 60},
             }
 
-
-
     def analyze_realtime(self, kline_data: Dict) -> Optional[Dict]:
-
         """Analyze real-time kline data"""
 
         try:
 
             # Only analyze when candle closes
 
-            if not kline_data.get('is_closed'):
+            if not kline_data.get("is_closed"):
 
                 return None
 
+            symbol = kline_data["symbol"]
 
-
-            symbol = kline_data['symbol']
-
-            timeframe = kline_data['timeframe']
-
-
+            timeframe = kline_data["timeframe"]
 
             logger.info(f"🔍 Real-time analysis: {symbol} {timeframe}")
-
-
 
             # Use existing analyze_symbol
 
             return self.analyze_symbol(symbol, timeframe)
-
-
 
         except Exception as e:
 
@@ -182,59 +128,40 @@ class SignalDetector:
 
             return None
 
-
-
     @ErrorHandler.service_error_handler("SignalDetector")
-
     def analyze_symbol(self, symbol: str, timeframe: str = "1d") -> Optional[Dict]:
-
         """Analyze symbol using refactored data flow"""
 
         try:
 
-
-
-            if timeframe not in ("1d","15m"): return None
-
-
+            if timeframe not in ("1d", "15m"):
+                return None
 
             logger.info(f"🔍 Analyzing {symbol} on {timeframe} (CONSERVATIVE)")
 
-            logger.info(f"[RISK-CFG] tf={timeframe} cfg={self.risk_management.get(timeframe)}")
-
-
+            logger.info(
+                f"[RISK-CFG] tf={timeframe} cfg={self.risk_management.get(timeframe)}"
+            )
 
             # Get data from DataManager
 
             df = self.data_manager.get_klines(symbol, timeframe, limit=100)
 
-
-
             df_1d = self.data_manager.get_klines(symbol, "1d", limit=100)
 
             trend_1d = self._detect_signals_improved_fixed(None, "1d", df_1d)
-
-
 
             if df is None:
 
                 logger.warning(f"No data available for {symbol} {timeframe}")
 
                 return {
-
                     "error": f"Failed to fetch data for {symbol}",
-
                     "symbol": symbol,
-
                     "timeframe": timeframe,
-
                     "timestamp": datetime.now().isoformat(),
-
-                    "version": "2.0-conservative"
-
+                    "version": "2.0-conservative",
                 }
-
-
 
             # Validate data quality
 
@@ -244,159 +171,116 @@ class SignalDetector:
 
                 return None
 
-
-
             # Calculate all indicators
 
-            analysis = self.indicators.analyze_all_indicators(df, self.indicator_settings)
+            analysis = self.indicators.analyze_all_indicators(
+                df, self.indicator_settings
+            )
 
             current_price = float(df["close"].iloc[-1])
 
-
-
             # Detect trading signals with CONSERVATIVE logic
 
-            signals = self._detect_signals_improved_fixed(analysis, timeframe, df, trend_1d=trend_1d)
-
-
+            signals = self._detect_signals_improved_fixed(
+                analysis, timeframe, df, trend_1d=trend_1d
+            )
 
             # Calculate risk management levels
 
-            risk_levels = self._calculate_risk_levels(current_price, timeframe, signals, symbol)
+            risk_levels = self._calculate_risk_levels(
+                current_price, timeframe, signals, symbol
+            )
 
             logger.info(f"[RISK-TEST] called for {symbol} {timeframe}")
-
-
 
             # Handle position creation with duplicate prevention
 
             position_created = self._handle_signal_position_fixed(
-
                 symbol, timeframe, signals, current_price, risk_levels
-
             )
-
-
-
-
 
             # Create comprehensive result
 
             result = {
-
                 "symbol": symbol,
-
                 "timeframe": timeframe,
-
                 "timestamp": datetime.now().isoformat(),
-
                 "current_price": current_price,
-
                 "version": "2.0-conservative",
-
-
-
                 # Indicator values
-
                 "indicators": {
-
                     "squeeze": analysis["squeeze"],
-
                     "macd": analysis["macd"],
-
                     "rsi": analysis["rsi"],
-
                 },
-
-
-
                 # ✅ เพิ่ม EMA สำหรับ 1D signals
-
                 "ema12": signals.get("ema12", 0),
-
                 "ema26": signals.get("ema26", 0),
-
-
-
                 # Trading signals
-
                 "signals": signals,
-
-
-
                 # Risk management
-
                 "risk_levels": risk_levels,
-
-
-
                 # Overall assessment
-
                 "signal_strength": self._calculate_signal_strength_improved(signals),
-
                 "recommendation": self._get_recommendation_improved(signals),
-
-
-
                 # Position info
-
                 "position_created": position_created,
-
-                "has_active_position": self._has_active_position_strict(symbol, timeframe),
-
+                "has_active_position": self._has_active_position_strict(
+                    symbol, timeframe
+                ),
             }
-
-
 
             # Convert NumPy types for JSON serialization
 
             result = self.data_converter.sanitize_signal_data(result)
 
-
-
             # Log significant results
 
             if result.get("recommendation"):
 
-                logger.info(f"Analysis complete for {symbol}: {result['recommendation']}")
+                logger.info(
+                    f"Analysis complete for {symbol}: {result['recommendation']}"
+                )
 
                 if position_created:
 
                     logger.info(f"🆕 Created position for {symbol} {timeframe}")
 
-
-
                 # ====== prevent duplicate alert + hard block + create position ======
 
-                signal_type = "LONG" if signals.get("buy") else "SHORT" if signals.get("short") else None
+                signal_type = (
+                    "LONG"
+                    if signals.get("buy")
+                    else "SHORT" if signals.get("short") else None
+                )
 
                 should_notify = False
 
-
-
                 if signal_type:
-
-
 
                     # soft block by history
 
-                    if not self.signal_history.should_notify(symbol, timeframe, signal_type, current_price):
+                    if not self.signal_history.should_notify(
+                        symbol, timeframe, signal_type, current_price
+                    ):
 
-                        logger.warning(f"⛔ DUPLICATE ALERT BLOCKED: {symbol} {timeframe} {signal_type}")
+                        logger.warning(
+                            f"⛔ DUPLICATE ALERT BLOCKED: {symbol} {timeframe} {signal_type}"
+                        )
 
                         return result
-
-
 
                     # pass => allow notify
 
                     should_notify = True
 
-                    self.signal_history.record_signal(symbol, timeframe, signal_type, current_price)
+                    self.signal_history.record_signal(
+                        symbol, timeframe, signal_type, current_price
+                    )
 
-                    self.signal_history.clear_opposite_signal(symbol, timeframe, signal_type)
-
-
+                    self.signal_history.clear_opposite_signal(
+                        symbol, timeframe, signal_type
+                    )
 
                 if self.telegram_notifier and should_notify:
 
@@ -404,38 +288,23 @@ class SignalDetector:
 
                     self.telegram_notifier.send_signal_alert(result)
 
-
-
                 # ===================================================================
 
-
-
             return result
-
-
 
         except Exception as e:
 
             logger.error(f"Analysis error for {symbol}: {str(e)}")
 
             return {
-
                 "error": f"Analysis error for {symbol}: {str(e)}",
-
                 "symbol": symbol,
-
                 "timeframe": timeframe,
-
                 "timestamp": datetime.now().isoformat(),
-
-                "version": "2.0-conservative"
-
+                "version": "2.0-conservative",
             }
 
-
-
     def _has_active_position_strict(self, symbol: str, timeframe: str) -> bool:
-
         """✅ STRICT check if position exists - prevent duplicates"""
 
         try:
@@ -444,23 +313,19 @@ class SignalDetector:
 
             position = self.position_manager.get_position_status(symbol, timeframe)
 
-
-
             if position and isinstance(position, dict):
 
                 # ถ้ามี key "position" อยู่
 
                 pos_data = position.get("position", position)
 
-
-
                 if pos_data and pos_data.get("status") == "ACTIVE":
 
-                    logger.debug(f"Found ACTIVE position via PositionManager: {symbol} {timeframe}")
+                    logger.debug(
+                        f"Found ACTIVE position via PositionManager: {symbol} {timeframe}"
+                    )
 
                     return True
-
-
 
             # Check 2: Check all direction combinations
 
@@ -472,13 +337,11 @@ class SignalDetector:
 
                     pos_data = self.position_manager.positions[position_id]
 
-                    if pos_data.get('status') == 'ACTIVE':
+                    if pos_data.get("status") == "ACTIVE":
 
                         logger.debug(f"Found active position by ID: {position_id}")
 
                         return True
-
-
 
             # Check 3: In active_positions set (by prefix)
 
@@ -490,11 +353,7 @@ class SignalDetector:
 
                 return True
 
-
-
             return False
-
-
 
         except Exception as e:
 
@@ -502,16 +361,15 @@ class SignalDetector:
 
             return True  # Return True on error to prevent duplicate
 
-
-
     @ErrorHandler.service_error_handler("SignalDetector")
-
     def _handle_signal_position_fixed(
-
-        self, symbol: str, timeframe: str, signals: Dict, current_price: float, risk_levels: Dict
-
+        self,
+        symbol: str,
+        timeframe: str,
+        signals: Dict,
+        current_price: float,
+        risk_levels: Dict,
     ) -> bool:
-
         """Handle position creation - only blocks if active position exists"""
 
         try:
@@ -526,8 +384,6 @@ class SignalDetector:
 
             # ====================================
 
-
-
             # Check if we have a valid signal
 
             has_signal = signals.get("buy") or signals.get("short")
@@ -536,17 +392,11 @@ class SignalDetector:
 
                 return False
 
-
-
-
-
             # Check if active position exists (no cooldown check)
 
             direction = "LONG" if signals.get("buy") else "SHORT"
 
             position_key = f"{symbol}_{timeframe}_{direction}"
-
-
 
             if position_key in self.active_positions:
 
@@ -554,19 +404,17 @@ class SignalDetector:
 
                 return False
 
-
-
             # Check via PositionManager strictly
 
-            existing_position = self.position_manager.get_position_status(symbol, timeframe)
+            existing_position = self.position_manager.get_position_status(
+                symbol, timeframe
+            )
 
             if existing_position:
 
                 logger.warning(f"⚠️ Position already exists: {symbol} {timeframe}")
 
                 return False
-
-
 
             # Check all possible position IDs
 
@@ -578,49 +426,40 @@ class SignalDetector:
 
                 if check_id in self.position_manager.positions:
 
-                    if self.position_manager.positions[check_id].get('status') == 'ACTIVE':
+                    if (
+                        self.position_manager.positions[check_id].get("status")
+                        == "ACTIVE"
+                    ):
 
-                        logger.warning(f"⚠️ Found active {dir_check} position: {symbol} {timeframe}")
+                        logger.warning(
+                            f"⚠️ Found active {dir_check} position: {symbol} {timeframe}"
+                        )
 
                         return False
-
-
 
             # Create signal data for position creation
 
             signal_data = {
-
                 "symbol": symbol,
-
                 "timeframe": timeframe,
-
                 "direction": direction,
-
                 "current_price": current_price,
-
-                "signal_strength": self._calculate_signal_strength_improved(signals)
-
+                "signal_strength": self._calculate_signal_strength_improved(signals),
             }
-
-
 
             # Create position using PositionManager
 
             position_id = self.position_manager.create_position(signal_data)
 
-
-
             if position_id:
 
-                logger.info(f"✅ Created {direction} position: {symbol} {timeframe} @ {current_price}")
-
-
+                logger.info(
+                    f"✅ Created {direction} position: {symbol} {timeframe} @ {current_price}"
+                )
 
                 # Update tracking (no cooldown timestamp)
 
                 self.active_positions.add(position_key)
-
-
 
                 return True
 
@@ -630,18 +469,15 @@ class SignalDetector:
 
                 return False
 
-
-
         except Exception as e:
 
             logger.error(f"Error handling signal position: {e}")
 
             return False
 
-
-
-    def _detect_signals_improved_fixed(self, analysis: Dict, timeframe: str = "1d", df=None, trend_1d=None) -> Dict[str, bool]:
-
+    def _detect_signals_improved_fixed(
+        self, analysis: Dict, timeframe: str = "1d", df=None, trend_1d=None
+    ) -> Dict[str, bool]:
         """
 
         1D: CDC ActionZone (EMA 12/26 Crossover)
@@ -652,17 +488,13 @@ class SignalDetector:
 
             import pandas as pd
 
-
-
             # Validate dataframe
 
-            if df is None or 'close' not in df.columns:
+            if df is None or "close" not in df.columns:
 
                 logger.warning("Invalid dataframe")
 
                 return {"buy": False, "short": False, "sell": False, "cover": False}
-
-
 
             # ========================================
 
@@ -676,31 +508,32 @@ class SignalDetector:
 
                     logger.warning(f"Insufficient data: {len(df)} candles")
 
-                    return {"buy": False, "short": False, "sell": False, "cover": False, "ema12": 0, "ema26": 0}
-
-
+                    return {
+                        "buy": False,
+                        "short": False,
+                        "sell": False,
+                        "cover": False,
+                        "ema12": 0,
+                        "ema26": 0,
+                    }
 
                 # Calculate EMA 12 and 26
 
-                df['ema12'] = df['close'].ewm(span=12, adjust=False).mean()
+                df["ema12"] = df["close"].ewm(span=12, adjust=False).mean()
 
-                df['ema26'] = df['close'].ewm(span=26, adjust=False).mean()
-
-
+                df["ema26"] = df["close"].ewm(span=26, adjust=False).mean()
 
                 # Current / Previous values
 
-                ema12_curr = df['ema12'].iloc[-1]
+                ema12_curr = df["ema12"].iloc[-1]
 
-                ema26_curr = df['ema26'].iloc[-1]
+                ema26_curr = df["ema26"].iloc[-1]
 
-                ema12_prev = df['ema12'].iloc[-2]
+                ema12_prev = df["ema12"].iloc[-2]
 
-                ema26_prev = df['ema26'].iloc[-2]
+                ema26_prev = df["ema26"].iloc[-2]
 
-                price_curr = df['close'].iloc[-1]
-
-
+                price_curr = df["close"].iloc[-1]
 
                 # -------------------------
 
@@ -708,17 +541,13 @@ class SignalDetector:
 
                 # -------------------------
 
-                cross_up   = (ema12_prev <= ema26_prev) and (ema12_curr > ema26_curr)
+                cross_up = (ema12_prev <= ema26_prev) and (ema12_curr > ema26_curr)
 
                 cross_down = (ema12_prev >= ema26_prev) and (ema12_curr < ema26_curr)
 
-
-
-                cross_buy   = cross_up and (price_curr > ema12_curr)
+                cross_buy = cross_up and (price_curr > ema12_curr)
 
                 cross_short = cross_down and (price_curr < ema12_curr)
-
-
 
                 # -------------------------
 
@@ -726,17 +555,15 @@ class SignalDetector:
 
                 # -------------------------
 
-                trend_up   = ema12_curr > ema26_curr
+                trend_up = ema12_curr > ema26_curr
 
                 trend_down = ema12_curr < ema26_curr
 
+                pullback_buy = trend_up and (price_curr > ema12_curr) and not cross_up
 
-
-                pullback_buy   = trend_up and (price_curr > ema12_curr) and not cross_up
-
-                pullback_short = trend_down and (price_curr < ema12_curr) and not cross_down
-
-
+                pullback_short = (
+                    trend_down and (price_curr < ema12_curr) and not cross_down
+                )
 
                 # -------------------------
 
@@ -744,11 +571,9 @@ class SignalDetector:
 
                 # -------------------------
 
-                buy_signal   = pullback_buy
+                buy_signal = pullback_buy
 
                 short_signal = pullback_short
-
-
 
                 # Log
 
@@ -760,8 +585,6 @@ class SignalDetector:
 
                     logger.info(f"🟢 1D PULLBACK BUY | Uptrend pullback")
 
-
-
                 elif cross_short:
 
                     logger.info(f"🔴 1D CROSS SELL | EMA12 crossed below EMA26")
@@ -770,29 +593,16 @@ class SignalDetector:
 
                     logger.info(f"🔴 1D PULLBACK SELL | Downtrend pullback")
 
-
-
                 return {
-
                     "buy": buy_signal,
-
                     "short": short_signal,
-
                     "sell": False,
-
                     "cover": False,
-
                     "ema12": float(ema12_curr),
-
                     "ema26": float(ema26_curr),
-
                     "cross_up": bool(cross_buy),
-
-                    "cross_down": bool(cross_short)
-
+                    "cross_down": bool(cross_short),
                 }
-
-
 
             # ========================================
 
@@ -805,8 +615,6 @@ class SignalDetector:
                 if analysis is None:
 
                     return {"buy": False, "short": False, "sell": False, "cover": False}
-
-
 
                 price = float(analysis.get("price", df["close"].iloc[-1]))
 
@@ -824,25 +632,16 @@ class SignalDetector:
 
                 vol_avg = float(analysis["volume"]["avg"])
 
-
-
                 # ✅ RSI previous candle (confirm turning)
 
                 rsi_prev, _, _ = self.indicators.rsi_extreme(
-
                     df.iloc[:-1],
-
                     period=14,
-
                     low_threshold=35,
-
                     high_threshold=65,
-
                 )
 
                 rsi_prev = float(rsi_prev)
-
-
 
                 ADX_MIN, ADX_MAX = 20.0, 40.0
 
@@ -854,13 +653,9 @@ class SignalDetector:
 
                 NEAR_PCT = 0.003
 
-
-
                 def is_near(a: float, b: float) -> bool:
 
                     return abs(a - b) / max(1e-9, b) <= NEAR_PCT
-
-
 
                 # 1) ADX filter
 
@@ -868,17 +663,15 @@ class SignalDetector:
 
                     return {"buy": False, "short": False, "sell": False, "cover": False}
 
-
-
                 # 2) Volume confirm
 
-                vol_ok = (vol > (vol_avg * 0.7)) or ((vol > (vol_avg * 0.4)) and (adx >= 25.0))
+                vol_ok = (vol > (vol_avg * 0.7)) or (
+                    (vol > (vol_avg * 0.4)) and (adx >= 25.0)
+                )
 
                 if not vol_ok:
 
                     return {"buy": False, "short": False, "sell": False, "cover": False}
-
-
 
                 # 3) Pullback zone
 
@@ -886,35 +679,30 @@ class SignalDetector:
 
                     return {"buy": False, "short": False, "sell": False, "cover": False}
 
-
-
                 # 4) Trend gate + RSI timing + RSI turning confirm
 
-                buy_signal = (ema50 > ema200) and (RSI_BUY_MIN <= rsi <= RSI_BUY_MAX) and (rsi_prev < rsi)
+                buy_signal = (
+                    (ema50 > ema200)
+                    and (RSI_BUY_MIN <= rsi <= RSI_BUY_MAX)
+                    and (rsi_prev < rsi)
+                )
 
-                short_signal = (ema50 < ema200) and (RSI_SELL_MIN <= rsi <= RSI_SELL_MAX) and (rsi_prev > rsi)
-
-
+                short_signal = (
+                    (ema50 < ema200)
+                    and (RSI_SELL_MIN <= rsi <= RSI_SELL_MAX)
+                    and (rsi_prev > rsi)
+                )
 
                 return {
-
                     "buy": bool(buy_signal),
-
                     "short": bool(short_signal),
-
                     "sell": False,
-
-                    "cover": False
-
+                    "cover": False,
                 }
-
-
 
             # default
 
             return {"buy": False, "short": False, "sell": False, "cover": False}
-
-
 
         except Exception as e:
 
@@ -922,17 +710,12 @@ class SignalDetector:
 
             return {"buy": False, "short": False, "sell": False, "cover": False}
 
-
-
     def _check_market_trend_enhanced(self, df) -> str:
-
         """Conservative trend detection using MA20 and MA50"""
 
         try:
 
-            close = df['close']
-
-
+            close = df["close"]
 
             # Calculate MAs
 
@@ -940,13 +723,9 @@ class SignalDetector:
 
             ma_50 = close.rolling(50).mean() if len(close) >= 50 else None
 
-
-
             current_price = close.iloc[-1]
 
             ma_20_current = ma_20.iloc[-1]
-
-
 
             # Case 1: Have MA50 - strict check
 
@@ -954,15 +733,11 @@ class SignalDetector:
 
                 ma_50_current = ma_50.iloc[-1]
 
-
-
                 # Uptrend: Price > MA20 AND MA20 > MA50
 
                 if current_price > ma_20_current and ma_20_current > ma_50_current:
 
                     return "UP"
-
-
 
                 # Downtrend: Price < MA20 AND MA20 < MA50
 
@@ -970,13 +745,9 @@ class SignalDetector:
 
                     return "DOWN"
 
-
-
                 else:
 
                     return "NEUTRAL"
-
-
 
             # Case 2: No MA50 - use only MA20
 
@@ -994,18 +765,13 @@ class SignalDetector:
 
                     return "NEUTRAL"
 
-
-
         except Exception as e:
 
             logger.error(f"Error checking market trend: {e}")
 
             return "NEUTRAL"
 
-
-
     def _get_recommendation_improved(self, signals: Dict[str, bool]) -> str:
-
         """Generate recommendation based on signals"""
 
         if signals.get("buy"):
@@ -1020,10 +786,7 @@ class SignalDetector:
 
             return ""
 
-
-
     def _calculate_signal_strength_improved(self, signals: Dict[str, bool]) -> int:
-
         """Calculate signal strength (0-100)"""
 
         if signals.get("buy") or signals.get("short"):
@@ -1034,45 +797,38 @@ class SignalDetector:
 
             return 0
 
-
-
-    def _calculate_risk_levels(self, current_price: float, timeframe: str, signals: Dict, symbol: str) -> Dict:
-
+    def _calculate_risk_levels(
+        self, current_price: float, timeframe: str, signals: Dict, symbol: str
+    ) -> Dict:
         """Calculate Stop Loss and Take Profit levels"""
 
         try:
 
             risk_config = self.risk_management.get(
-
                 timeframe, self.risk_management.get("1d", {})
-
             )
 
+            default_cfg = self.risk_management.get(
+                timeframe
+            ) or self.risk_management.get("1d", {})
 
+            tp_percentages = risk_config.get(
+                "tp_levels", default_cfg.get("tp_levels", [3.0, 5.0, 7.0])
+            )
 
-            default_cfg = self.risk_management.get(timeframe) or self.risk_management.get("1d", {})
-
-            tp_percentages = risk_config.get("tp_levels", default_cfg.get("tp_levels", [3.0, 5.0, 7.0]))
-
-            sl_percentage = risk_config.get("sl_level", default_cfg.get("sl_level", 3.0))
+            sl_percentage = risk_config.get(
+                "sl_level", default_cfg.get("sl_level", 3.0)
+            )
 
             logger.info(f"[RISK] tf={timeframe} tp={tp_percentages} sl={sl_percentage}")
 
-
-
-
-
             risk_levels = {"timeframe": timeframe, "entry_price": current_price}
-
-
 
             # Determine signal direction
 
             is_long_signal = signals.get("buy", False)
 
             is_short_signal = signals.get("short", False)
-
-
 
             # Calculate levels based on signal direction
 
@@ -1088,37 +844,24 @@ class SignalDetector:
 
                 return risk_levels
 
-
-
             calculated = RiskCalculator.calculate_levels(
-
                 entry=current_price,
-
                 direction=direction,
-
                 sl_pct=sl_percentage,
-
-                tp_levels=tp_percentages
-
+                tp_levels=tp_percentages,
             )
 
-
-
-            risk_levels.update({
-
-                "direction": direction,
-
-                **calculated,
-
-                "risk_reward_ratio": tp_percentages[0] / sl_percentage if sl_percentage else 0
-
-            })
-
-
+            risk_levels.update(
+                {
+                    "direction": direction,
+                    **calculated,
+                    "risk_reward_ratio": (
+                        tp_percentages[0] / sl_percentage if sl_percentage else 0
+                    ),
+                }
+            )
 
             return risk_levels
-
-
 
         except Exception as e:
 
@@ -1126,21 +869,16 @@ class SignalDetector:
 
             return {"error": "Failed to calculate risk levels"}
 
-
-
-    def scan_multiple_symbols(self, symbols: List[str], timeframes: List[str] = None) -> List[Dict]:
-
+    def scan_multiple_symbols(
+        self, symbols: List[str], timeframes: List[str] = None
+    ) -> List[Dict]:
         """Scan multiple symbols for signals across different timeframes"""
 
         if timeframes is None:
 
             timeframes = ["1d"]
 
-
-
         results = []
-
-
 
         for symbol in symbols:
 
@@ -1149,8 +887,6 @@ class SignalDetector:
                 logger.info(f"🔍 Scanning {symbol} on {timeframe}")
 
                 result = self.analyze_symbol(symbol, timeframe)
-
-
 
                 # ========================================
 
@@ -1164,8 +900,6 @@ class SignalDetector:
 
                     current_price = result.get("current_price", 0)
 
-
-
                     if signals.get("buy"):
 
                         signal_type = "LONG"
@@ -1178,37 +912,34 @@ class SignalDetector:
 
                         signal_type = None
 
-
-
                     # Check if should notify
 
                     if signal_type:
 
                         should_notify = self.signal_history.should_notify(
-
                             symbol, timeframe, signal_type, current_price
-
                         )
-
-
 
                         if should_notify:
 
                             # Record signal
 
                             self.signal_history.record_signal(
-
                                 symbol, timeframe, signal_type, current_price
-
                             )
 
                             # Clear opposite signal
 
                             self.signal_history.clear_opposite_signal(
-
                                 symbol, timeframe, signal_type
-
                             )
+
+                            # Log to Google Sheet (only when NEW signal)
+                            if self.sheets_logger:
+                                try:
+                                    self.sheets_logger.log_trading_journal(result)
+                                except Exception as e:
+                                    logger.error(f"Sheets log failed: {e}")
 
                             # Add to results
 
@@ -1218,7 +949,9 @@ class SignalDetector:
 
                         else:
 
-                            logger.debug(f"⏭️ SKIP 1D signal: {symbol} {signal_type} (already notified)")
+                            logger.debug(
+                                f"⏭️ SKIP 1D signal: {symbol} {signal_type} (already notified)"
+                            )
 
                     else:
 
@@ -1234,29 +967,20 @@ class SignalDetector:
 
                         results.append(result)
 
-
-
                 time.sleep(0.2)
-
-
 
         return results
 
-
-
-    def get_active_signals(self, symbols: List[str], timeframes: List[str] = None) -> List[Dict]:
-
+    def get_active_signals(
+        self, symbols: List[str], timeframes: List[str] = None
+    ) -> List[Dict]:
         """Get only signals with active recommendations"""
 
         if timeframes is None:
 
             timeframes = ["1d"]
 
-
-
         all_results = self.scan_multiple_symbols(symbols, timeframes)
-
-
 
         # Filter only results with actual recommendations
 
@@ -1272,16 +996,15 @@ class SignalDetector:
 
                     active_signals.append(result)
 
-
-
-        logger.info(f"Found {len(active_signals)} active signals out of {len(all_results)} scans")
+        logger.info(
+            f"Found {len(active_signals)} active signals out of {len(all_results)} scans"
+        )
 
         return active_signals
 
-
-
-    def scan_all_symbols(self, symbols: List[str] = None, timeframes: List[str] = None) -> List[Dict]:
-
+    def scan_all_symbols(
+        self, symbols: List[str] = None, timeframes: List[str] = None
+    ) -> List[Dict]:
         """Scan all symbols and return all results"""
 
         if symbols is None:
@@ -1292,14 +1015,9 @@ class SignalDetector:
 
             timeframes = ["1d"]
 
-
-
         return self.scan_multiple_symbols(symbols, timeframes)
 
-
-
     def validate_signal_quality(self, analysis: Dict) -> Dict:
-
         """Validate signal quality and reliability"""
 
         try:
@@ -1308,13 +1026,9 @@ class SignalDetector:
 
             quality_factors = []
 
-
-
             indicators = analysis.get("indicators", {})
 
             signals = analysis.get("signals", {})
-
-
 
             # Check squeeze momentum quality
 
@@ -1325,8 +1039,6 @@ class SignalDetector:
                 quality_score += 30
 
                 quality_factors.append("Squeeze breakout confirmed")
-
-
 
                 # Check momentum strength
 
@@ -1340,8 +1052,6 @@ class SignalDetector:
 
                     quality_factors.append("Strong momentum")
 
-
-
             # Check MACD quality
 
             macd = indicators.get("macd", {})
@@ -1351,8 +1061,6 @@ class SignalDetector:
                 quality_score += 25
 
                 quality_factors.append("MACD cross confirmed")
-
-
 
                 # Check if MACD is above/below zero line
 
@@ -1370,15 +1078,11 @@ class SignalDetector:
 
                     quality_factors.append("MACD below zero line")
 
-
-
             # Check RSI quality
 
             rsi = indicators.get("rsi", {})
 
             rsi_value = rsi.get("value", 50)
-
-
 
             if rsi_value < 40 or rsi_value > 60:
 
@@ -1388,21 +1092,19 @@ class SignalDetector:
 
                 quality_factors.append(f"RSI {level} level")
 
-
-
                 # Check RSI trend alignment
 
                 rsi_details = rsi.get("details", {})
 
                 rsi_trend = rsi_details.get("rsi_trend", "NEUTRAL")
 
-                if (rsi_value < 40 and rsi_trend == "RISING") or (rsi_value > 60 and rsi_trend == "FALLING"):
+                if (rsi_value < 40 and rsi_trend == "RISING") or (
+                    rsi_value > 60 and rsi_trend == "FALLING"
+                ):
 
                     quality_score += 5
 
                     quality_factors.append("RSI trend alignment")
-
-
 
             # Signal grade bonus
 
@@ -1411,8 +1113,6 @@ class SignalDetector:
                 quality_score += 15
 
                 quality_factors.append("Strong signal grade")
-
-
 
             # Risk-reward assessment
 
@@ -1426,58 +1126,35 @@ class SignalDetector:
 
                 quality_factors.append("Favorable risk-reward ratio")
 
-
-
             # Cap quality score at 100
 
             quality_score = min(quality_score, 100)
 
-
-
             return {
-
                 "quality_score": quality_score,
-
                 "quality_factors": quality_factors,
-
                 "risk_reward_ratio": risk_reward,
-
                 "signal_reliability": (
-
-                    "HIGH" if quality_score >= 80
-
-                    else "MEDIUM" if quality_score >= 60
-
-                    else "LOW"
-
+                    "HIGH"
+                    if quality_score >= 80
+                    else "MEDIUM" if quality_score >= 60 else "LOW"
                 ),
-
             }
-
-
 
         except Exception as e:
 
             logger.error(f"Error validating signal quality: {e}")
 
             return {
-
                 "quality_score": 0,
-
                 "quality_factors": [],
-
                 "risk_reward_ratio": 0,
-
                 "signal_reliability": "UNKNOWN",
-
             }
-
-
 
     # Position Management Integration Methods
 
     def get_position_summary(self) -> Dict:
-
         """Get positions summary from PositionManager"""
 
         try:
@@ -1490,10 +1167,7 @@ class SignalDetector:
 
             return {"error": str(e)}
 
-
-
     def get_position_status(self, symbol: str, timeframe: str) -> Dict:
-
         """Get specific position status from PositionManager"""
 
         try:
@@ -1501,15 +1175,10 @@ class SignalDetector:
             position = self.position_manager.get_position_status(symbol, timeframe)
 
             return {
-
                 "position_found": position is not None,
-
                 "position": position,
-
                 "symbol": symbol,
-
-                "timeframe": timeframe
-
+                "timeframe": timeframe,
             }
 
         except Exception as e:
@@ -1518,10 +1187,9 @@ class SignalDetector:
 
             return {"error": str(e), "position_found": False}
 
-
-
-    def force_close_position(self, symbol: str, timeframe: str, reason: str = "MANUAL") -> Dict:
-
+    def force_close_position(
+        self, symbol: str, timeframe: str, reason: str = "MANUAL"
+    ) -> Dict:
         """Force close a position via PositionManager"""
 
         try:
@@ -1532,8 +1200,6 @@ class SignalDetector:
 
             success = self.position_manager.close_position(position_id, reason)
 
-
-
             if not success:
 
                 # Try SHORT if LONG doesn't exist
@@ -1541,8 +1207,6 @@ class SignalDetector:
                 position_id = f"{symbol}_{timeframe}_SHORT"
 
                 success = self.position_manager.close_position(position_id, reason)
-
-
 
             if success:
 
@@ -1556,29 +1220,18 @@ class SignalDetector:
 
                         self.active_positions.remove(key)
 
-
-
                 return {
-
                     "success": True,
-
                     "message": f"Closed position for {symbol} {timeframe}",
-
-                    "reason": reason
-
+                    "reason": reason,
                 }
 
             else:
 
                 return {
-
                     "success": False,
-
-                    "message": f"No active position found for {symbol} {timeframe}"
-
+                    "message": f"No active position found for {symbol} {timeframe}",
                 }
-
-
 
         except Exception as e:
 
@@ -1586,17 +1239,12 @@ class SignalDetector:
 
             return {"success": False, "error": str(e)}
 
-
-
     def update_all_positions(self, current_prices: Dict[str, float]) -> List[Dict]:
-
         """Update all positions with current prices via PositionManager"""
 
         try:
 
             updates = self.position_manager.update_positions()
-
-
 
             # Format results for compatibility
 
@@ -1606,7 +1254,7 @@ class SignalDetector:
 
                 # Extract symbol from position_id (format: SYMBOL_TIMEFRAME_DIRECTION)
 
-                parts = position_id.split('_')
+                parts = position_id.split("_")
 
                 if len(parts) >= 3:
 
@@ -1614,27 +1262,16 @@ class SignalDetector:
 
                     timeframe = parts[1]
 
-
-
                     result = {
-
                         "symbol": symbol,
-
                         "timeframe": timeframe,
-
                         "position_id": position_id,
-
-                        "update_info": update_info
-
+                        "update_info": update_info,
                     }
 
                     results.append(result)
 
-
-
             return results
-
-
 
         except Exception as e:
 
@@ -1642,10 +1279,7 @@ class SignalDetector:
 
             return []
 
-
-
     def get_data_storage_stats(self) -> Dict:
-
         """Get data storage statistics from DataManager"""
 
         try:
@@ -1658,10 +1292,7 @@ class SignalDetector:
 
             return {"error": str(e)}
 
-
-
     def force_data_update(self, symbol: str, timeframe: str):
-
         """Force data update for symbol/timeframe via DataManager"""
 
         try:
@@ -1676,55 +1307,38 @@ class SignalDetector:
 
             logger.error(f"Error forcing data update for {symbol} {timeframe}: {e}")
 
-
-
     def clear_position_history(self):
-
         """Clear position history for testing"""
 
         self.active_positions.clear()
 
         logger.info("Cleared position history and tracking")
 
-
-
     def shutdown(self):
-
         """Shutdown SignalDetector and cleanup resources"""
 
         try:
 
             logger.info("Shutting down SignalDetector CONSERVATIVE mode...")
 
-
-
             # Clear data manager cache
 
-            if hasattr(self.data_manager, 'clear_cache'):
+            if hasattr(self.data_manager, "clear_cache"):
 
                 self.data_manager.clear_cache()
 
-
-
             # Cleanup old positions
 
-            if hasattr(self.position_manager, 'cleanup_old_positions'):
+            if hasattr(self.position_manager, "cleanup_old_positions"):
 
                 self.position_manager.cleanup_old_positions()
-
-
 
             # Clear tracking
 
             self.active_positions.clear()
 
-
-
             logger.info("SignalDetector shutdown complete")
-
-
 
         except Exception as e:
 
             logger.error(f"Error during shutdown: {e}")
-

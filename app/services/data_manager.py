@@ -15,7 +15,6 @@ from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
 
-
 from ..utils.core_utils import JSONManager, ErrorHandler
 
 from ..utils.data_types import DataConverter
@@ -23,12 +22,8 @@ from ..utils.data_types import DataConverter
 from .config_manager import ConfigManager
 
 
-
 class DataManager:
-
     """Centralized data management - รวม DataUpdater + PriceFetcher"""
-
-
 
     def __init__(self):
 
@@ -40,8 +35,6 @@ class DataManager:
 
         self.data_converter = DataConverter()
 
-
-
         # Cache management
 
         self.cache = {}
@@ -50,70 +43,41 @@ class DataManager:
 
         self.last_requests = {}
 
-
-
         # Rate limiting
 
         self.min_request_interval = 0.2  # 200ms between requests
 
-        self.price_cache_timeout = 30    # 30 seconds for price cache
-
-
+        self.price_cache_timeout = 30  # 30 seconds for price cache
 
         # Setup requests session with connection pooling
 
         self._setup_session()
 
-
-
         self.logger.info("✅ DataManager initialized")
 
-
-
     def _setup_session(self):
-
         """Setup requests session with connection pooling"""
 
         self.session = requests.Session()
 
-
-
         # Retry strategy
 
         retry_strategy = Retry(
-
             total=3,
-
             backoff_factor=1,
-
             status_forcelist=[429, 500, 502, 503, 504],
-
         )
-
-
 
         adapter = HTTPAdapter(
-
-            pool_connections=10,
-
-            pool_maxsize=20,
-
-            max_retries=retry_strategy
-
+            pool_connections=10, pool_maxsize=20, max_retries=retry_strategy
         )
-
-
 
         self.session.mount("http://", adapter)
 
         self.session.mount("https://", adapter)
 
-
-
     @ErrorHandler.api_error_handler
-
     def get_current_prices(self, symbols: List[str]) -> Dict[str, float]:
-
         """Get current prices for multiple symbols"""
 
         try:
@@ -124,33 +88,23 @@ class DataManager:
 
             url = f"{binance_config['base_url']}/ticker/price"
 
-
-
             response = self.session.get(
-
                 url,
-
-                params={'symbols': symbols_param},
-
-                timeout=binance_config['timeout']
-
+                params={"symbols": symbols_param},
+                timeout=binance_config["timeout"],
             )
 
             response.raise_for_status()
-
-
 
             prices = {}
 
             for item in response.json():
 
-                price = float(item['price'])
+                price = float(item["price"])
 
                 if self.data_converter.validate_price_data(price):
 
-                    prices[item['symbol']] = price
-
-
+                    prices[item["symbol"]] = price
 
             # Update cache
 
@@ -158,21 +112,11 @@ class DataManager:
 
             for symbol, price in prices.items():
 
-                self.price_cache[f"price_{symbol}"] = {
-
-                    'price': price,
-
-                    'timestamp': now
-
-                }
-
-
+                self.price_cache[f"price_{symbol}"] = {"price": price, "timestamp": now}
 
             self.logger.info(f"Fetched {len(prices)} current prices")
 
             return prices
-
-
 
         except Exception as e:
 
@@ -180,10 +124,7 @@ class DataManager:
 
             return {}
 
-
-
     def get_current_prices_cached(self, symbols: List[str]) -> Dict[str, float]:
-
         """Get current prices with intelligent caching"""
 
         now = time.time()
@@ -191,8 +132,6 @@ class DataManager:
         fresh_prices = {}
 
         symbols_to_fetch = []
-
-
 
         # Check cache first
 
@@ -204,9 +143,9 @@ class DataManager:
 
                 cached_data = self.price_cache[cache_key]
 
-                if now - cached_data['timestamp'] < self.price_cache_timeout:
+                if now - cached_data["timestamp"] < self.price_cache_timeout:
 
-                    fresh_prices[symbol] = cached_data['price']
+                    fresh_prices[symbol] = cached_data["price"]
 
                 else:
 
@@ -216,8 +155,6 @@ class DataManager:
 
                 symbols_to_fetch.append(symbol)
 
-
-
         # Fetch missing prices
 
         if symbols_to_fetch:
@@ -226,91 +163,48 @@ class DataManager:
 
             fresh_prices.update(fetched_prices)
 
-
-
         return fresh_prices
 
-
-
     def get_single_price(self, symbol: str) -> Optional[float]:
-
         """Get single symbol price with rate limiting"""
 
         now = time.time()
-
         last_request = self.last_requests.get(symbol, 0)
 
-
-
         if now - last_request < self.min_request_interval:
-
             time.sleep(self.min_request_interval - (now - last_request))
 
-
-
         try:
-
             binance_config = self.config.get_binance_config()
-
             url = f"{binance_config['base_url']}/ticker/price"
 
-
-
             response = self.session.get(
-
-                url,
-
-                params={'symbol': symbol},
-
-                timeout=binance_config['timeout']
-
+                url, params={"symbol": symbol}, timeout=binance_config["timeout"]
             )
-
             response.raise_for_status()
-
-
 
             self.last_requests[symbol] = time.time()
 
-            price = float(response.json()['price'])
-
-
-
+            price = float(response.json()["price"])
             if self.data_converter.validate_price_data(price):
-
-                # Update cache
-
                 self.price_cache[f"price_{symbol}"] = {
-
-                    'price': price,
-
-                    'timestamp': time.time()
-
+                    "price": price,
+                    "timestamp": time.time(),
                 }
-
                 return price
 
-
-
             return None
-
-
 
         except Exception as e:
-
             self.logger.error(f"Error fetching price for {symbol}: {e}")
-
             return None
 
-
-
-    def get_klines(self, symbol: str, interval: str, limit: int = 500) -> Optional[pd.DataFrame]:
-
+    def get_klines(
+        self, symbol: str, interval: str, limit: int = 500
+    ) -> Optional[pd.DataFrame]:
         """Get klines data with caching"""
 
         cache_key = f"{symbol}_{interval}"
-
-
 
         # Check cache first
 
@@ -320,9 +214,7 @@ class DataManager:
 
             if self._is_cache_valid(cached_data, interval):
 
-                return cached_data['df']
-
-
+                return cached_data["df"]
 
         try:
 
@@ -330,63 +222,45 @@ class DataManager:
 
             url = f"{binance_config['base_url']}/klines"
 
-            params = {
-
-                'symbol': symbol,
-
-                'interval': interval,
-
-                'limit': limit
-
-            }
-
-
+            params = {"symbol": symbol, "interval": interval, "limit": limit}
 
             response = self.session.get(
-
-                url,
-
-                params=params,
-
-                timeout=binance_config['timeout']
-
+                url, params=params, timeout=binance_config["timeout"]
             )
 
             response.raise_for_status()
 
-
-
             data = response.json()
 
-
-
-            df = pd.DataFrame(data, columns=[
-
-                'timestamp', 'open', 'high', 'low', 'close', 'volume',
-
-                'close_time', 'quote_asset_volume', 'number_of_trades',
-
-                'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 'ignore'
-
-            ])
-
-
+            df = pd.DataFrame(
+                data,
+                columns=[
+                    "timestamp",
+                    "open",
+                    "high",
+                    "low",
+                    "close",
+                    "volume",
+                    "close_time",
+                    "quote_asset_volume",
+                    "number_of_trades",
+                    "taker_buy_base_asset_volume",
+                    "taker_buy_quote_asset_volume",
+                    "ignore",
+                ],
+            )
 
             # Convert data types
 
-            numeric_columns = ['open', 'high', 'low', 'close', 'volume']
+            numeric_columns = ["open", "high", "low", "close", "volume"]
 
             for col in numeric_columns:
 
-                df[col] = pd.to_numeric(df[col], errors='coerce')
+                df[col] = pd.to_numeric(df[col], errors="coerce")
 
+            df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
 
-
-            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
-
-            df = df[['timestamp', 'open', 'high', 'low', 'close', 'volume']].copy()
-
-
+            df = df[["timestamp", "open", "high", "low", "close", "volume"]].copy()
 
             # Validate DataFrame
 
@@ -396,31 +270,17 @@ class DataManager:
 
                 return None
 
-
-
             # Update cache
 
-            self.cache[cache_key] = {
-
-                'df': df,
-
-                'timestamp': datetime.now()
-
-            }
-
-
+            self.cache[cache_key] = {"df": df, "timestamp": datetime.now()}
 
             # Save to file for persistence
 
             self._save_to_file(symbol, interval, df)
 
-
-
             self.logger.debug(f"Loaded {len(df)} candles for {symbol} {interval}")
 
             return df
-
-
 
         except Exception as e:
 
@@ -428,30 +288,18 @@ class DataManager:
 
             return self._load_from_file(symbol, interval)
 
-
-
     def _is_cache_valid(self, cached_data: Dict, interval: str) -> bool:
-
         """Check if cached data is still valid"""
 
         now = datetime.now()
 
-        cache_time = cached_data['timestamp']
-
-
+        cache_time = cached_data["timestamp"]
 
         # Cache validity periods
 
-        validity_periods = {
-
-            '1d': timedelta(hours=6)
-
-        }
-
-
+        validity_periods = {"1d": timedelta(hours=6)}
 
     def _save_to_file(self, symbol: str, interval: str, df: pd.DataFrame):
-
         """Save data to JSON file"""
 
         try:
@@ -460,21 +308,12 @@ class DataManager:
 
             filename = f"data/candles/{symbol}_{interval}_{month_str}.json"
 
-
-
             data = {
-
-                'symbol': symbol,
-
-                'interval': interval,
-
-                'timestamp': datetime.now().isoformat(),
-
-                'data': df.to_dict('records')
-
+                "symbol": symbol,
+                "interval": interval,
+                "timestamp": datetime.now().isoformat(),
+                "data": df.to_dict("records"),
             }
-
-
 
             # Convert numpy types before saving
 
@@ -482,16 +321,11 @@ class DataManager:
 
             self.json_manager.save_json(data, filename)
 
-
-
         except Exception as e:
 
             self.logger.error(f"Error saving data to file: {e}")
 
-
-
     def _load_from_file(self, symbol: str, interval: str) -> Optional[pd.DataFrame]:
-
         """Load data from JSON file as fallback"""
 
         try:
@@ -500,29 +334,21 @@ class DataManager:
 
             filename = f"data/candles/{symbol}_{interval}_{month_str}.json"
 
-
-
             data = self.json_manager.load_json(filename)
 
-            if not data or 'data' not in data:
+            if not data or "data" not in data:
 
                 return None
 
-
-
-            df = pd.DataFrame(data['data'])
+            df = pd.DataFrame(data["data"])
 
             if df.empty:
 
                 return None
 
-
-
             # Convert timestamp column
 
-            df['timestamp'] = pd.to_datetime(df['timestamp'])
-
-
+            df["timestamp"] = pd.to_datetime(df["timestamp"])
 
             # Validate loaded data
 
@@ -532,11 +358,7 @@ class DataManager:
 
                 return df
 
-
-
             return None
-
-
 
         except Exception as e:
 
@@ -544,10 +366,7 @@ class DataManager:
 
             return None
 
-
-
     def clear_cache(self):
-
         """Clear all caches"""
 
         self.cache.clear()
@@ -556,12 +375,7 @@ class DataManager:
 
         self.logger.info("Cache cleared")
 
-
-
-
-
     def process_websocket_kline(self, kline_data: Dict, signal_detector=None):
-
         """Process real-time kline from WebSocket"""
 
         try:
@@ -572,8 +386,6 @@ class DataManager:
 
             cache_key = f"{symbol}_{timeframe}_realtime"
 
-
-
             # ✅ log แค่ทุก 1 นาที (ต่อ symbol+timeframe)
 
             now = datetime.now()
@@ -581,8 +393,6 @@ class DataManager:
             minute_key = f"{symbol}_{timeframe}"
 
             last_ts = getattr(self, "_last_minute_log", {}).get(minute_key)
-
-
 
             if last_ts is None or (now - last_ts).total_seconds() >= 60:
 
@@ -594,43 +404,27 @@ class DataManager:
 
                 self._last_minute_log[minute_key] = now
 
-
-
                 self.logger.info("🎯 DataManager.process_websocket_kline() called")
 
                 self.logger.info(
-
                     f"📊 {symbol} {timeframe} | C: {float(kline_data.get('close', 0)):.2f} | Closed: {bool(kline_data.get('is_closed'))}"
-
                 )
-
-
 
             # Update real-time cache
 
             self.cache[cache_key] = {
-
                 "data": kline_data,
-
                 "timestamp": now,
-
             }
-
-
 
             # When candle closes
 
             if kline_data.get("is_closed"):
 
                 self.logger.info(
-
                     f"📊 Candle closed: {symbol} {timeframe} "
-
                     f"C: {float(kline_data.get('close', 0)):.2f}"
-
                 )
-
-
 
                 # Forward to SignalDetector for analysis (only on close)
 
@@ -644,24 +438,15 @@ class DataManager:
 
                         self.logger.error(f"Error forwarding to SignalDetector: {e}")
 
-
-
         except Exception as e:
 
             self.logger.error(f"Error processing WebSocket kline: {e}")
 
-
-
     def get_cache_stats(self) -> Dict:
-
         """Get cache statistics"""
 
         return {
-
-            'klines_cache_size': len(self.cache),
-
-            'price_cache_size': len(self.price_cache),
-
-            'last_requests_count': len(self.last_requests)
-
+            "klines_cache_size": len(self.cache),
+            "price_cache_size": len(self.price_cache),
+            "last_requests_count": len(self.last_requests),
         }

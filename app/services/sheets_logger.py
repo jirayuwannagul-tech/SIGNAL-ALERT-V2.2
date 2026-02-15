@@ -8,20 +8,13 @@ FIXED: worksheet attribute error + Base64 credentials support
 
 """
 
-
-
 import base64
-
 import json
-
 import logging
-
 import os
 
 from datetime import datetime
-
 from typing import Any, Dict, List, Optional
-
 
 
 try:
@@ -41,15 +34,10 @@ except ImportError:
     Credentials = None
 
 
-
 logger = logging.getLogger(__name__)
 
 
-
-
-
 class SheetsLogger:
-
     """
 
     REFACTORED Google Sheets Logger for v2.0
@@ -78,10 +66,7 @@ class SheetsLogger:
 
     """
 
-
-
     def __init__(self, config: Dict):
-
         """
 
         Initialize SheetsLogger with ConfigManager config
@@ -102,19 +87,15 @@ class SheetsLogger:
 
         self.spreadsheet_id = config.get("sheets_id")
 
-
-
         # Connection state
 
-        self.gc = None                    # Google Sheets client
+        self.gc = None  # Google Sheets client
 
-        self.spreadsheet = None           # Spreadsheet object
+        self.spreadsheet = None  # Spreadsheet object
 
-        self._cached_worksheet = None     # Current worksheet cache (FIXED)
+        self._cached_worksheet = None  # Current worksheet cache (FIXED)
 
-        self._initialized = False         # Initialization status
-
-
+        self._initialized = False  # Initialization status
 
         # Show configuration status
 
@@ -124,8 +105,6 @@ class SheetsLogger:
 
         logger.info(f"Spreadsheet ID configured: {bool(self.spreadsheet_id)}")
 
-
-
         # Check dependencies
 
         if not SHEETS_AVAILABLE:
@@ -134,21 +113,21 @@ class SheetsLogger:
 
             return
 
-
-
         # Check configuration
 
         if not self.credentials_path or not self.spreadsheet_id:
 
             logger.warning("Google Sheets credentials or spreadsheet ID not configured")
 
-            logger.warning(f"   Credentials: {'available' if self.credentials_path else 'missing'}")
+            logger.warning(
+                f"   Credentials: {'available' if self.credentials_path else 'missing'}"
+            )
 
-            logger.warning(f"   Spreadsheet ID: {'available' if self.spreadsheet_id else 'missing'}")
+            logger.warning(
+                f"   Spreadsheet ID: {'available' if self.spreadsheet_id else 'missing'}"
+            )
 
             return
-
-
 
         # Attempt connection
 
@@ -166,12 +145,8 @@ class SheetsLogger:
 
             self._initialized = False
 
-
-
     @property
-
     def worksheet(self):
-
         """
 
         Property to safely access Trading_Journal worksheet
@@ -184,8 +159,6 @@ class SheetsLogger:
 
             return None
 
-
-
         try:
 
             # Try to get cached worksheet first
@@ -193,8 +166,6 @@ class SheetsLogger:
             if self._cached_worksheet:
 
                 return self._cached_worksheet
-
-
 
             # Get worksheet from spreadsheet
 
@@ -204,51 +175,35 @@ class SheetsLogger:
 
             return worksheet
 
-
-
         except Exception as e:
 
             logger.error(f"Error accessing Trading_Journal worksheet: {e}")
 
             return None
 
-
-
     def _initialize_connection(self):
-
         """Initialize connection to Google Sheets"""
 
         if not SHEETS_AVAILABLE:
 
             return
 
-
-
         try:
 
             # Define OAuth permissions
 
             scope = [
-
                 "https://spreadsheets.google.com/feeds",
-
                 "https://www.googleapis.com/auth/drive",
-
             ]
-
-
 
             logger.info(f"Loading credentials type: {type(self.credentials_path)}")
 
-
-
             credentials_str = str(self.credentials_path).strip()
-
-
 
             # ลองโหลดเป็น JSON string ก่อน
 
-            if credentials_str.startswith('{'):
+            if credentials_str.startswith("{"):
 
                 try:
 
@@ -256,7 +211,9 @@ class SheetsLogger:
 
                     creds_info = json.loads(credentials_str)
 
-                    creds = Credentials.from_service_account_info(creds_info, scopes=scope)
+                    creds = Credentials.from_service_account_info(
+                        creds_info, scopes=scope
+                    )
 
                     logger.info("✅ Successfully loaded credentials from JSON string")
 
@@ -273,32 +230,26 @@ class SheetsLogger:
                 logger.info(f"Loading credentials from file: {credentials_str}")
 
                 creds = Credentials.from_service_account_file(
-
                     credentials_str, scopes=scope
-
                 )
 
                 logger.info("✅ Successfully loaded credentials from file")
 
             else:
 
-                logger.error(f"Invalid credentials format (not JSON or file): {credentials_str[:100]}")
+                logger.error(
+                    f"Invalid credentials format (not JSON or file): {credentials_str[:100]}"
+                )
 
                 raise ValueError(f"Invalid credentials format")
-
-
 
             # Create authorized client
 
             self.gc = gspread.authorize(creds)
 
-
-
             # Connect to spreadsheet
 
             self.spreadsheet = self.gc.open_by_key(self.spreadsheet_id)
-
-
 
             # Try to access or create the main worksheet
 
@@ -312,27 +263,32 @@ class SheetsLogger:
 
                 # Create Trading_Journal worksheet if it doesn't exist
 
-                headers = ["Date", "Symbol", "Signal", "Entry", "SL", "TP1", "TP2", "TP3", "Win/Loss", "Win Rate"]
+                headers = [
+                    "Date",
+                    "Symbol",
+                    "Signal",
+                    "Entry",
+                    "SL",
+                    "TP1",
+                    "TP2",
+                    "TP3",
+                    "Win/Loss",
+                    "Win Rate",
+                ]
 
                 self._cached_worksheet = self.spreadsheet.add_worksheet(
-
                     title="Trading_Journal", rows=1000, cols=len(headers)
-
                 )
 
                 self._cached_worksheet.append_row(headers)
 
                 logger.info("Created new Trading_Journal worksheet")
 
-
-
             logger.info("Google Sheets connection established")
 
             logger.info(f"Spreadsheet: {self.spreadsheet.title}")
 
             logger.info(f"Spreadsheet ID: {self.spreadsheet_id}")
-
-
 
         except Exception as e:
 
@@ -344,10 +300,9 @@ class SheetsLogger:
 
             raise
 
-
-
-    def _ensure_worksheet_exists(self, worksheet_name: str, headers: List[str]) -> Optional[Any]:
-
+    def _ensure_worksheet_exists(
+        self, worksheet_name: str, headers: List[str]
+    ) -> Optional[Any]:
         """Ensure worksheet exists with proper headers"""
 
         if not self.spreadsheet:
@@ -355,8 +310,6 @@ class SheetsLogger:
             logger.error("Spreadsheet not initialized")
 
             return None
-
-
 
         try:
 
@@ -367,8 +320,6 @@ class SheetsLogger:
                 worksheet = self.spreadsheet.worksheet(worksheet_name)
 
                 logger.info(f"Found existing worksheet: {worksheet_name}")
-
-
 
                 # Check headers
 
@@ -382,11 +333,7 @@ class SheetsLogger:
 
                     logger.info(f"Updated headers for worksheet: {worksheet_name}")
 
-
-
                 return worksheet
-
-
 
             # Create new worksheet if not found
 
@@ -395,13 +342,7 @@ class SheetsLogger:
                 logger.info(f"Creating new worksheet: {worksheet_name}")
 
                 worksheet = self.spreadsheet.add_worksheet(
-
-                    title=worksheet_name,
-
-                    rows=1000,
-
-                    cols=len(headers)
-
+                    title=worksheet_name, rows=1000, cols=len(headers)
                 )
 
                 worksheet.append_row(headers)
@@ -410,18 +351,13 @@ class SheetsLogger:
 
                 return worksheet
 
-
-
         except Exception as e:
 
             logger.error(f"Error ensuring worksheet exists: {e}")
 
             return None
 
-
-
     def _determine_signal_type(self, signals: Dict) -> str:
-
         """Determine signal type from signals dictionary"""
 
         # Strong signals (highest priority)
@@ -434,8 +370,6 @@ class SheetsLogger:
 
             return "STRONG_SHORT"
 
-
-
         # Medium signals
 
         elif signals.get("medium_buy"):
@@ -445,8 +379,6 @@ class SheetsLogger:
         elif signals.get("medium_short"):
 
             return "MEDIUM_SHORT"
-
-
 
         # Weak signals
 
@@ -458,8 +390,6 @@ class SheetsLogger:
 
             return "WEAK_SHORT"
 
-
-
         # Experimental signals
 
         elif signals.get("experimental_buy"):
@@ -469,8 +399,6 @@ class SheetsLogger:
         elif signals.get("experimental_short"):
 
             return "EXPERIMENTAL_SHORT"
-
-
 
         # Basic signals (legacy support)
 
@@ -490,107 +418,65 @@ class SheetsLogger:
 
             return "COVER"
 
-
-
         # No signal
 
         else:
 
             return "NONE"
 
-
-
     def _has_tradeable_signal(self, signals: Dict) -> bool:
-
         """Check if signals contain tradeable signals"""
 
-        return any([
-
-            # Strong signals
-
-            signals.get("strong_buy", False),
-
-            signals.get("strong_short", False),
-
-
-
-            # Medium signals
-
-            signals.get("medium_buy", False),
-
-            signals.get("medium_short", False),
-
-
-
-            # Weak signals
-
-            signals.get("weak_buy", False),
-
-            signals.get("weak_short", False),
-
-
-
-            # Experimental signals
-
-            signals.get("experimental_buy", False),
-
-            signals.get("experimental_short", False),
-
-
-
-            # Basic signals (legacy)
-
-            signals.get("buy", False),
-
-            signals.get("short", False)
-
-        ])
-
-
+        return any(
+            [
+                # Strong signals
+                signals.get("strong_buy", False),
+                signals.get("strong_short", False),
+                # Medium signals
+                signals.get("medium_buy", False),
+                signals.get("medium_short", False),
+                # Weak signals
+                signals.get("weak_buy", False),
+                signals.get("weak_short", False),
+                # Experimental signals
+                signals.get("experimental_buy", False),
+                signals.get("experimental_short", False),
+                # Basic signals (legacy)
+                signals.get("buy", False),
+                signals.get("short", False),
+            ]
+        )
 
     def _get_trade_direction(self, signals: Dict) -> Optional[str]:
-
         """Get trade direction from signals"""
 
         # LONG/BUY signals
 
-        if any([
-
-            signals.get("strong_buy", False),
-
-            signals.get("medium_buy", False),
-
-            signals.get("weak_buy", False),
-
-            signals.get("experimental_buy", False),
-
-            signals.get("buy", False)
-
-        ]):
+        if any(
+            [
+                signals.get("strong_buy", False),
+                signals.get("medium_buy", False),
+                signals.get("weak_buy", False),
+                signals.get("experimental_buy", False),
+                signals.get("buy", False),
+            ]
+        ):
 
             return "LONG"
 
-
-
         # SHORT signals
 
-        elif any([
-
-            signals.get("strong_short", False),
-
-            signals.get("medium_short", False),
-
-            signals.get("weak_short", False),
-
-            signals.get("experimental_short", False),
-
-            signals.get("short", False)
-
-        ]):
+        elif any(
+            [
+                signals.get("strong_short", False),
+                signals.get("medium_short", False),
+                signals.get("weak_short", False),
+                signals.get("experimental_short", False),
+                signals.get("short", False),
+            ]
+        ):
 
             return "SHORT"
-
-
 
         # No clear direction
 
@@ -598,10 +484,7 @@ class SheetsLogger:
 
             return None
 
-
-
     def log_signal(self, analysis: Dict) -> bool:
-
         """
 
         Log detailed signal information to Signals worksheet
@@ -624,19 +507,19 @@ class SheetsLogger:
 
         if not self._initialized:
 
-            logger.warning("SheetsLogger not properly initialized, skipping detailed signal log")
+            logger.warning(
+                "SheetsLogger not properly initialized, skipping detailed signal log"
+            )
 
             return False
-
-
 
         if not self.spreadsheet:
 
-            logger.warning("Google Sheets not initialized, skipping detailed signal log")
+            logger.warning(
+                "Google Sheets not initialized, skipping detailed signal log"
+            )
 
             return False
-
-
 
         try:
 
@@ -646,21 +529,28 @@ class SheetsLogger:
 
             logger.info(f"Attempting to log detailed signal: {symbol} ({timeframe})")
 
-
-
             # Define headers for detailed logging
 
             headers = [
-
-                "Timestamp", "Symbol", "Timeframe", "Price", "Signal", "Recommendation",
-
-                "Squeeze_Off", "Momentum", "MACD_Cross", "RSI_Value", "RSI_Level",
-
-                "Signal_Strength", "Entry_Price", "Stop_Loss", "TP1", "TP2", "TP3", "Risk_Reward"
-
+                "Timestamp",
+                "Symbol",
+                "Timeframe",
+                "Price",
+                "Signal",
+                "Recommendation",
+                "Squeeze_Off",
+                "Momentum",
+                "MACD_Cross",
+                "RSI_Value",
+                "RSI_Level",
+                "Signal_Strength",
+                "Entry_Price",
+                "Stop_Loss",
+                "TP1",
+                "TP2",
+                "TP3",
+                "Risk_Reward",
             ]
-
-
 
             # Prepare worksheet
 
@@ -674,8 +564,6 @@ class SheetsLogger:
 
                 return False
 
-
-
             # Extract data from analysis
 
             signals = analysis.get("signals", {})
@@ -684,65 +572,38 @@ class SheetsLogger:
 
             risk_levels = analysis.get("risk_levels", {})
 
-
-
             # Determine signal type
 
             signal_type = self._determine_signal_type(signals)
 
             logger.info(f"Signal type determined: {signal_type}")
 
-
-
             # Prepare row data
 
             try:
 
                 row_data = [
-
                     analysis.get("timestamp", datetime.now().isoformat()),
-
                     symbol,
-
                     timeframe,
-
                     float(analysis.get("current_price", 0)),
-
                     signal_type,
-
                     analysis.get("recommendation", ""),
-
                     bool(indicators.get("squeeze", {}).get("squeeze_off", False)),
-
                     str(indicators.get("squeeze", {}).get("momentum_direction", "")),
-
                     str(indicators.get("macd", {}).get("cross_direction", "")),
-
                     float(indicators.get("rsi", {}).get("value", 0)),
-
                     str(indicators.get("rsi", {}).get("extreme_level", "")),
-
                     float(analysis.get("signal_strength", 0)),
-
                     float(risk_levels.get("entry_price", 0)),
-
                     float(risk_levels.get("stop_loss", 0)),
-
                     float(risk_levels.get("take_profit_1", 0)),
-
                     float(risk_levels.get("take_profit_2", 0)),
-
                     float(risk_levels.get("take_profit_3", 0)),
-
                     float(risk_levels.get("risk_reward_ratio", 0)),
-
                 ]
 
-
-
                 logger.info(f"Row data prepared: {len(row_data)} columns")
-
-
 
             except Exception as e:
 
@@ -750,21 +611,17 @@ class SheetsLogger:
 
                 return False
 
-
-
             # Append to worksheet
 
             logger.info("Appending row to worksheet...")
 
             worksheet.append_row(row_data)
 
-
-
-            logger.info(f"Detailed signal logged successfully: {symbol} - {signal_type}")
+            logger.info(
+                f"Detailed signal logged successfully: {symbol} - {signal_type}"
+            )
 
             return True
-
-
 
         except Exception as e:
 
@@ -772,10 +629,7 @@ class SheetsLogger:
 
             return False
 
-
-
     def log_trading_journal(self, analysis: Dict) -> bool:
-
         """
 
         Log tradeable signals to Trading_Journal worksheet
@@ -802,35 +656,34 @@ class SheetsLogger:
 
             return False
 
-
-
         try:
 
             signals = analysis.get("signals", {})
-
-
 
             # Check for tradeable signals
 
             if not self._has_tradeable_signal(signals):
 
-                logger.debug(f"No tradeable signals found for {analysis.get('symbol', 'UNKNOWN')}")
+                logger.debug(
+                    f"No tradeable signals found for {analysis.get('symbol', 'UNKNOWN')}"
+                )
 
                 return False
-
-
 
             # Headers for Trading Journal
 
             headers = [
-
-                "Date", "Symbol", "Signal", "Entry", "SL",
-
-                "TP1", "TP2", "TP3", "Win/Loss", "Win Rate"
-
+                "Date",
+                "Symbol",
+                "Signal",
+                "Entry",
+                "SL",
+                "TP1",
+                "TP2",
+                "TP3",
+                "Win/Loss",
+                "Win Rate",
             ]
-
-
 
             # Prepare worksheet (use main worksheet if available)
 
@@ -846,11 +699,7 @@ class SheetsLogger:
 
                     return False
 
-
-
             risk_levels = analysis.get("risk_levels", {})
-
-
 
             # Get trade direction
 
@@ -858,75 +707,49 @@ class SheetsLogger:
 
             if not trade_direction:
 
-                logger.debug(f"No clear trade direction for {analysis.get('symbol', 'UNKNOWN')}")
+                logger.debug(
+                    f"No clear trade direction for {analysis.get('symbol', 'UNKNOWN')}"
+                )
 
                 return False
 
-
-
             # Check for duplicates before logging
-
             symbol = analysis.get("symbol", "")
-
             records = worksheet.get_all_records()
-
             today = datetime.now().strftime("%Y-%m-%d")
 
-
-
             for rec in records:
-
-                if (rec.get("Date") == today and
-
-                    rec.get("Symbol") == symbol and
-
-                    rec.get("Signal") == trade_direction and
-
-                    not rec.get("Win/Loss")):
-
+                if (
+                    rec.get("Date") == today
+                    and rec.get("Symbol") == symbol
+                    and rec.get("Signal") == trade_direction
+                    and not rec.get("Win/Loss")
+                ):
                     logger.warning(f"Duplicate signal blocked: {symbol} {trade_direction}")
-
                     return False
 
-
-
             # Prepare row data
-
             row_data = [
-
                 datetime.now().strftime("%Y-%m-%d"),
-
                 analysis.get("symbol", ""),
-
                 trade_direction,
-
                 float(risk_levels.get("entry_price", 0)),
-
                 float(risk_levels.get("stop_loss", 0)),
-
                 float(risk_levels.get("take_profit_1", 0)),
-
                 float(risk_levels.get("take_profit_2", 0)),
-
                 float(risk_levels.get("take_profit_3", 0)),
-
                 "",
-
-                ""
-
+                "",
             ]
 
-
-
             # Append to worksheet
-
             worksheet.append_row(row_data)
 
-            logger.info(f"Trading journal logged: {analysis.get('symbol')} - {trade_direction} (Signal: {self._determine_signal_type(signals)})")
+            logger.info(
+                f"Trading journal logged: {analysis.get('symbol')} - {trade_direction} (Signal: {self._determine_signal_type(signals)})"
+            )
 
             return True
-
-
 
         except Exception as e:
 
@@ -934,10 +757,7 @@ class SheetsLogger:
 
             return False
 
-
-
     def log_tp_hit(self, position_data: Dict, tp_info: Dict) -> bool:
-
         """
 
         Log Take Profit hit to Google Sheets
@@ -964,8 +784,6 @@ class SheetsLogger:
 
             return False
 
-
-
         try:
 
             symbol = position_data.get("symbol", "")
@@ -976,29 +794,25 @@ class SheetsLogger:
 
             current_price = tp_info.get("price", 0)
 
-
-
             # Determine which TP was hit from the price
 
             tp_levels = position_data.get("tp_levels", {})
 
             tp_level = "TP1"  # Default
 
-
-
             for tp_name, tp_target in tp_levels.items():
 
-                if abs(tp_target - tp_price) < 0.001:  # Account for floating point precision
+                if (
+                    abs(tp_target - tp_price) < 0.001
+                ):  # Account for floating point precision
 
                     tp_level = tp_name
 
                     break
 
-
-
-            return self.update_trading_result(symbol, entry_price, f"take_profit_{tp_level[-1]}", current_price)
-
-
+            return self.update_trading_result(
+                symbol, entry_price, f"take_profit_{tp_level[-1]}", current_price
+            )
 
         except Exception as e:
 
@@ -1006,10 +820,7 @@ class SheetsLogger:
 
             return False
 
-
-
     def log_sl_hit(self, position_data: Dict, sl_info: Dict) -> bool:
-
         """
 
         Log Stop Loss hit to Google Sheets
@@ -1036,8 +847,6 @@ class SheetsLogger:
 
             return False
 
-
-
         try:
 
             symbol = position_data.get("symbol", "")
@@ -1046,11 +855,9 @@ class SheetsLogger:
 
             current_price = sl_info.get("price", 0)
 
-
-
-            return self.update_trading_result(symbol, entry_price, "stop_loss", current_price)
-
-
+            return self.update_trading_result(
+                symbol, entry_price, "stop_loss", current_price
+            )
 
         except Exception as e:
 
@@ -1058,10 +865,7 @@ class SheetsLogger:
 
             return False
 
-
-
     def log_position_close(self, position_data: Dict) -> bool:
-
         """
 
         Log position closure to Google Sheets
@@ -1086,8 +890,6 @@ class SheetsLogger:
 
             return False
 
-
-
         try:
 
             symbol = position_data.get("symbol", "")
@@ -1095,8 +897,6 @@ class SheetsLogger:
             entry_price = position_data.get("entry_price", 0)
 
             close_reason = position_data.get("close_reason", "MANUAL")
-
-
 
             # Determine if it's a win or loss based on close reason
 
@@ -1112,13 +912,9 @@ class SheetsLogger:
 
                 result_type = "MANUAL_CLOSE"
 
-
-
             # Update the trading journal
 
             return self._update_position_status(symbol, entry_price, result_type)
-
-
 
         except Exception as e:
 
@@ -1126,10 +922,13 @@ class SheetsLogger:
 
             return False
 
-
-
-    def update_trading_result(self, symbol: str, entry_price: float, triggered_level: str, triggered_price: float) -> bool:
-
+    def update_trading_result(
+        self,
+        symbol: str,
+        entry_price: float,
+        triggered_level: str,
+        triggered_price: float,
+    ) -> bool:
         """
 
         Update trading result with TP/SL marks
@@ -1160,8 +959,6 @@ class SheetsLogger:
 
             return False
 
-
-
         try:
 
             # Access Trading Journal worksheet - FIXED: use safe access
@@ -1174,23 +971,20 @@ class SheetsLogger:
 
                 return False
 
-
-
             records = worksheet.get_all_records()
-
-
 
             # Find matching row
 
-            for i, record in enumerate(records, start=2):  # start=2 because row 1 is header
+            for i, record in enumerate(
+                records, start=2
+            ):  # start=2 because row 1 is header
 
-                if (record.get("Symbol") == symbol and
-
-                    abs(float(record.get("Entry", 0)) - entry_price) < 0.001 and  # Account for floating point precision
-
-                    not record.get("Win/Loss")):  # Not yet updated
-
-
+                if (
+                    record.get("Symbol") == symbol
+                    and abs(float(record.get("Entry", 0)) - entry_price)
+                    < 0.001  # Account for floating point precision
+                    and not record.get("Win/Loss")
+                ):  # Not yet updated
 
                     # Update based on triggered level
 
@@ -1204,9 +998,9 @@ class SheetsLogger:
 
                         worksheet.update_cell(i, 9, "LOSS")  # Win/Loss column
 
-                        logger.info(f"Updated LOSS: {symbol} hit SL at {triggered_price}")
-
-
+                        logger.info(
+                            f"Updated LOSS: {symbol} hit SL at {triggered_price}"
+                        )
 
                     elif triggered_level.startswith("take_profit"):
 
@@ -1228,35 +1022,29 @@ class SheetsLogger:
 
                             continue
 
-
-
                         current_tp = worksheet.cell(i, col).value
 
                         worksheet.update_cell(i, col, f"✅ {current_tp}")
 
                         worksheet.update_cell(i, 9, "WIN")  # Win/Loss column
 
-                        logger.info(f"Updated WIN: {symbol} hit {triggered_level} at {triggered_price}")
-
-
+                        logger.info(
+                            f"Updated WIN: {symbol} hit {triggered_level} at {triggered_price}"
+                        )
 
                     # Update Win Rate
 
                     self._update_win_rate(worksheet)
 
-
-
-                    logger.info(f"Trading result updated successfully: {symbol} - {triggered_level}")
+                    logger.info(
+                        f"Trading result updated successfully: {symbol} - {triggered_level}"
+                    )
 
                     return True
-
-
 
             logger.warning(f"No matching trade found for {symbol} at {entry_price}")
 
             return False
-
-
 
         except Exception as e:
 
@@ -1264,10 +1052,9 @@ class SheetsLogger:
 
             return False
 
-
-
-    def _update_position_status(self, symbol: str, entry_price: float, status: str) -> bool:
-
+    def _update_position_status(
+        self, symbol: str, entry_price: float, status: str
+    ) -> bool:
         """Update position status in trading journal"""
 
         try:
@@ -1280,39 +1067,27 @@ class SheetsLogger:
 
                 return False
 
-
-
             records = worksheet.get_all_records()
-
-
 
             # Find matching row
 
             for i, record in enumerate(records, start=2):
 
-                if (record.get("Symbol") == symbol and
-
-                    abs(float(record.get("Entry", 0)) - entry_price) < 0.001 and
-
-                    not record.get("Win/Loss")):
-
-
+                if (
+                    record.get("Symbol") == symbol
+                    and abs(float(record.get("Entry", 0)) - entry_price) < 0.001
+                    and not record.get("Win/Loss")
+                ):
 
                     worksheet.update_cell(i, 9, status)  # Win/Loss column
 
                     self._update_win_rate(worksheet)
 
-
-
                     logger.info(f"Updated position status: {symbol} - {status}")
 
                     return True
 
-
-
             return False
-
-
 
         except Exception as e:
 
@@ -1320,10 +1095,7 @@ class SheetsLogger:
 
             return False
 
-
-
     def _update_win_rate(self, worksheet):
-
         """Calculate and update Win Rate"""
 
         try:
@@ -1332,21 +1104,17 @@ class SheetsLogger:
 
             records = worksheet.get_all_records()
 
-
-
             # Filter completed trades
 
-            completed_trades = [r for r in records if r.get("Win/Loss") in ["WIN", "LOSS"]]
-
-
+            completed_trades = [
+                r for r in records if r.get("Win/Loss") in ["WIN", "LOSS"]
+            ]
 
             if not completed_trades:
 
                 logger.debug("No completed trades found for win rate calculation")
 
                 return
-
-
 
             # Calculate Win Rate
 
@@ -1356,34 +1124,27 @@ class SheetsLogger:
 
             win_rate = f"{round(wins / total * 100, 1)}%"
 
-
-
             logger.info(f"Win Rate calculated: {wins}/{total} = {win_rate}")
-
-
 
             # Update Win Rate in the last row with data
 
             for i in range(len(records), 1, -1):  # From bottom to top
 
-                if records[i-2].get("Win/Loss"):  # i-2 because records start from 0
+                if records[i - 2].get("Win/Loss"):  # i-2 because records start from 0
 
-                    worksheet.update_cell(i, 10, win_rate)  # Win Rate column (column J = 10)
+                    worksheet.update_cell(
+                        i, 10, win_rate
+                    )  # Win Rate column (column J = 10)
 
                     logger.info(f"Win Rate updated in row {i}: {win_rate}")
 
                     break
 
-
-
         except Exception as e:
 
             logger.error(f"Error updating win rate: {e}")
 
-
-
     def test_connection(self) -> bool:
-
         """Test Google Sheets connection"""
 
         try:
@@ -1394,13 +1155,9 @@ class SheetsLogger:
 
                 return False
 
-
-
             title = self.spreadsheet.title
 
             worksheet_count = len(self.spreadsheet.worksheets())
-
-
 
             logger.info(f"Google Sheets connection test successful!")
 
@@ -1408,13 +1165,11 @@ class SheetsLogger:
 
             logger.info(f"  Worksheets: {worksheet_count}")
 
-            logger.info(f"  URL: https://docs.google.com/spreadsheets/d/{self.spreadsheet_id}")
-
-
+            logger.info(
+                f"  URL: https://docs.google.com/spreadsheets/d/{self.spreadsheet_id}"
+            )
 
             return True
-
-
 
         except Exception as e:
 
@@ -1422,10 +1177,7 @@ class SheetsLogger:
 
             return False
 
-
-
     def get_trading_statistics(self, days: int = 30) -> Dict:
-
         """
 
         Generate trading statistics
@@ -1448,8 +1200,6 @@ class SheetsLogger:
 
             return {}
 
-
-
         try:
 
             worksheet = self.worksheet
@@ -1458,23 +1208,17 @@ class SheetsLogger:
 
                 return {}
 
-
-
             records = worksheet.get_all_records()
-
-
 
             # Filter completed trades (simplified - use all for now)
 
-            completed_trades = [r for r in records if r.get("Win/Loss") in ["WIN", "LOSS"]]
-
-
+            completed_trades = [
+                r for r in records if r.get("Win/Loss") in ["WIN", "LOSS"]
+            ]
 
             if not completed_trades:
 
                 return {"total_trades": 0, "win_rate": 0, "total_pnl": 0}
-
-
 
             # Calculate statistics
 
@@ -1484,29 +1228,16 @@ class SheetsLogger:
 
             win_rate = round(wins / total_trades * 100, 1) if total_trades > 0 else 0
 
-
-
             return {
-
                 "total_trades": total_trades,
-
                 "wins": wins,
-
                 "losses": total_trades - wins,
-
                 "win_rate": win_rate,
-
                 "total_pnl": 0,  # TODO: Calculate from actual prices
-
                 "best_performer": "",
-
                 "worst_performer": "",
-
-                "version": "2.0-refactored"
-
+                "version": "2.0-refactored",
             }
-
-
 
         except Exception as e:
 
@@ -1514,10 +1245,7 @@ class SheetsLogger:
 
             return {}
 
-
-
     def log_daily_summary(self, summary_data: Dict) -> bool:
-
         """
 
         Log daily summary to Google Sheets
@@ -1540,19 +1268,19 @@ class SheetsLogger:
 
             return False
 
-
-
         try:
 
             headers = [
-
-                "Date", "Total_Signals", "Active_Positions", "Closed_Positions",
-
-                "Total_PnL", "Win_Rate", "Best_Performer", "Worst_Performer", "Version"
-
+                "Date",
+                "Total_Signals",
+                "Active_Positions",
+                "Closed_Positions",
+                "Total_PnL",
+                "Win_Rate",
+                "Best_Performer",
+                "Worst_Performer",
+                "Version",
             ]
-
-
 
             worksheet = self._ensure_worksheet_exists("Daily_Summary", headers)
 
@@ -1560,31 +1288,17 @@ class SheetsLogger:
 
                 return False
 
-
-
             row_data = [
-
                 summary_data.get("date", ""),
-
                 summary_data.get("total_signals", 0),
-
                 summary_data.get("active_positions", 0),
-
                 summary_data.get("closed_positions", 0),
-
                 summary_data.get("total_pnl", 0),
-
                 summary_data.get("win_rate", 0),
-
                 summary_data.get("best_performer", ""),
-
                 summary_data.get("worst_performer", ""),
-
                 summary_data.get("version", "2.0-refactored"),
-
             ]
-
-
 
             worksheet.append_row(row_data)
 
@@ -1592,18 +1306,13 @@ class SheetsLogger:
 
             return True
 
-
-
         except Exception as e:
 
             logger.error(f"Error logging daily summary: {e}")
 
             return False
 
-
-
     def log_position_update(self, update_data: Dict) -> bool:
-
         """
 
         Log position update information
@@ -1626,8 +1335,6 @@ class SheetsLogger:
 
             return False
 
-
-
         try:
 
             # Extract position and update information
@@ -1636,68 +1343,49 @@ class SheetsLogger:
 
             updates = update_data.get("updates", {})
 
-
-
             if not position or not updates:
 
                 return False
-
-
 
             symbol = position.get("symbol", "")
 
             entry_price = position.get("entry_price", 0)
 
-
-
             # Process TP hits
 
-            for tp_level in ['TP1', 'TP2', 'TP3']:
+            for tp_level in ["TP1", "TP2", "TP3"]:
 
-                tp_key = f'{tp_level}_hit'
+                tp_key = f"{tp_level}_hit"
 
-                if updates.get(tp_key, {}).get('hit', False):
+                if updates.get(tp_key, {}).get("hit", False):
 
                     tp_info = updates[tp_key]
 
                     self.log_tp_hit(position, tp_info)
 
-
-
             # Process SL hits
 
-            if updates.get('sl_hit', {}).get('hit', False):
+            if updates.get("sl_hit", {}).get("hit", False):
 
-                sl_info = updates['sl_hit']
+                sl_info = updates["sl_hit"]
 
                 self.log_sl_hit(position, sl_info)
 
-
-
             # Process position closure
 
-            if updates.get('position_closed', False):
+            if updates.get("position_closed", False):
 
                 self.log_position_close(position)
 
-
-
             return True
-
-
 
         except Exception as e:
 
             logger.error(f"Error logging position update: {e}")
 
-
-
             return False
 
-
-
     def shutdown(self):
-
         """Shutdown SheetsLogger"""
 
         try:
@@ -1713,3 +1401,43 @@ class SheetsLogger:
         except Exception as e:
 
             logger.error(f"Error during SheetsLogger shutdown: {e}")
+
+    def log_signals_bulk(self, signals):
+        if not self._initialized or not self.spreadsheet:
+            logger.warning("SheetsLogger not initialized")
+            return False
+
+        try:
+            headers = [
+                "Timestamp","Symbol","Timeframe","Signal","Entry","SL",
+                "TP1","TP2","TP3","Strength","Key",
+            ]
+            ws = self._ensure_worksheet_exists("Signals_Scanned", headers)
+            if not ws:
+                return False
+
+            now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            rows = []
+            for s in signals or []:
+                symbol = (s.get("symbol") or "").upper()
+                tf = (s.get("timeframe") or "").lower()
+                sig = (s.get("signal_type") or s.get("signal") or "").upper()
+
+                risk = s.get("risk_levels", {}) or {}
+                entry = risk.get("entry_price") or risk.get("entry") or ""
+                sl = risk.get("stop_loss") or risk.get("sl") or ""
+                tp1 = risk.get("take_profit_1") or risk.get("tp1") or ""
+                tp2 = risk.get("take_profit_2") or risk.get("tp2") or ""
+                tp3 = risk.get("take_profit_3") or risk.get("tp3") or ""
+                strength = s.get("signal_strength", "") or s.get("strength", "")
+
+                key = s.get("key") or (f"{symbol}_{tf}_{sig}" if (symbol and tf and sig) else "")
+                rows.append([now_str, symbol, tf, sig, entry, sl, tp1, tp2, tp3, strength, key])
+
+            if rows:
+                ws.append_rows(rows, value_input_option="USER_ENTERED")
+            return True
+
+        except Exception as e:
+            logger.error(f"Error logging bulk signals: {e}")
+            return False

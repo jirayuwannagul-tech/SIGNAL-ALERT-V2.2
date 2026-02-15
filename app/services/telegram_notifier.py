@@ -9,13 +9,10 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 
-
 from typing import Dict, Optional
 
 
-
 logger = logging.getLogger(__name__)
-
 
 
 # =========================
@@ -23,7 +20,6 @@ logger = logging.getLogger(__name__)
 # Helper
 
 # =========================
-
 
 
 def _to_int(v):
@@ -37,15 +33,11 @@ def _to_int(v):
         return None
 
 
-
-
-
 # =========================
 
 # Telegram Notifier
 
 # =========================
-
 
 
 class TelegramNotifier:
@@ -58,29 +50,17 @@ class TelegramNotifier:
 
         self.api_url = f"https://api.telegram.org/bot{self.token}"
 
-
-
         # Topic IDs (Forum Threads)
 
         self.topics = {
-
-            "normal": int(os.getenv("TOPIC_NORMAL_ID", "2")),   # คุยทั่วไป
-
-            "vip": int(os.getenv("TOPIC_VIP_ID", "18")),          # 1D signals
-
-            "chat": int(os.getenv("TOPIC_CHAT_ID", "1")),         # TP/SL ทุก TF
-
-            "15m": int(os.getenv("TOPIC_15M_ID", "249")),         # 15m signals
-
-            "member": int(os.getenv("TOPIC_MEMBER_ID", "4")),     # อธิบาย
-
+            "normal": int(os.getenv("TOPIC_NORMAL_ID", "2")),  # คุยทั่วไป
+            "vip": int(os.getenv("TOPIC_VIP_ID", "18")),  # 1D signals
+            "chat": int(os.getenv("TOPIC_CHAT_ID", "1")),  # TP/SL ทุก TF
+            "15m": int(os.getenv("TOPIC_15M_ID", "249")),  # 15m signals
+            "member": int(os.getenv("TOPIC_MEMBER_ID", "4")),  # อธิบาย
         }
 
-
-
         logger.info(f"TelegramNotifier ready | topics={self.topics}")
-
-
 
     # =========================
 
@@ -90,27 +70,21 @@ class TelegramNotifier:
 
     # =========================
 
-    def resolve_topic_id(self, timeframe: str, fallback: Optional[int] = None) -> Optional[int]:
+    def resolve_topic_id(
+        self, timeframe: str, fallback: Optional[int] = None
+    ) -> Optional[int]:
 
         tf = (timeframe or "").lower().strip()
-
-
 
         if tf in ("1d", "1day", "d"):
 
             return self.topics.get("vip") or fallback
 
-
-
         if tf in ("15m", "15min", "m15"):
 
             return self.topics.get("15m") or fallback
 
-
-
         return fallback
-
-
 
     # =========================
 
@@ -118,63 +92,40 @@ class TelegramNotifier:
 
     # =========================
 
-
-
     def send_message(self, text: str, thread_id: Optional[int] = None):
 
         try:
 
             url = f"{self.api_url}/sendMessage"
 
-
-
             safe = text.replace("```", "'''")
 
             wrapped = f"```\n{safe}\n```"
 
-
-
             payload = {
-
                 "chat_id": self.chat_id,
-
                 "text": wrapped,
-
                 "parse_mode": "Markdown",
-
                 "disable_web_page_preview": True,
-
             }
-
-
 
             if thread_id:
 
                 payload["message_thread_id"] = thread_id
 
-
-
             res = requests.post(url, json=payload, timeout=10)
 
             return res.json()
 
-
-
         except Exception as e:
 
             logger.error(f"Telegram Send Error: {e}")
-
-
-
-
 
     # =========================
 
     # Signal Alert (VIP)
 
     # =========================
-
-
 
     def send_signal_alert(self, analysis: Dict, topic_id: Optional[int] = None):
 
@@ -186,15 +137,11 @@ class TelegramNotifier:
 
             price = float(analysis.get("current_price", 0) or 0)
 
-
-
             signals = analysis.get("signals", {}) or {}
 
             risk = analysis.get("risk_levels", {}) or {}
 
             strength = analysis.get("signal_strength", 0)
-
-
 
             entry = float(risk.get("entry_price", price) or 0)
 
@@ -206,13 +153,9 @@ class TelegramNotifier:
 
             tp3 = float(risk.get("take_profit_3", 0) or 0)
 
-
-
             # เวลาไทย
 
             now_th = datetime.now(ZoneInfo("Asia/Bangkok")).strftime("%H:%M:%S")
-
-
 
             # Direction (support signals + explicit direction)
 
@@ -221,8 +164,6 @@ class TelegramNotifier:
             is_long = bool(signals.get("buy")) or direction == "LONG"
 
             is_short = bool(signals.get("short")) or direction == "SHORT"
-
-
 
             if is_long and not is_short:
 
@@ -252,8 +193,6 @@ class TelegramNotifier:
 
                 tp3_pct = -((entry - tp3) / entry) * 100 if entry else 0
 
-
-
             # RR (ใช้ abs ให้เป็นบวกเสมอ)
 
             if sl_pct != 0:
@@ -268,15 +207,11 @@ class TelegramNotifier:
 
                 rr1 = rr2 = rr3 = 0.0
 
-
-
             # Header + Strategy (1D only)
 
             header = f"{emoji}⚡ CDC ALERT ⚡{emoji}"
 
             strategy = "1D SWING"
-
-
 
             # =========================
 
@@ -297,8 +232,6 @@ class TelegramNotifier:
             else:
 
                 system_name = "SYSTEM"
-
-
 
             # =========================================================
 
@@ -342,8 +275,6 @@ class TelegramNotifier:
 
             route = (analysis.get("route") or "").lower().strip()
 
-
-
             # override เสมอ ถ้า caller ส่งมา
 
             if topic_id is not None:
@@ -358,15 +289,11 @@ class TelegramNotifier:
 
                 fallback_thread = self.topics.get("normal")
 
-
-
                 if route in ("tp_sl", "tpsl", "sl_tp", "sl/tp"):
 
                     target_thread = self.topics.get("chat") or fallback_thread
 
                     route_reason = f"route='{route}' -> chat"
-
-
 
                 elif route in ("signal_1d", "entry_1d", "vip"):
 
@@ -374,15 +301,15 @@ class TelegramNotifier:
 
                     route_reason = f"route='{route}' -> vip"
 
-
-
                 elif tf in ("15m", "15min", "m15"):
 
-                    target_thread = self.topics.get("15m") or self.topics.get("chat") or fallback_thread
+                    target_thread = (
+                        self.topics.get("15m")
+                        or self.topics.get("chat")
+                        or fallback_thread
+                    )
 
                     route_reason = f"timeframe='{tf}' -> 15m"
-
-
 
                 elif route in ("cross", "normal"):
 
@@ -390,15 +317,11 @@ class TelegramNotifier:
 
                     route_reason = f"route='{route}' -> normal"
 
-
-
                 elif route in ("member", "membership"):
 
                     target_thread = self.topics.get("member") or fallback_thread
 
                     route_reason = f"route='{route}' -> member"
-
-
 
                 else:
 
@@ -414,7 +337,11 @@ class TelegramNotifier:
 
                     elif tf in ("15m", "15min", "m15"):
 
-                        target_thread = self.topics.get("15m") or self.topics.get("chat") or fallback_thread
+                        target_thread = (
+                            self.topics.get("15m")
+                            or self.topics.get("chat")
+                            or fallback_thread
+                        )
 
                         route_reason = f"timeframe='{tf}' -> 15m"
 
@@ -424,23 +351,17 @@ class TelegramNotifier:
 
                         route_reason = f"timeframe='{tf}' -> normal(fallback)"
 
-
-
             if os.getenv("DEBUG_TELEGRAM_ROUTE") == "1":
 
-                logger.info(f"[ROUTE] symbol={symbol} tf={timeframe} route={route or '-'} -> thread={target_thread} ({route_reason})")
-
-
-
-
+                logger.info(
+                    f"[ROUTE] symbol={symbol} tf={timeframe} route={route or '-'} -> thread={target_thread} ({route_reason})"
+                )
 
             # ✅ ใส่ logic สร้างข้อความแบบ LONG/SHORT ในก้อนนี้เลย
 
             is_long = str(side).upper() == "LONG"
 
             emoji = "🐂" if is_long else "🐻"
-
-
 
             if is_long:
 
@@ -466,33 +387,18 @@ class TelegramNotifier:
 
                 footer_tip = "💡 ขาดทุนอย่าโทษบอทนะ ฮิ้วววว~"
 
-
-
             message = (
-
                 f"{'🟢🚀 LONG SIGNAL' if is_long else '🔴📉 SHORT SIGNAL'}\n\n"
-
                 f"🧩 System: {system_name} | TF: {timeframe}\n"
-
                 f"🪙 {symbol}\n\n"
-
                 f"💰 Entry: {entry:,.4f}\n\n"
-
                 f"🎯 TP1: {tp1:,.4f} ({tp1_pct:+.1f}%) {rr1:.1f}:1\n"
-
                 f"🎯 TP2: {tp2:,.4f} ({tp2_pct:+.1f}%) {rr2:.1f}:1\n"
-
                 f"🎯 TP3: {tp3:,.4f} ({tp3_pct:+.1f}%) {rr3:.1f}:1\n\n"
-
                 f"🛑 STOP LOSS: {sl:,.4f} ({sl_pct:+.1f}%)\n\n"
-
                 f"💪 Strength: {strength}%\n"
-
                 f"🕐 {now_th}"
-
             )
-
-
 
             self.send_message(message, thread_id=target_thread)
 
@@ -501,8 +407,6 @@ class TelegramNotifier:
         except Exception as e:
 
             logger.error(f"Telegram Alert Error: {e}")
-
-
 
     # =========================
 
@@ -522,15 +426,11 @@ class TelegramNotifier:
 
             system_name = payload.get("system_name") or "SYSTEM"
 
-
-
             entry = float(payload.get("entry", 0) or 0)
 
             tp_levels = payload.get("tp_levels") or {}
 
             sl_level = float(payload.get("sl_level", 0) or 0)
-
-
 
             tp_hit = payload.get("tp_hit") or {}
 
@@ -538,17 +438,15 @@ class TelegramNotifier:
 
             event = (payload.get("event") or "").upper().strip()
 
-
-
             now_th = datetime.now(ZoneInfo("Asia/Bangkok")).strftime("%H:%M:%S")
-
-
 
             # Header
 
-            header = f"🟢✅ TAKE PROFIT {event}" if event.startswith("TP") else "🔴🛑 STOP LOSS"
-
-
+            header = (
+                f"🟢✅ TAKE PROFIT {event}"
+                if event.startswith("TP")
+                else "🔴🛑 STOP LOSS"
+            )
 
             # Marks
 
@@ -556,13 +454,9 @@ class TelegramNotifier:
 
                 return "✅" if bool(tp_hit.get(k)) else "⬜️"
 
-
-
             def _mark_sl() -> str:
 
                 return "❌" if (sl_hit or event == "SL") else "⬜️"
-
-
 
             tp1 = float(tp_levels.get("TP1", 0) or 0)
 
@@ -570,39 +464,22 @@ class TelegramNotifier:
 
             tp3 = float(tp_levels.get("TP3", 0) or 0)
 
-
-
             message = (
-
                 f"{header}\n\n"
-
                 f"🧩 System: {system_name} | TF: {timeframe}\n"
-
                 f"🪙 {symbol} | {side}\n\n"
-
                 f"💰 Entry: {entry:,.4f}\n\n"
-
                 f"Status:\n"
-
                 f"{_mark_tp('TP1')} TP1: {tp1:,.4f}\n"
-
                 f"{_mark_tp('TP2')} TP2: {tp2:,.4f}\n"
-
                 f"{_mark_tp('TP3')} TP3: {tp3:,.4f}\n"
-
                 f"{_mark_sl()} SL : {sl_level:,.4f}\n\n"
-
                 f"🕐 {now_th}"
-
             )
-
-
 
             # ✅ Routing: TP/SL ทุก TF ไปห้อง แจ้ง TP SL (TOPIC_CHAT_ID)
 
             thread = self.topics.get("chat") or self.topics.get("normal")
-
-
 
             if thread:
 
@@ -612,13 +489,9 @@ class TelegramNotifier:
 
                 self.send_message(message)
 
-
-
         except Exception as e:
 
             logger.error(f"TP/SL Alert Error: {e}")
-
-
 
     # =========================
 
@@ -626,13 +499,9 @@ class TelegramNotifier:
 
     # =========================
 
-
-
     def send_membership_alert(self, text: str):
 
         self.send_message(text, thread_id=self.topics["member"])
-
-
 
     # =========================
 
@@ -640,27 +509,16 @@ class TelegramNotifier:
 
     # =========================
 
-
-
     def send_direct_message(self, user_id: str, text: str):
 
         try:
 
             url = f"{self.api_url}/sendMessage"
 
-            payload = {
-
-                "chat_id": user_id,
-
-                "text": text,
-
-                "parse_mode": "Markdown"
-
-            }
+            payload = {"chat_id": user_id, "text": text, "parse_mode": "Markdown"}
 
             requests.post(url, json=payload, timeout=10)
 
         except:
 
             pass
-

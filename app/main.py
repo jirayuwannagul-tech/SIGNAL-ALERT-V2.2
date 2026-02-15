@@ -129,10 +129,8 @@ def initialize_services_background():
             
         try:
             google_config = services["config_manager"].get_google_config()
-            # 👇 ใส่ # ไว้หน้า 2 บรรทัดนี้
-            # services["sheets_logger"] = SheetsLogger(google_config)
-            # logger.info("✅ SheetsLogger initialized with ConfigManager")
-            services["sheets_logger"] = None # 👈 เพิ่มบรรทัดนี้เพื่อให้ระบบรู้ว่าไม่ต้องใช้
+            services["sheets_logger"] = SheetsLogger(google_config)
+            logger.info("✅ SheetsLogger initialized with ConfigManager")
         except Exception as e:
             logger.warning(f"⚠️ SheetsLogger failed to initialize: {e}")
             services["sheets_logger"] = None
@@ -1015,22 +1013,41 @@ def debug_services():
             else:
                 debug_info["services"][service_name] = "available"
         
+
         return jsonify(debug_info)
-        
+
     except Exception as e:
         logger.error(f"Error in debug services: {e}")
         return jsonify({"error": str(e)}), 500
 
+
+# === /api/debug/routes endpoint ===
+@app.get("/api/debug/routes")
+@require_services
+def debug_routes():
+    """List all registered routes"""
+    out = []
+    for r in app.url_map.iter_rules():
+        methods = sorted([m for m in (r.methods or []) if m not in ("HEAD", "OPTIONS")])
+        out.append({"endpoint": r.endpoint, "methods": methods, "rule": str(r)})
+    out.sort(key=lambda x: x["rule"])
+    return jsonify({"status": "success", "routes": out, "version": VERSION})
+
+
 @app.route("/api/debug/create_position", methods=["POST"])
 @require_services
 def debug_create_position():
-    print("DEBUG_CREATE_POSITION_VERSION=NEW")   # ← วางตรงนี้
-
     data = request.get_json() or {}
 
-    symbol = data.get("symbol")
-    timeframe = data.get("timeframe")
-    direction = data.get("direction")
+    symbol = (data.get("symbol") or "").upper().strip()
+    timeframe = (data.get("timeframe") or "").lower().strip()
+    direction = (data.get("direction") or "").upper().strip()
+
+    if not symbol or not timeframe or direction not in ("LONG", "SHORT"):
+        return jsonify({
+            "status": "error",
+            "message": "Required: symbol, timeframe, direction(LONG/SHORT)"
+        }), 400
 
     raw_price = data.get("price")
     if raw_price is None:
@@ -1048,7 +1065,7 @@ def debug_create_position():
         "symbol": symbol,
         "timeframe": timeframe,
         "direction": direction,
-        "current_price": price
+        "current_price": price,
     }
 
     pid = services["position_manager"].create_position(signal_data)
@@ -1058,10 +1075,8 @@ def debug_create_position():
             "message": "create_position returned None (likely ACTIVE position already exists)"
         }), 409
 
-    # ✅ ดึง position data ที่มี TP/SL ครบ
     position_data = services["position_manager"].positions.get(pid, {})
-    
-    # ✅ สร้าง data สำหรับ Telegram (รวม TP/SL)
+
     telegram_data = {
         "symbol": symbol,
         "timeframe": timeframe,
@@ -1077,7 +1092,7 @@ def debug_create_position():
         "signal_strength": 100,
     }
 
-    # ✅ ส่ง Telegram ทดสอบ (ใช้ notifier ที่มีอยู่ใน services)
+    # ส่ง Telegram ทดสอบ (ถ้ามี)
     try:
         tn = services.get("telegram_notifier") or services.get("telegram")
         if tn:
@@ -1088,9 +1103,61 @@ def debug_create_position():
             elif hasattr(tn, "send_message"):
                 tn.send_message(f"TEST SIGNAL {symbol} {timeframe} {direction} @ {price}")
     except Exception as e:
-        current_app.logger.error(f"Telegram send failed in debug_create_position: {e}")
+        logger.error(f"Telegram send failed in debug_create_position: {e}")
 
     return jsonify({"status": "ok", "position_id": pid})
+
+
+# === Debug endpoint: override DataManager symbol price for TP/SL testing ===
+@app.route("/api/debug/set_price", methods=["POST"])
+@require_services
+def debug_set_price():
+    """Debug: override a symbol price in DataManager cache (for TP/SL test)"""
+    data = request.get_json() or {}
+
+    symbol = (data.get("symbol") or "").upper().strip()
+    raw_price = data.get("price")
+
+    if not symbol or raw_price is None:
+        return jsonify({
+            "status": "error",
+            "message": "Required: symbol, price"
+        }), 400
+
+    try:
+        price = float(raw_price)
+    except Exception:
+        return jsonify({"status": "error", "message": "Invalid price"}), 400
+
+    dm = services.get("data_manager")
+    if not dm:
+        return jsonify({"status": "error", "message": "DataManager not available"}), 503
+
+    # Try common cache attribute names
+    for attr in ("price_cache", "prices", "_price_cache", "cache"):
+        if hasattr(dm, attr):
+            cache_obj = getattr(dm, attr)
+            if isinstance(cache_obj, dict):
+                # Match DataManager cache format used by get_single_price(): price_<SYMBOL> -> {price, timestamp}
+                cache_obj[f"price_{symbol}"] = {
+                    "price": price,
+                    "timestamp": time.time(),
+                    "override": True,
+                }
+                return jsonify({
+                    "status": "success",
+                    "symbol": symbol,
+                    "price": price,
+                    "cache_attr": attr,
+                    "cache_key": f"price_{symbol}",
+                    "version": VERSION
+                })
+
+    return jsonify({
+        "status": "error",
+        "message": "No dict cache found on DataManager (tried: price_cache, prices, _price_cache, cache)",
+        "version": VERSION
+    }), 500
 
 if __name__ == "__main__":
     # ลบพวก raw_port = ... และ if raw_port == ... ทิ้งให้หมด

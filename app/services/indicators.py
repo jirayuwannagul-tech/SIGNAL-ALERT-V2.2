@@ -1,11 +1,8 @@
 """Technical indicators for Squeeze Bot trading system."""
 
-
-
 import logging
 
 from typing import Dict, Optional, Tuple
-
 
 
 import numpy as np
@@ -13,20 +10,13 @@ import numpy as np
 import pandas as pd
 
 
-
 from app.utils.data_types import DataConverter
 
 logger = logging.getLogger(__name__)
 
 
-
-
-
 class TechnicalIndicators:
-
     """Technical analysis indicators calculator with layer organization."""
-
-
 
     # ================================================================
 
@@ -34,16 +24,10 @@ class TechnicalIndicators:
 
     # ================================================================
 
-
-
     @staticmethod
-
     def squeeze_momentum(
-
         df: pd.DataFrame, length: int = 20, mult_bb: float = 2.0, mult_kc: float = 1.5
-
     ) -> Tuple[bool, str, Dict]:
-
         """
 
         Calculate Squeeze Momentum Indicator.
@@ -82,8 +66,6 @@ class TechnicalIndicators:
 
             low = df["low"]
 
-
-
             # Bollinger Bands calculation
 
             basis = close.rolling(length).mean()
@@ -93,8 +75,6 @@ class TechnicalIndicators:
             upper_bb = basis + dev
 
             lower_bb = basis - dev
-
-
 
             # Keltner Channel calculation (using True Range)
 
@@ -108,8 +88,6 @@ class TechnicalIndicators:
 
             rangema = true_range.rolling(length).mean()
 
-
-
             # Moving average for Keltner Channel
 
             ma = close.rolling(length).mean()
@@ -118,17 +96,11 @@ class TechnicalIndicators:
 
             lower_kc = ma - rangema * mult_kc
 
-
-
             # Squeeze detection: BB inside KC = squeeze ON, BB outside KC = squeeze OFF
 
             squeeze_off = (lower_bb.iloc[-1] < lower_kc.iloc[-1]) and (
-
                 upper_bb.iloc[-1] > upper_kc.iloc[-1]
-
             )
-
-
 
             # Momentum calculation using linear regression
 
@@ -138,13 +110,9 @@ class TechnicalIndicators:
 
             mid_point = (highest + lowest) / 2
 
-
-
             momentum_direction = "NEUTRAL"
 
             momentum_value = 0
-
-
 
             if len(close) >= length:
 
@@ -154,8 +122,6 @@ class TechnicalIndicators:
 
                 y = (close - mid_point).iloc[-length:].values
 
-
-
                 if len(y) == length and not np.isnan(y).any():
 
                     # Current momentum slope
@@ -163,8 +129,6 @@ class TechnicalIndicators:
                     slope = np.polyfit(x, y, 1)[0]
 
                     momentum_value = slope
-
-
 
                     # Previous momentum slope for comparison
 
@@ -175,8 +139,6 @@ class TechnicalIndicators:
                         if len(prev_y) == length and not np.isnan(prev_y).any():
 
                             prev_slope = np.polyfit(x, prev_y, 1)[0]
-
-
 
                             # Determine momentum direction
 
@@ -192,45 +154,27 @@ class TechnicalIndicators:
 
                                 momentum_direction = "NEUTRAL"
 
-
-
             # Additional details for analysis
 
             details = {
-
                 "bb_upper": float(upper_bb.iloc[-1]),
-
                 "bb_lower": float(lower_bb.iloc[-1]),
-
                 "kc_upper": float(upper_kc.iloc[-1]),
-
                 "kc_lower": float(lower_kc.iloc[-1]),
-
                 "momentum_value": float(momentum_value),
-
                 "squeeze_intensity": float(upper_bb.iloc[-1] - lower_bb.iloc[-1])
-
                 / float(upper_kc.iloc[-1] - lower_kc.iloc[-1]),
-
             }
-
-
 
             # Ensure boolean is Python native type
 
             squeeze_off = bool(squeeze_off)
 
-
-
             logger.debug(
-
                 f"Squeeze analysis: OFF={squeeze_off}, Direction={momentum_direction}"
-
             )
 
             return squeeze_off, momentum_direction, details
-
-
 
         except Exception as e:
 
@@ -238,24 +182,16 @@ class TechnicalIndicators:
 
             return False, "NEUTRAL", {}
 
-
-
     # ================================================================
 
     # 📈 LAYER 2: MACD Uncle Cholok (MACD ลุงโฉลก 8,17,9)
 
     # ================================================================
 
-
-
     @staticmethod
-
     def macd_uncle_cholok(
-
         df: pd.DataFrame, fast: int = 8, slow: int = 17, signal: int = 9
-
     ) -> Tuple[float, float, str, Dict]:
-
         """
 
         MACD ลุงโฉลก (Uncle Cholok) calculation with custom periods (8,17,9).
@@ -267,8 +203,6 @@ class TechnicalIndicators:
         try:
 
             close = df["close"]
-
-
 
             # Calculate MACD components
 
@@ -282,8 +216,6 @@ class TechnicalIndicators:
 
             histogram = macd_line - signal_line
 
-
-
             # Get current values
 
             current_macd = macd_line.iloc[-1]
@@ -291,8 +223,6 @@ class TechnicalIndicators:
             current_signal = signal_line.iloc[-1]
 
             current_histogram = histogram.iloc[-1]
-
-
 
             # ✅ UPDATED: Cross detection with momentum
 
@@ -303,8 +233,6 @@ class TechnicalIndicators:
                 prev_macd = macd_line.iloc[-2]
 
                 prev_signal = signal_line.iloc[-2]
-
-
 
                 # Bullish signal: MACD crosses above Signal OR trending up
 
@@ -324,9 +252,9 @@ class TechnicalIndicators:
 
                         cross_direction = "UP"
 
-                        logger.debug("MACD: Bullish momentum detected (above signal + rising)")
-
-
+                        logger.debug(
+                            "MACD: Bullish momentum detected (above signal + rising)"
+                        )
 
                 # Bearish signal: MACD crosses below Signal OR trending down
 
@@ -346,39 +274,26 @@ class TechnicalIndicators:
 
                         cross_direction = "DOWN"
 
-                        logger.debug("MACD: Bearish momentum detected (below signal + falling)")
-
-
+                        logger.debug(
+                            "MACD: Bearish momentum detected (below signal + falling)"
+                        )
 
             # Additional details
 
             details = {
-
                 "ema_fast": float(ema_fast.iloc[-1]),
-
                 "ema_slow": float(ema_slow.iloc[-1]),
-
                 "histogram": float(current_histogram),
-
                 "macd_above_zero": bool(current_macd > 0),
-
                 "signal_above_zero": bool(current_signal > 0),
-
                 "divergence_strength": float(abs(current_macd - current_signal)),
-
             }
 
-
-
             logger.debug(
-
                 f"MACD Uncle Cholok: {current_macd:.6f}, Signal: {current_signal:.6f}, Cross: {cross_direction}"
-
             )
 
             return float(current_macd), float(current_signal), cross_direction, details
-
-
 
         except Exception as e:
 
@@ -386,30 +301,19 @@ class TechnicalIndicators:
 
             return 0.0, 0.0, "NONE", {}
 
-
-
     # ================================================================
 
     # 📊 LAYER 3: RSI Extreme (RSI โต่ง) - ปรับ default threshold 40/60
 
     # ================================================================
 
-
-
     @staticmethod
-
     def rsi_extreme(
-
         df: pd.DataFrame,
-
         period: int = 14,
-
-        low_threshold: float = 35,   # ✅ ปรับจาก 40 เป็น 35 (ต้องขายหนักจริงๆ ถึงจะน่าสะสม)
-
+        low_threshold: float = 35,  # ✅ ปรับจาก 40 เป็น 35 (ต้องขายหนักจริงๆ ถึงจะน่าสะสม)
         high_threshold: float = 65,  # ✅ ปรับจาก 60 เป็น 65 (ต้องซื้อหนักจริงๆ ถึงจะน่าระวัง)
-
     ) -> Tuple[float, str, Dict]:
-
         """
 
         RSI โต่ง (Extreme RSI) calculation for identifying overbought/oversold conditions.
@@ -440,33 +344,21 @@ class TechnicalIndicators:
 
             close = df["close"]
 
-
-
             # Calculate price changes
 
             delta = close.diff()
 
-
-
             # Separate gains and losses
 
             gain = (
-
                 (delta.where(delta > 0, 0)).rolling(window=period, min_periods=1).mean()
-
             )
 
             loss = (
-
                 (-delta.where(delta < 0, 0))
-
                 .rolling(window=period, min_periods=1)
-
                 .mean()
-
             )
-
-
 
             # Calculate Relative Strength and RSI
 
@@ -474,11 +366,7 @@ class TechnicalIndicators:
 
             rsi = 100 - (100 / (1 + rs))
 
-
-
             current_rsi = rsi.iloc[-1]
-
-
 
             # Determine extreme level - ใช้ threshold ใหม่
 
@@ -493,8 +381,6 @@ class TechnicalIndicators:
             else:
 
                 extreme_level = "NORMAL"
-
-
 
             # Calculate RSI tren
 
@@ -512,39 +398,23 @@ class TechnicalIndicators:
 
                     rsi_trend = "FALLING"
 
-
-
             # Additional details
 
             details = {
-
                 "rsi_14": float(current_rsi),
-
                 "rsi_trend": rsi_trend,
-
                 "distance_to_oversold": float(current_rsi - low_threshold),
-
                 "distance_to_overbought": float(high_threshold - current_rsi),
-
                 "is_diverging": False,  # TODO: Implement divergence detection
-
-                "threshold_low": float(low_threshold),   # เพิ่มเพื่อ debug
-
-                "threshold_high": float(high_threshold), # เพิ่มเพื่อ debug
-
+                "threshold_low": float(low_threshold),  # เพิ่มเพื่อ debug
+                "threshold_high": float(high_threshold),  # เพิ่มเพื่อ debug
             }
 
-
-
             logger.debug(
-
                 f"RSI Extreme: {current_rsi:.2f}, Level: {extreme_level}, Trend: {rsi_trend}, Thresholds: {low_threshold}/{high_threshold}"
-
             )
 
             return float(current_rsi), extreme_level, details
-
-
 
         except Exception as e:
 
@@ -552,18 +422,13 @@ class TechnicalIndicators:
 
             return 50.0, "NORMAL", {}
 
-
-
     # ================================================================
 
     # 🔍 LAYER 4: Comprehensive Analysis (การวิเคราะห์รวม) - แก้ไข default values
 
     # ================================================================
 
-
-
     @staticmethod
-
     def analyze_all_indicators(df: pd.DataFrame, config: Dict) -> Dict:
 
         try:
@@ -576,8 +441,6 @@ class TechnicalIndicators:
 
             rsi_config = config.get("rsi", {})
 
-
-
             close = df["close"]
 
             high = df["high"]
@@ -586,63 +449,36 @@ class TechnicalIndicators:
 
             volume = df["volume"]
 
-
-
             # Calculate Squeeze Momentum
 
             squeeze_off, momentum_direction, squeeze_details = (
-
                 TechnicalIndicators.squeeze_momentum(
-
                     df,
-
                     length=squeeze_config.get("length", 20),
-
                     mult_bb=squeeze_config.get("bb_mult", 2.0),
-
                     mult_kc=squeeze_config.get("kc_mult", 1.5),
-
                 )
-
             )
-
-
 
             # Calculate MACD Uncle Cholok
 
             macd_line, signal_line, macd_cross, macd_details = (
-
                 TechnicalIndicators.macd_uncle_cholok(
-
                     df,
-
                     fast=macd_config.get("fast", 8),
-
                     slow=macd_config.get("slow", 17),
-
                     signal=macd_config.get("signal", 9),
-
                 )
-
             )
-
-
 
             # Calculate RSI Extreme
 
             rsi_value, rsi_extreme, rsi_details = TechnicalIndicators.rsi_extreme(
-
                 df,
-
                 period=rsi_config.get("period", 14),
-
                 low_threshold=rsi_config.get("oversold", 40),
-
                 high_threshold=rsi_config.get("overbought", 60),
-
             )
-
-
 
             # =========================================================
 
@@ -650,29 +486,21 @@ class TechnicalIndicators:
 
             # =========================================================
 
-
-
             # EMA 50/200
 
             ema50 = close.ewm(span=50, adjust=False).mean().iloc[-1]
 
             ema200 = close.ewm(span=200, adjust=False).mean().iloc[-1]
 
-
-
             # Bollinger Bands middle (20)
 
             bb_mid = close.rolling(20, min_periods=1).mean().iloc[-1]
-
-
 
             # Volume avg (20)
 
             vol_value = float(volume.iloc[-1])
 
             vol_avg = float(volume.rolling(20, min_periods=1).mean().iloc[-1])
-
-
 
             # ADX (14)
 
@@ -681,22 +509,13 @@ class TechnicalIndicators:
             prev_close = close.shift(1)
 
             tr = pd.concat(
-
                 [
-
                     (high - low),
-
                     (high - prev_close).abs(),
-
                     (low - prev_close).abs(),
-
                 ],
-
                 axis=1,
-
             ).max(axis=1)
-
-
 
             # Directional Movement
 
@@ -704,13 +523,9 @@ class TechnicalIndicators:
 
             down_move = -low.diff()
 
-
-
             plus_dm = np.where((up_move > down_move) & (up_move > 0), up_move, 0.0)
 
             minus_dm = np.where((down_move > up_move) & (down_move > 0), down_move, 0.0)
-
-
 
             # Wilder smoothing (ใช้ rolling mean แบบ min_periods=1 เพื่อไม่ให้ NaN)
 
@@ -718,95 +533,69 @@ class TechnicalIndicators:
 
             atr = tr.rolling(period, min_periods=1).mean()
 
-            plus_di = 100 * (pd.Series(plus_dm, index=df.index).rolling(period, min_periods=1).mean() / atr.replace(0, np.nan))
+            plus_di = 100 * (
+                pd.Series(plus_dm, index=df.index).rolling(period, min_periods=1).mean()
+                / atr.replace(0, np.nan)
+            )
 
-            minus_di = 100 * (pd.Series(minus_dm, index=df.index).rolling(period, min_periods=1).mean() / atr.replace(0, np.nan))
+            minus_di = 100 * (
+                pd.Series(minus_dm, index=df.index)
+                .rolling(period, min_periods=1)
+                .mean()
+                / atr.replace(0, np.nan)
+            )
 
+            dx = (
+                100
+                * (plus_di - minus_di).abs()
+                / (plus_di + minus_di).replace(0, np.nan)
+            )
 
-
-            dx = (100 * (plus_di - minus_di).abs() / (plus_di + minus_di).replace(0, np.nan))
-
-            adx_value = float(dx.rolling(period, min_periods=1).mean().iloc[-1]) if len(dx) else 0.0
+            adx_value = (
+                float(dx.rolling(period, min_periods=1).mean().iloc[-1])
+                if len(dx)
+                else 0.0
+            )
 
             if np.isnan(adx_value):
 
                 adx_value = 0.0
 
-
-
             current_price = float(close.iloc[-1])
-
-
 
             # Compile comprehensive analysis
 
             analysis = {
-
                 "timestamp": pd.Timestamp.now().isoformat(),
-
-
-
                 # ✅ ให้มีทั้ง current_price และ price กันสับสนฝั่ง signal_detector
-
                 "current_price": current_price,
-
                 "price": current_price,
-
-
-
                 "ema50": {"value": float(ema50)},
-
                 "ema200": {"value": float(ema200)},
-
                 "bb": {"middle": float(bb_mid)},
-
                 "adx": {"value": float(adx_value)},
-
                 "volume": {"value": float(vol_value), "avg": float(vol_avg)},
-
-
-
                 "squeeze": {
-
                     "squeeze_off": squeeze_off,
-
                     "momentum_direction": momentum_direction,
-
                     "details": squeeze_details,
-
                 },
-
                 "macd": {
-
                     "macd_line": macd_line,
-
                     "signal_line": signal_line,
-
                     "cross_direction": macd_cross,
-
                     "details": macd_details,
-
                 },
-
                 "rsi": {
-
                     "value": rsi_value,
-
                     "extreme_level": rsi_extreme,
-
                     "details": rsi_details,
-
                 },
-
             }
-
-
 
             logger.info("Comprehensive indicator analysis completed")
 
             return analysis
-
-
 
         except Exception as e:
 
@@ -814,12 +603,8 @@ class TechnicalIndicators:
 
             return {}
 
-
-
     @staticmethod
-
     def get_indicator_summary(analysis: Dict) -> Dict:
-
         """
 
         สรุปสถานะ indicators สำหรับการแสดงผล
@@ -831,31 +616,26 @@ class TechnicalIndicators:
         try:
 
             summary = {
-
                 "timestamp": analysis.get("timestamp"),
-
                 "price": analysis.get("current_price"),
-
-                "squeeze_status": "OFF" if analysis.get("squeeze", {}).get("squeeze_off") else "ON",
-
-                "momentum": analysis.get("squeeze", {}).get("momentum_direction", "NEUTRAL"),
-
+                "squeeze_status": (
+                    "OFF" if analysis.get("squeeze", {}).get("squeeze_off") else "ON"
+                ),
+                "momentum": analysis.get("squeeze", {}).get(
+                    "momentum_direction", "NEUTRAL"
+                ),
                 "macd_cross": analysis.get("macd", {}).get("cross_direction", "NONE"),
-
                 "rsi_value": round(analysis.get("rsi", {}).get("value", 50), 2),
-
                 "rsi_level": analysis.get("rsi", {}).get("extreme_level", "NORMAL"),
-
                 "signals_present": {
-
-                    "squeeze_breakout": analysis.get("squeeze", {}).get("squeeze_off", False),
-
-                    "macd_signal": analysis.get("macd", {}).get("cross_direction") != "NONE",
-
-                    "rsi_extreme": analysis.get("rsi", {}).get("extreme_level") != "NORMAL"
-
-                }
-
+                    "squeeze_breakout": analysis.get("squeeze", {}).get(
+                        "squeeze_off", False
+                    ),
+                    "macd_signal": analysis.get("macd", {}).get("cross_direction")
+                    != "NONE",
+                    "rsi_extreme": analysis.get("rsi", {}).get("extreme_level")
+                    != "NORMAL",
+                },
             }
 
             return summary
@@ -866,12 +646,8 @@ class TechnicalIndicators:
 
             return {}
 
-
-
     @staticmethod
-
     def calculate_signal_confluence(analysis: Dict) -> Dict:
-
         """
 
         คำนวณการยืนยันสัญญาณจาก indicators หลายตัว
@@ -888,15 +664,11 @@ class TechnicalIndicators:
 
             rsi = analysis.get("rsi", {})
 
-
-
             # Count bullish signals
 
             bullish_signals = 0
 
             bearish_signals = 0
-
-
 
             # Squeeze momentum
 
@@ -908,8 +680,6 @@ class TechnicalIndicators:
 
                 bearish_signals += 1
 
-
-
             # MACD cross
 
             if macd.get("cross_direction") == "UP":
@@ -919,8 +689,6 @@ class TechnicalIndicators:
             elif macd.get("cross_direction") == "DOWN":
 
                 bearish_signals += 1
-
-
 
             # RSI extreme
 
@@ -932,43 +700,32 @@ class TechnicalIndicators:
 
                 bearish_signals += 1
 
-
-
             # Squeeze breakout (neutral but important)
 
             squeeze_breakout = squeeze.get("squeeze_off", False)
 
-
-
             confluence = {
-
                 "bullish_count": bullish_signals,
-
                 "bearish_count": bearish_signals,
-
                 "total_signals": bullish_signals + bearish_signals,
-
                 "squeeze_breakout": squeeze_breakout,
-
-                "confluence_strength": "STRONG" if (bullish_signals >= 3 or bearish_signals >= 3) else
-
-                                     "MEDIUM" if (bullish_signals >= 2 or bearish_signals >= 2) else
-
-                                     "WEAK",
-
-                "direction": "BULLISH" if bullish_signals > bearish_signals else
-
-                           "BEARISH" if bearish_signals > bullish_signals else
-
-                           "NEUTRAL"
-
+                "confluence_strength": (
+                    "STRONG"
+                    if (bullish_signals >= 3 or bearish_signals >= 3)
+                    else (
+                        "MEDIUM"
+                        if (bullish_signals >= 2 or bearish_signals >= 2)
+                        else "WEAK"
+                    )
+                ),
+                "direction": (
+                    "BULLISH"
+                    if bullish_signals > bearish_signals
+                    else "BEARISH" if bearish_signals > bullish_signals else "NEUTRAL"
+                ),
             }
 
-
-
             return confluence
-
-
 
         except Exception as e:
 
@@ -976,20 +733,14 @@ class TechnicalIndicators:
 
             return {}
 
-
-
     # ================================================================
 
     # 📋 LAYER 6: Debug และ Monitoring Functions
 
     # ================================================================
 
-
-
     @staticmethod
-
     def get_indicator_health(analysis: Dict) -> Dict:
-
         """
 
         ตรวจสอบสุขภาพของการคำนวณ indicators
@@ -1000,17 +751,7 @@ class TechnicalIndicators:
 
         try:
 
-            health = {
-
-                "overall_status": "HEALTHY",
-
-                "issues": [],
-
-                "warnings": []
-
-            }
-
-
+            health = {"overall_status": "HEALTHY", "issues": [], "warnings": []}
 
             # Check squeeze calculation
 
@@ -1022,8 +763,6 @@ class TechnicalIndicators:
 
                 health["overall_status"] = "ERROR"
 
-
-
             # Check MACD calculation
 
             macd = analysis.get("macd", {})
@@ -1031,8 +770,6 @@ class TechnicalIndicators:
             if macd.get("macd_line") == 0 and macd.get("signal_line") == 0:
 
                 health["warnings"].append("MACD values are zero - check data quality")
-
-
 
             # Check RSI calculation
 
@@ -1046,8 +783,6 @@ class TechnicalIndicators:
 
                 health["overall_status"] = "ERROR"
 
-
-
             # Check data freshness
 
             timestamp = analysis.get("timestamp")
@@ -1060,17 +795,14 @@ class TechnicalIndicators:
 
                 if pd.Timestamp.now() - analysis_time > timedelta(minutes=10):
 
-                    health["warnings"].append("Analysis data is more than 10 minutes old")
-
-
+                    health["warnings"].append(
+                        "Analysis data is more than 10 minutes old"
+                    )
 
             return health
-
-
 
         except Exception as e:
 
             logger.error(f"Error checking indicator health: {e}")
 
             return {"overall_status": "ERROR", "issues": [str(e)], "warnings": []}
-

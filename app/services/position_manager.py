@@ -7,7 +7,6 @@ from datetime import datetime
 import pandas as pd
 
 
-
 from ..utils.core_utils import JSONManager, ErrorHandler
 
 from ..utils.data_types import DataConverter
@@ -15,7 +14,6 @@ from ..utils.data_types import DataConverter
 from app.utils.pnl_utils import calculate_pnl_pct
 
 from app.utils.risk_utils import RiskCalculator
-
 
 
 # Step 3: Initialize PositionManager
@@ -31,24 +29,15 @@ except Exception:
     # Fallback (should match Config defaults)
 
     RISK_MANAGEMENT = {
-
-    "1d": {"tp_levels": [3.0, 5.0, 7.0], "sl_level": 3.0},
-
-    "15m": {"tp_levels": [1.0, 2.0, 3.0], "sl_level": 1.0},
-
-}
-
+        "1d": {"tp_levels": [3.0, 5.0, 7.0], "sl_level": 3.0},
+        "15m": {"tp_levels": [1.0, 2.0, 3.0], "sl_level": 1.0},
+    }
 
 
 class PositionManager:
-
     """Centralized position management - รวม PositionTracker + PriceMonitor logic"""
 
-
-
     PRICE_TOLERANCE = 0.005  # 0.1% tolerance for TP/SL detection
-
-
 
     def __init__(self, data_manager):
 
@@ -64,11 +53,7 @@ class PositionManager:
 
         self.positions = self._load_positions()
 
-
-
         self.logger.info("✅ PositionManager initialized")
-
-
 
     # =========================================================
 
@@ -77,7 +62,6 @@ class PositionManager:
     # =========================================================
 
     def _ensure_events(self, position: Dict) -> Dict:
-
         """Ensure position has events structure (for old JSON compatibility)"""
 
         if not isinstance(position, dict):
@@ -89,8 +73,6 @@ class PositionManager:
             position["events"] = {"TP1": None, "TP2": None, "TP3": None, "SL": None}
 
             return position
-
-
 
         # Ensure all keys exist
 
@@ -104,25 +86,19 @@ class PositionManager:
 
         return position
 
-
-
     @ErrorHandler.service_error_handler("PositionManager")
-
     def create_position(self, signal_data: Dict) -> Optional[str]:
-
         """Create new position from signal"""
 
         try:
 
-            symbol = signal_data['symbol']
+            symbol = signal_data["symbol"]
 
-            timeframe = signal_data['timeframe']
+            timeframe = signal_data["timeframe"]
 
-            direction = signal_data['direction']
+            direction = signal_data["direction"]
 
-            entry_price = signal_data['current_price']
-
-
+            entry_price = signal_data["current_price"]
 
             # Validate entry price
 
@@ -131,8 +107,6 @@ class PositionManager:
                 self.logger.error(f"Invalid entry price: {entry_price}")
 
                 return None
-
-
 
             # Check price sanity (เทียบกับ cached price ถ้ามี)
 
@@ -144,8 +118,6 @@ class PositionManager:
 
                 return None
 
-
-
             # Check for existing position
 
             position_id = f"{symbol}_{timeframe}_{direction}"
@@ -154,87 +126,52 @@ class PositionManager:
 
                 existing = self.positions[position_id]
 
-                if existing['status'] == 'ACTIVE':
+                if existing["status"] == "ACTIVE":
 
                     self.logger.info(f"Position {position_id} already exists")
 
                     return None
 
-
-
             # Calculate TP/SL levels
 
-            tp_levels, sl_level = self._calculate_levels(entry_price, direction, timeframe)
-
-
+            tp_levels, sl_level = self._calculate_levels(
+                entry_price, direction, timeframe
+            )
 
             position = {
-
-                'id': position_id,
-
-                'symbol': symbol,
-
-                'timeframe': timeframe,
-
-                'direction': direction,
-
-                'entry_price': entry_price,
-
-                'entry_time': datetime.now().isoformat(),
-
-                'status': 'ACTIVE',
-
-                'tp_levels': tp_levels,
-
-                'sl_level': sl_level,
-
-                'tp_hit': {'TP1': False, 'TP2': False, 'TP3': False},
-
-                'sl_hit': False,
-
-
-
+                "id": position_id,
+                "symbol": symbol,
+                "timeframe": timeframe,
+                "direction": direction,
+                "entry_price": entry_price,
+                "entry_time": datetime.now().isoformat(),
+                "status": "ACTIVE",
+                "tp_levels": tp_levels,
+                "sl_level": sl_level,
+                "tp_hit": {"TP1": False, "TP2": False, "TP3": False},
+                "sl_hit": False,
                 # =========================================================
-
                 # ✅ NEW: events timeline for daily/weekly summary
-
                 # =========================================================
-
-                'events': {'TP1': None, 'TP2': None, 'TP3': None, 'SL': None},
-
-
-
-                'current_price': entry_price,
-
-                'pnl_pct': 0.0,
-
-                'signal_strength': signal_data.get('signal_strength', 0),
-
-                'created_by': 'signal_detector',
-
-                'last_update': datetime.now().isoformat()
-
+                "events": {"TP1": None, "TP2": None, "TP3": None, "SL": None},
+                "current_price": entry_price,
+                "pnl_pct": 0.0,
+                "signal_strength": signal_data.get("signal_strength", 0),
+                "created_by": "signal_detector",
+                "last_update": datetime.now().isoformat(),
             }
-
-
 
             # Sanitize data before saving
 
             position = self.data_converter.sanitize_signal_data(position)
 
-
-
             self.positions[position_id] = position
 
             self._save_positions()
 
-
-
             self.logger.info(f"✅ Created position: {position_id} at {entry_price}")
 
             return position_id
-
-
 
         except Exception as e:
 
@@ -242,39 +179,27 @@ class PositionManager:
 
             return None
 
-
-
     @ErrorHandler.service_error_handler("PositionManager")
-
     def update_positions(self) -> Dict[str, Dict]:
-
         """Update all active positions with current prices"""
 
         updates = {}
 
-
-
         try:
 
-            active_positions = {k: v for k, v in self.positions.items()
-
-                                if v['status'] == 'ACTIVE'}
-
-
+            active_positions = {
+                k: v for k, v in self.positions.items() if v["status"] == "ACTIVE"
+            }
 
             if not active_positions:
 
                 return updates
 
-
-
             # Get current prices for all active symbols
 
-            symbols = list(set([pos['symbol'] for pos in active_positions.values()]))
+            symbols = list(set([pos["symbol"] for pos in active_positions.values()]))
 
             current_prices = self.data_manager.get_current_prices_cached(symbols)
-
-
 
             for position_id, position in active_positions.items():
 
@@ -282,69 +207,49 @@ class PositionManager:
 
                 self._ensure_events(position)
 
-
-
-                symbol = position['symbol']
+                symbol = position["symbol"]
 
                 current_price = current_prices.get(symbol)
-
-
 
                 if current_price is None:
 
                     continue
 
-
-
                 # Update position with current price
 
-                old_price = position['current_price']
+                old_price = position["current_price"]
 
-                position['current_price'] = current_price
+                position["current_price"] = current_price
 
-                position['last_update'] = datetime.now().isoformat()
-
-
+                position["last_update"] = datetime.now().isoformat()
 
                 # Calculate P&L
 
-                entry_price = position['entry_price']
+                entry_price = position["entry_price"]
 
-                direction = position['direction']
-
-
+                direction = position["direction"]
 
                 pnl_pct = calculate_pnl_pct(direction, entry_price, current_price)
 
-
-
-                position['pnl_pct'] = round(pnl_pct, 2)
-
-
+                position["pnl_pct"] = round(pnl_pct, 2)
 
                 # Check TP/SL hits
 
-                tp_sl_update = self._check_tp_sl_hits(position, old_price, current_price)
+                tp_sl_update = self._check_tp_sl_hits(
+                    position, old_price, current_price
+                )
 
                 if tp_sl_update:
 
                     updates[position_id] = tp_sl_update
 
-
-
             self._save_positions()
-
-
 
             if updates:
 
                 self.logger.info(f"📊 Updated {len(updates)} positions with TP/SL hits")
 
-
-
             return updates
-
-
 
         except Exception as e:
 
@@ -352,21 +257,18 @@ class PositionManager:
 
             return {}
 
-
-
-    def _check_tp_sl_hits(self, position: Dict, old_price: float, current_price: float) -> Optional[Dict]:
-
+    def _check_tp_sl_hits(
+        self, position: Dict, old_price: float, current_price: float
+    ) -> Optional[Dict]:
         """Check if TP/SL levels are hit"""
 
-        direction = position['direction']
+        direction = position["direction"]
 
-        tp_levels = position['tp_levels']
+        tp_levels = position["tp_levels"]
 
-        sl_level = position['sl_level']
+        sl_level = position["sl_level"]
 
         updates = {}
-
-
 
         try:
 
@@ -374,19 +276,15 @@ class PositionManager:
 
             self._ensure_events(position)
 
-
-
             # Check TP hits
 
             for tp_name, tp_price in tp_levels.items():
 
-                if not position['tp_hit'][tp_name]:
+                if not position["tp_hit"][tp_name]:
 
                     hit = False
 
-
-
-                    if direction == 'LONG':
+                    if direction == "LONG":
 
                         tp_threshold = tp_price * (1 - self.PRICE_TOLERANCE)
 
@@ -398,13 +296,9 @@ class PositionManager:
 
                         hit = current_price <= tp_threshold
 
-
-
                     if hit:
 
-                        position['tp_hit'][tp_name] = True
-
-
+                        position["tp_hit"][tp_name] = True
 
                         # =========================================================
 
@@ -415,60 +309,42 @@ class PositionManager:
                         if position["events"].get(tp_name) is None:
 
                             position["events"][tp_name] = {
-
-                                'hit': True,
-
-                                'price': current_price,
-
-                                'target_price': tp_price,
-
-                                'timestamp': datetime.now().isoformat()
-
+                                "hit": True,
+                                "price": current_price,
+                                "target_price": tp_price,
+                                "timestamp": datetime.now().isoformat(),
                             }
 
-
-
-                        updates[f'{tp_name}_hit'] = {
-
-                            'hit': True,
-
-                            'price': current_price,
-
-                            'target_price': tp_price,
-
-                            'timestamp': datetime.now().isoformat()
-
+                        updates[f"{tp_name}_hit"] = {
+                            "hit": True,
+                            "price": current_price,
+                            "target_price": tp_price,
+                            "timestamp": datetime.now().isoformat(),
                         }
 
-
-
-                        self.logger.info(f"🎯 {tp_name} hit for {position['symbol']}: {current_price}")
-
-
+                        self.logger.info(
+                            f"🎯 {tp_name} hit for {position['symbol']}: {current_price}"
+                        )
 
                         # Check if all TPs hit
 
-                        if all(position['tp_hit'].values()):
+                        if all(position["tp_hit"].values()):
 
-                            position['status'] = 'CLOSED'
+                            position["status"] = "CLOSED"
 
-                            position['close_reason'] = 'ALL_TP_HIT'
+                            position["close_reason"] = "ALL_TP_HIT"
 
-                            position['close_time'] = datetime.now().isoformat()
+                            position["close_time"] = datetime.now().isoformat()
 
-                            updates['position_closed'] = True
-
-
+                            updates["position_closed"] = True
 
             # Check SL hit
 
-            if not position['sl_hit']:
+            if not position["sl_hit"]:
 
                 sl_hit = False
 
-
-
-                if direction == 'LONG':
+                if direction == "LONG":
 
                     sl_threshold = sl_level * (1 - self.PRICE_TOLERANCE)
 
@@ -480,13 +356,9 @@ class PositionManager:
 
                     sl_hit = current_price >= sl_threshold
 
-
-
                 if sl_hit:
 
-                    position['sl_hit'] = True
-
-
+                    position["sl_hit"] = True
 
                     # =========================================================
 
@@ -497,48 +369,32 @@ class PositionManager:
                     if position["events"].get("SL") is None:
 
                         position["events"]["SL"] = {
-
-                            'hit': True,
-
-                            'price': current_price,
-
-                            'target_price': sl_level,
-
-                            'timestamp': datetime.now().isoformat()
-
+                            "hit": True,
+                            "price": current_price,
+                            "target_price": sl_level,
+                            "timestamp": datetime.now().isoformat(),
                         }
 
+                    position["status"] = "CLOSED"
 
+                    position["close_reason"] = "SL_HIT"
 
-                    position['status'] = 'CLOSED'
+                    position["close_time"] = datetime.now().isoformat()
 
-                    position['close_reason'] = 'SL_HIT'
-
-                    position['close_time'] = datetime.now().isoformat()
-
-                    updates['sl_hit'] = {
-
-                        'hit': True,
-
-                        'price': current_price,
-
-                        'target_price': sl_level,
-
-                        'timestamp': datetime.now().isoformat()
-
+                    updates["sl_hit"] = {
+                        "hit": True,
+                        "price": current_price,
+                        "target_price": sl_level,
+                        "timestamp": datetime.now().isoformat(),
                     }
 
-                    updates['position_closed'] = True
+                    updates["position_closed"] = True
 
-
-
-                    self.logger.info(f"🛑 SL hit for {position['symbol']}: {current_price}")
-
-
+                    self.logger.info(
+                        f"🛑 SL hit for {position['symbol']}: {current_price}"
+                    )
 
             return updates if updates else None
-
-
 
         except Exception as e:
 
@@ -546,63 +402,38 @@ class PositionManager:
 
             return None
 
-
-
-    def _calculate_levels(self, entry_price: float, direction: str, timeframe: str) -> Tuple[Dict, float]:
-
+    def _calculate_levels(
+        self, entry_price: float, direction: str, timeframe: str
+    ) -> Tuple[Dict, float]:
         """Calculate TP and SL levels (using RiskCalculator)"""
 
+        risk_config = RISK_MANAGEMENT.get(timeframe, RISK_MANAGEMENT["1d"])
 
+        tp_percentages = risk_config["tp_levels"]
 
-        risk_config = RISK_MANAGEMENT.get(timeframe, RISK_MANAGEMENT['1d'])
-
-        tp_percentages = risk_config['tp_levels']
-
-        sl_percentage = risk_config['sl_level']
-
-
+        sl_percentage = risk_config["sl_level"]
 
         result = RiskCalculator.calculate_levels(
-
             entry=entry_price,
-
             direction=direction,
-
             sl_pct=sl_percentage,
-
-            tp_levels=tp_percentages
-
+            tp_levels=tp_percentages,
         )
 
-
-
         tp_levels = {
-
             "TP1": result.get("take_profit_1"),
-
             "TP2": result.get("take_profit_2"),
-
             "TP3": result.get("take_profit_3"),
-
         }
-
-
 
         sl_level = result.get("stop_loss")
 
-
-
         return tp_levels, sl_level
 
-
-
     def get_active_positions(self) -> Dict:
-
         """Get all active positions"""
 
-        return {k: v for k, v in self.positions.items() if v['status'] == 'ACTIVE'}
-
-
+        return {k: v for k, v in self.positions.items() if v["status"] == "ACTIVE"}
 
     def has_active_position_any_tf(self, symbol: str) -> bool:
 
@@ -615,8 +446,6 @@ class PositionManager:
                 return True
 
         return False
-
-
 
     def _norm_tf(self, tf: str) -> str:
 
@@ -632,45 +461,37 @@ class PositionManager:
 
         return tf
 
-
-
     def get_position_status(self, symbol: str, timeframe: str) -> Optional[Dict]:
 
         symbol = (symbol or "").upper()
 
         tf = self._norm_tf(timeframe)
 
-
-
         for position in self.positions.values():
 
-            if (position.get('symbol') == symbol and
-
-                self._norm_tf(position.get('timeframe')) == tf and
-
-                position.get('status') == 'ACTIVE'):
+            if (
+                position.get("symbol") == symbol
+                and self._norm_tf(position.get("timeframe")) == tf
+                and position.get("status") == "ACTIVE"
+            ):
 
                 return position
 
         return None
 
-
-
     @ErrorHandler.service_error_handler("PositionManager")
-
-    def close_position(self, position_id: str, reason: str = 'MANUAL') -> bool:
-
+    def close_position(self, position_id: str, reason: str = "MANUAL") -> bool:
         """Manually close a position"""
 
         try:
 
             if position_id in self.positions:
 
-                self.positions[position_id]['status'] = 'CLOSED'
+                self.positions[position_id]["status"] = "CLOSED"
 
-                self.positions[position_id]['close_reason'] = reason
+                self.positions[position_id]["close_reason"] = reason
 
-                self.positions[position_id]['close_time'] = datetime.now().isoformat()
+                self.positions[position_id]["close_time"] = datetime.now().isoformat()
 
                 self._save_positions()
 
@@ -686,61 +507,43 @@ class PositionManager:
 
             return False
 
-
-
     def get_positions_summary(self) -> Dict:
-
         """Get positions summary statistics"""
 
         all_positions = self.positions
 
         active_positions = self.get_active_positions()
 
-        closed_positions = [pos for pos in all_positions.values() if pos['status'] == 'CLOSED']
-
-
+        closed_positions = [
+            pos for pos in all_positions.values() if pos["status"] == "CLOSED"
+        ]
 
         # Calculate P&L stats
 
-        total_pnl = sum(pos.get('pnl_pct', 0) for pos in active_positions.values())
+        total_pnl = sum(pos.get("pnl_pct", 0) for pos in active_positions.values())
 
-        wins = len([pos for pos in closed_positions if pos.get('pnl_pct', 0) > 0])
+        wins = len([pos for pos in closed_positions if pos.get("pnl_pct", 0) > 0])
 
-        losses = len([pos for pos in closed_positions if pos.get('pnl_pct', 0) < 0])
+        losses = len([pos for pos in closed_positions if pos.get("pnl_pct", 0) < 0])
 
         win_rate = (wins / len(closed_positions) * 100) if closed_positions else 0
 
-
-
         return {
-
-            'total_positions': len(all_positions),
-
-            'active_positions': len(active_positions),
-
-            'closed_positions': len(closed_positions),
-
-            'total_pnl_pct': round(total_pnl, 2),
-
-            'win_rate_pct': round(win_rate, 2),
-
-            'wins': wins,
-
-            'losses': losses
-
+            "total_positions": len(all_positions),
+            "active_positions": len(active_positions),
+            "closed_positions": len(closed_positions),
+            "total_pnl_pct": round(total_pnl, 2),
+            "win_rate_pct": round(win_rate, 2),
+            "wins": wins,
+            "losses": losses,
         }
 
-
-
     def _load_positions(self) -> Dict:
-
         """Load positions from JSON file"""
 
         positions = self.json_manager.load_json(self.positions_file, {})
 
         self.logger.info(f"📂 Loaded {len(positions)} positions")
-
-
 
         # Ensure backward compatibility for old saved positions
 
@@ -754,14 +557,9 @@ class PositionManager:
 
             pass
 
-
-
         return positions
 
-
-
     def _save_positions(self):
-
         """Save positions to JSON file"""
 
         success = self.json_manager.save_json(self.positions, self.positions_file)
@@ -770,25 +568,20 @@ class PositionManager:
 
             self.logger.error("❌ Failed to save positions")
 
-
-
     def cleanup_old_positions(self, days_old: int = 30):
-
         """Clean up old closed positions"""
 
         try:
 
             cutoff_date = datetime.now().timestamp() - (days_old * 24 * 60 * 60)
 
-
-
             positions_to_remove = []
 
             for pos_id, position in self.positions.items():
 
-                if position['status'] == 'CLOSED':
+                if position["status"] == "CLOSED":
 
-                    close_time = position.get('close_time')
+                    close_time = position.get("close_time")
 
                     if close_time:
 
@@ -798,33 +591,26 @@ class PositionManager:
 
                             positions_to_remove.append(pos_id)
 
-
-
             for pos_id in positions_to_remove:
 
                 del self.positions[pos_id]
-
-
 
             if positions_to_remove:
 
                 self._save_positions()
 
-                self.logger.info(f"🧹 Cleaned up {len(positions_to_remove)} old positions")
-
-
+                self.logger.info(
+                    f"🧹 Cleaned up {len(positions_to_remove)} old positions"
+                )
 
         except Exception as e:
 
             self.logger.error(f"Error cleaning up positions: {e}")
 
-
-
-    def validate_price_sanity(self, symbol: str, price: float, previous_price: float = None) -> bool:
-
+    def validate_price_sanity(
+        self, symbol: str, price: float, previous_price: float = None
+    ) -> bool:
         """Check if price is within reasonable range"""
-
-
 
         # Check zero or negative
 
@@ -833,8 +619,6 @@ class PositionManager:
             self.logger.error(f"INVALID PRICE: {symbol} = {price} (zero or negative)")
 
             return False
-
-
 
         # Check percentage change if we have previous price
 
@@ -845,14 +629,9 @@ class PositionManager:
             if pct_change > 30:
 
                 self.logger.error(
-
                     f"SUSPICIOUS PRICE CHANGE: {symbol} {previous_price} -> {price} ({pct_change:.1f}%)"
-
                 )
 
                 return False
 
-
-
         return True
-
