@@ -39,14 +39,14 @@ def get_version():
                 version = int(f.read().strip())
         else:
             version = 106
-        
+
         # Increment version
         new_version = version + 1
-        
+
         # Save new version
         with open('version.txt', 'w') as f:
             f.write(str(new_version))
-        
+
         logger.info(f"🔢 Version auto-incremented: 2.2.{version} → 2.2.{new_version}")
         return f"2.2.{new_version}"
     except Exception as e:
@@ -70,19 +70,19 @@ services = {
     "config_manager": None,
     "data_manager": None, 
     "position_manager": None,
-    
+
     # 👤 Added for Telegram VIP System
     "database": None,
     "member_manager": None,
     "telegram_notifier": None,
-    
+
     # Legacy services (จะยังอยู่ครบเหมือนเดิม)
     "signal_detector": None,
     "scheduler": None,
     "line_notifier": None,
     "sheets_logger": None,
     "performance_analyzer": None,
-    
+
     "initialized": False,
 }
 
@@ -90,12 +90,12 @@ def initialize_services_background():
     """Initialize all services with new refactored architecture"""
     try:
         logger.info(f"🚀 Starting SIGNAL-ALERT {VERSION} service initialization...")
-        
+
         # 📂 สร้างโฟลเดอร์ data เพื่อป้องกัน DB Error (V2.2 Update)
         if not os.path.exists('data'):
             os.makedirs('data')
             logger.info("📁 Created 'data' directory for member database")
-        
+
         # Step 1: Initialize ConfigManager (Singleton)
         services["config_manager"] = ConfigManager()
         logger.info("✅ ConfigManager initialized")
@@ -117,7 +117,6 @@ def initialize_services_background():
         services["position_manager"] = PositionManager(services["data_manager"])
         logger.info("✅ PositionManager initialized")
 
-
         # Step 4: Initialize notification services with ConfigManager
         try:
             line_config = services["config_manager"].get_line_config()
@@ -126,7 +125,7 @@ def initialize_services_background():
         except Exception as e:
             logger.warning(f"⚠️ LineNotifier failed to initialize: {e}")
             services["line_notifier"] = None
-            
+
         try:
             google_config = services["config_manager"].get_google_config()
             services["sheets_logger"] = SheetsLogger(google_config)
@@ -134,7 +133,7 @@ def initialize_services_background():
         except Exception as e:
             logger.warning(f"⚠️ SheetsLogger failed to initialize: {e}")
             services["sheets_logger"] = None
-        
+
         # Step 5: Initialize SignalDetector with new services
         try:
             signal_config = {
@@ -147,7 +146,7 @@ def initialize_services_background():
 
             services["signal_detector"] = SignalDetector(signal_config)
             logger.info("✅ SignalDetector initialized with refactored services")
-            
+
         except Exception as e:
             logger.exception("❌ SignalDetector initialization failed")
             services["signal_detector"] = None
@@ -156,7 +155,7 @@ def initialize_services_background():
         try:
             scheduler_config = services["config_manager"].get_all()
             services["scheduler"] = SignalScheduler(scheduler_config)
-            
+
             # Inject refactored services into scheduler
             services["scheduler"].set_services(
                 signal_detector=services["signal_detector"],
@@ -165,9 +164,9 @@ def initialize_services_background():
                 sheets_logger=services["sheets_logger"],
                 member_manager=services["member_manager"]  # 🎯 ใส่บรรทัดนี้บรรทัดเดียวพอครับ
             )
-            
+
             logger.info("✅ SignalScheduler initialized with refactored services")
-            
+
             # Auto-start scheduler
             services["scheduler"].start_scheduler()
             logger.info("✅ Scheduler auto-started")
@@ -191,11 +190,11 @@ def initialize_services_background():
                 services["ws_15m"].append(ws)
 
             logger.info("✅ WebSocket 15m started for 10 symbols")
-            
+
         except Exception as e:
             logger.error(f"❌ SignalScheduler initialization failed: {e}")
             services["scheduler"] = None
-        
+
         # Step 7: Initialize PerformanceAnalyzer
         try:
             services["performance_analyzer"] = PerformanceAnalyzer(
@@ -206,7 +205,7 @@ def initialize_services_background():
         except Exception as e:
             logger.warning(f"⚠️ PerformanceAnalyzer failed to initialize: {e}")
             services["performance_analyzer"] = None
-        
+
         # Step 8: Start automatic position monitoring
         if services["position_manager"]:
             try:
@@ -219,10 +218,10 @@ def initialize_services_background():
                 logger.info("✅ Background position monitoring started")
             except Exception as e:
                 logger.warning(f"⚠️ Failed to start background monitoring: {e}")
-        
+
         services["initialized"] = True
         logger.info(f"🎉 All services initialized successfully! SIGNAL-ALERT {VERSION} ready")
-        
+
     except Exception as e:
         logger.error(f"💥 Service initialization failed: {e}")
         services["initialized"] = False
@@ -347,13 +346,12 @@ def start_position_monitoring():
 # Start background initialization
 Thread(target=initialize_services_background, daemon=True).start()
 
-
 @app.route("/")
 def root():
     """Home endpoint - system information"""
     config = services["config_manager"]
     cache_stats = services["data_manager"].get_cache_stats() if services["data_manager"] else {}
-    
+
     return jsonify({
         "system": "SIGNAL-ALERT",
         "version": VERSION,
@@ -382,7 +380,6 @@ def root():
         }
     })
 
-
 @app.route("/health")
 def health_check():
     """System health check"""
@@ -392,7 +389,7 @@ def health_check():
         "services_initialized": services["initialized"],
         "version": VERSION
     }
-    
+
     status_code = 200 if services["initialized"] else 503
     return jsonify(health_data), status_code
 
@@ -442,15 +439,15 @@ def test_line_notification():
                 "success": False,
                 "error": "LineNotifier not initialized"
             }), 500
-        
+
         success = services["line_notifier"].send_test_message()
-        
+
         return jsonify({
             "success": success,
             "message": "Test message sent to LINE" if success else "Failed to send",
             "line_status": services["line_notifier"].get_status()
         })
-        
+
     except Exception as e:
         logger.error(f"Test LINE error: {e}")
         return jsonify({
@@ -465,29 +462,29 @@ def line_webhook():
         # ดึง signature และ body จาก request
         signature = request.headers.get('X-Line-Signature')
         body = request.get_data(as_text=True)
-        
+
         logger.info(f"📥 Received LINE webhook")
-        
+
         # แปลง JSON body เป็น dict
         import json
         data = json.loads(body)
-        
+
         # วนลูปดู events ที่ได้รับ
         for event in data.get('events', []):
             # เช็กว่ามาจากกลุ่มหรือไม่
             source = event.get('source', {})
-            
+
             if source.get('type') == 'group':
                 # 🎯 นี่คือ Group ID ที่เราต้องการ!
                 group_id = source.get('groupId')
-                
+
                 # แสดง log
                 logger.info(f"🎯 GROUP ID FOUND: {group_id}")
                 logger.info(f"📝 Message Type: {event.get('type')}")
                 logger.info(f"💬 Text: {event.get('message', {}).get('text', 'N/A')}")
-                
+
         return jsonify({"status": "ok"}), 200
-        
+
     except Exception as e:
         logger.error(f"❌ Webhook error: {e}")
         return jsonify({"error": str(e)}), 500
@@ -501,12 +498,12 @@ def receive_signal_from_outside():
         direction = data.get('direction', 'LONG').upper()
         price = data.get('current_price', 0)
         risk = data.get('risk_levels', {})
-        
+
         # 1. คำนวณ Risk:Reward (R:R)
         entry = risk.get('entry_price', price)
         sl = risk.get('stop_loss', 0)
         tp1 = risk.get('take_profit_1', 0)
-        
+
         rr_ratio = 0.0
         if entry and sl and tp1 and (entry != sl):
             risk_amt = abs(entry - sl)
@@ -539,7 +536,7 @@ def receive_signal_from_outside():
             },
             "signal_strength": data.get('signal_strength', 100)
         }
-        
+
         # 3. ส่งแจ้งเตือนเข้า LINE
         if services["line_notifier"]:
             services["line_notifier"].send_signal_alert(analysis)
@@ -550,7 +547,7 @@ def receive_signal_from_outside():
             from app.services.telegram_notifier import TelegramNotifier
             tg_token = os.getenv("TELEGRAM_BOT_TOKEN")
             tg_chat_id = os.getenv("TELEGRAM_CHAT_ID")
-            
+
             if tg_token and tg_chat_id:
                 tg_bot = TelegramNotifier(tg_token, tg_chat_id)
                 # ✅ disabled: prevent duplicate TG alerts (scheduler will handle)
@@ -560,7 +557,7 @@ def receive_signal_from_outside():
                 logger.warning("⚠️ ข้าม Telegram: ไม่พบ TOKEN หรือ CHAT_ID ใน Variables")
         except Exception as e:
             logger.error(f"❌ บอทพ่นสัญญาณลง Telegram ไม่สำเร็จ: {e}")
-            
+
         return jsonify({
             "status": "success", 
             "message": "Signal processed and sent to all channels", 
@@ -570,7 +567,7 @@ def receive_signal_from_outside():
     except Exception as e:
         logger.error(f"❌ Error in receive_signal: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
-        
+
 @app.route("/startup")
 def startup_probe():
     """Startup probe - always return OK for Cloud Run"""
@@ -579,19 +576,18 @@ def startup_probe():
         "timestamp": time.time()
     }), 200
 
-
 @app.route("/keepalive")
 def keepalive():
     """Keepalive endpoint for Cloud Run"""
     try:
         scheduler_status = "unknown"
         position_count = 0
-        
+
         if services["initialized"] and services["scheduler"]:
             try:
                 status_info = services["scheduler"].get_scheduler_status()
                 scheduler_status = status_info.get("status", "unknown")
-                
+
                 # Auto-restart scheduler if stopped
                 if scheduler_status == "stopped":
                     services["scheduler"].start_scheduler()
@@ -600,14 +596,14 @@ def keepalive():
             except Exception as e:
                 logger.warning(f"Scheduler check failed in keepalive: {e}")
                 scheduler_status = "error"
-        
+
         if services["position_manager"]:
             try:
                 summary = services["position_manager"].get_positions_summary()
                 position_count = summary["active_positions"]
             except Exception as e:
                 logger.warning(f"Position count check failed: {e}")
-        
+
         return jsonify({
             "status": "alive",
             "timestamp": time.time(),
@@ -617,7 +613,7 @@ def keepalive():
             "uptime_check": "ok",
             "version": VERSION
         })
-        
+
     except Exception as e:
         logger.error(f"Keepalive endpoint error: {e}")
         return jsonify({
@@ -626,7 +622,6 @@ def keepalive():
             "error": str(e),
             "version": VERSION
         }), 200
-
 
 def require_services(f):
     """Decorator to check if services are ready"""
@@ -746,7 +741,7 @@ def get_positions():
     try:
         active_positions = services["position_manager"].get_active_positions()
         summary = services["position_manager"].get_positions_summary()
-        
+
         return jsonify({
             "status": "success",
             "active_positions": active_positions,
@@ -755,7 +750,7 @@ def get_positions():
             "active_count": summary["active_positions"],
             "version": VERSION
         })
-        
+
     except Exception as e:
         logger.error(f"Error in get_positions: {e}")
         return jsonify({"error": str(e)}), 500
@@ -775,25 +770,23 @@ def get_positions_summary():
         logger.error(f"Error in get_positions_summary: {e}")
         return jsonify({"error": str(e)}), 500
 
-
 @app.route("/api/positions/status/<symbol>/<timeframe>")
 @require_services  
 def get_position_status(symbol, timeframe):
     """Get specific position status"""
     try:
         position = services["position_manager"].get_position_status(symbol.upper(), timeframe)
-        
+
         return jsonify({
             "status": "success",
             "position_found": position is not None,
             "position": position,
             "version": VERSION
         })
-        
+
     except Exception as e:
         logger.error(f"Error getting position status for {symbol} {timeframe}: {e}")
         return jsonify({"error": str(e)}), 500
-
 
 @app.route("/api/positions/close", methods=["POST"])
 @require_services
@@ -803,12 +796,12 @@ def close_position():
         data = request.get_json()
         position_id = data.get("position_id")
         reason = data.get("reason", "MANUAL")
-        
+
         if not position_id:
             return jsonify({"error": "position_id required"}), 400
-        
+
         success = services["position_manager"].close_position(position_id, reason)
-        
+
         if success:
             return jsonify({
                 "status": "success",
@@ -821,11 +814,10 @@ def close_position():
                 "error": "Position not found or already closed",
                 "position_id": position_id
             }), 404
-            
+
     except Exception as e:
         logger.error(f"Error closing position: {e}")
         return jsonify({"error": str(e)}), 500
-
 
 @app.route("/api/positions/update", methods=["POST"])
 @require_services
@@ -833,7 +825,7 @@ def update_positions():
     """Update all positions with current prices"""
     try:
         updates = services["position_manager"].update_positions()
-        
+
         return jsonify({
             "status": "success",
             "positions_updated": len(updates),
@@ -841,11 +833,10 @@ def update_positions():
             "timestamp": time.time(),
             "version": VERSION
         })
-        
+
     except Exception as e:
         logger.error(f"Error updating positions: {e}")
         return jsonify({"error": str(e)}), 500
-
 
 @app.route("/api/monitor/status")
 @require_services
@@ -854,7 +845,7 @@ def get_monitor_status():
     try:
         summary = services["position_manager"].get_positions_summary()
         cache_stats = services["data_manager"].get_cache_stats()
-        
+
         return jsonify({
             "status": "success",
             "monitoring": True,
@@ -863,11 +854,10 @@ def get_monitor_status():
             "cache_stats": cache_stats,
             "version": VERSION
         })
-        
+
     except Exception as e:
         logger.error(f"Error getting monitor status: {e}")
         return jsonify({"error": str(e)}), 500
-
 
 @app.route("/api/monitor/force-check", methods=["POST"])
 @require_services
@@ -875,7 +865,7 @@ def force_check_positions():
     """Force check all positions immediately"""
     try:
         updates = services["position_manager"].update_positions()
-        
+
         return jsonify({
             "status": "success",
             "message": "Force check completed",
@@ -884,11 +874,10 @@ def force_check_positions():
             "timestamp": time.time(),
             "version": VERSION
         })
-        
+
     except Exception as e:
         logger.error(f"Error in force check: {e}")
         return jsonify({"error": str(e)}), 500
-
 
 @app.route("/api/monitor/check/<symbol>")
 @require_services
@@ -896,7 +885,7 @@ def get_symbol_price(symbol):
     """Get current price for specific symbol"""
     try:
         price = services["data_manager"].get_single_price(symbol.upper())
-        
+
         if price is not None:
             return jsonify({
                 "status": "success", 
@@ -910,11 +899,10 @@ def get_symbol_price(symbol):
                 "error": f"Failed to get price for {symbol}",
                 "symbol": symbol.upper()
             }), 500
-            
+
     except Exception as e:
         logger.error(f"Error getting price for {symbol}: {e}")
         return jsonify({"error": str(e)}), 500
-
 
 @app.route("/api/scheduler/start", methods=["POST"])
 @require_services
@@ -931,7 +919,6 @@ def start_scheduler():
         logger.error(f"Error starting scheduler: {e}")
         return jsonify({"error": str(e)}), 500
 
-
 @app.route("/api/scheduler/stop", methods=["POST"])
 @require_services
 def stop_scheduler():
@@ -946,7 +933,6 @@ def stop_scheduler():
     except Exception as e:
         logger.error(f"Error stopping scheduler: {e}")
         return jsonify({"error": str(e)}), 500
-
 
 @app.route("/api/scheduler/status")
 @require_services
@@ -963,7 +949,6 @@ def get_scheduler_status():
         logger.error(f"Error getting scheduler status: {e}")
         return jsonify({"error": str(e)}), 500
 
-
 @app.route("/api/debug/services")
 @require_services
 def debug_services():
@@ -974,12 +959,12 @@ def debug_services():
             "initialized": services["initialized"],
             "services": {}
         }
-        
+
         # Check each service
         for service_name, service in services.items():
             if service_name == "initialized":
                 continue
-                
+
             if service is None:
                 debug_info["services"][service_name] = "not_available"
             elif service_name == "config_manager":
@@ -1012,14 +997,12 @@ def debug_services():
                     debug_info["services"][service_name] = {"error": str(e)}
             else:
                 debug_info["services"][service_name] = "available"
-        
 
         return jsonify(debug_info)
 
     except Exception as e:
         logger.error(f"Error in debug services: {e}")
         return jsonify({"error": str(e)}), 500
-
 
 # === /api/debug/routes endpoint ===
 @app.get("/api/debug/routes")
@@ -1032,7 +1015,6 @@ def debug_routes():
         out.append({"endpoint": r.endpoint, "methods": methods, "rule": str(r)})
     out.sort(key=lambda x: x["rule"])
     return jsonify({"status": "success", "routes": out, "version": VERSION})
-
 
 @app.route("/api/debug/create_position", methods=["POST"])
 @require_services
@@ -1107,7 +1089,6 @@ def debug_create_position():
 
     return jsonify({"status": "ok", "position_id": pid})
 
-
 # === Debug endpoint: override DataManager symbol price for TP/SL testing ===
 @app.route("/api/debug/set_price", methods=["POST"])
 @require_services
@@ -1161,9 +1142,9 @@ def debug_set_price():
 
 if __name__ == "__main__":
     # ลบพวก raw_port = ... และ if raw_port == ... ทิ้งให้หมด
-    
+
     logger.info(f"🚀 Starting SIGNAL-ALERT {VERSION} on port {port}")
-    
+
     try:
         app.run(host="0.0.0.0", port=port, debug=False)
     except Exception as e:

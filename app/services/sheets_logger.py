@@ -1,148 +1,78 @@
 """
-
 Google Sheets Integration for Trading Signal Logging - REFACTORED for v2.0
-
 Simplified to use ConfigManager for configuration
-
 FIXED: worksheet attribute error + Base64 credentials support
-
 """
 
 import base64
 import json
 import logging
 import os
-
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-
-
 try:
-
     import gspread
-
     from google.oauth2.service_account import Credentials
-
     SHEETS_AVAILABLE = True
-
 except ImportError:
-
     SHEETS_AVAILABLE = False
-
     gspread = None
-
     Credentials = None
-
-
 logger = logging.getLogger(__name__)
-
-
 class SheetsLogger:
     """
-
     REFACTORED Google Sheets Logger for v2.0
-
-
-
     Main responsibilities:
-
     - Connect to Google Sheets using ConfigManager settings
-
     - Log trading signals and results
-
     - Track Trading Journal with Win/Loss tracking
-
     - Calculate Win Rate automatically
-
     - Generate trading statistics
-
-
-
     Uses ConfigManager for:
-
     - Google Sheets ID
-
     - Credentials path/content
-
     """
 
     def __init__(self, config: Dict):
         """
-
         Initialize SheetsLogger with ConfigManager config
-
-
-
         Args:
-
             config: Configuration from ConfigManager.get_google_config()
-
                    Expected keys: 'sheets_id', 'credentials_path'
-
         """
-
         # Configuration from ConfigManager
-
         self.credentials_path = config.get("credentials_path")
-
         self.spreadsheet_id = config.get("sheets_id")
-
         # Connection state
-
         self.gc = None  # Google Sheets client
-
         self.spreadsheet = None  # Spreadsheet object
-
         self._cached_worksheet = None  # Current worksheet cache (FIXED)
-
         self._initialized = False  # Initialization status
-
         # Show configuration status
-
         logger.info("Initializing SheetsLogger v2.0...")
-
         logger.info(f"Credentials configured: {bool(self.credentials_path)}")
-
         logger.info(f"Spreadsheet ID configured: {bool(self.spreadsheet_id)}")
-
         # Check dependencies
-
         if not SHEETS_AVAILABLE:
-
             logger.warning("Google Sheets dependencies not installed")
-
             return
-
         # Check configuration
-
         if not self.credentials_path or not self.spreadsheet_id:
-
             logger.warning("Google Sheets credentials or spreadsheet ID not configured")
-
             logger.warning(
                 f"   Credentials: {'available' if self.credentials_path else 'missing'}"
             )
-
             logger.warning(
                 f"   Spreadsheet ID: {'available' if self.spreadsheet_id else 'missing'}"
             )
-
             return
-
         # Attempt connection
-
         try:
-
             self._initialize_connection()
-
             self._initialized = True
-
             logger.info("SheetsLogger v2.0 initialization completed successfully")
-
         except Exception as e:
-
             logger.error(f"Failed to initialize Google Sheets connection: {e}")
-
             self._initialized = False
 
     @property
@@ -489,13 +419,9 @@ class SheetsLogger:
 
         Log detailed signal information to Signals worksheet
 
-
-
         Args:
 
             analysis: Complete analysis from SignalDetector
-
-
 
         Returns:
 
@@ -634,13 +560,9 @@ class SheetsLogger:
 
         Log tradeable signals to Trading_Journal worksheet
 
-
-
         Args:
 
             analysis: Analysis from SignalDetector
-
-
 
         Returns:
 
@@ -762,15 +684,11 @@ class SheetsLogger:
 
         Log Take Profit hit to Google Sheets
 
-
-
         Args:
 
             position_data: Position information
 
             tp_info: TP hit information
-
-
 
         Returns:
 
@@ -825,15 +743,11 @@ class SheetsLogger:
 
         Log Stop Loss hit to Google Sheets
 
-
-
         Args:
 
             position_data: Position information
 
             sl_info: SL hit information
-
-
 
         Returns:
 
@@ -870,13 +784,9 @@ class SheetsLogger:
 
         Log position closure to Google Sheets
 
-
-
         Args:
 
             position_data: Position information
-
-
 
         Returns:
 
@@ -933,8 +843,6 @@ class SheetsLogger:
 
         Update trading result with TP/SL marks
 
-
-
         Args:
 
             symbol: Trading symbol
@@ -944,8 +852,6 @@ class SheetsLogger:
             triggered_level: Level that was triggered (e.g., "take_profit_1", "stop_loss")
 
             triggered_price: Price at which level was triggered
-
-
 
         Returns:
 
@@ -1182,13 +1088,9 @@ class SheetsLogger:
 
         Generate trading statistics
 
-
-
         Args:
 
             days: Number of days to analyze (simplified - uses all data for now)
-
-
 
         Returns:
 
@@ -1250,13 +1152,9 @@ class SheetsLogger:
 
         Log daily summary to Google Sheets
 
-
-
         Args:
 
             summary_data: Summary data dictionary
-
-
 
         Returns:
 
@@ -1317,13 +1215,9 @@ class SheetsLogger:
 
         Log position update information
 
-
-
         Args:
 
             update_data: Position update data
-
-
 
         Returns:
 

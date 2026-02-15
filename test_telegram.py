@@ -18,7 +18,7 @@ topics = {
 
 def test_send():
     print(f"🚀 เริ่มการทดสอบส่งข้อความ Telegram...")
-    
+
     for thread_id, room_name in topics.items():
         url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
         payload = {
@@ -27,7 +27,7 @@ def test_send():
             "message_thread_id": thread_id,
             "parse_mode": "Markdown"
         }
-        
+
         try:
             res = requests.post(url, json=payload)
             if res.json().get("ok"):

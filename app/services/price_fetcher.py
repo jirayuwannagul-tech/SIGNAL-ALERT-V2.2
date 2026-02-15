@@ -8,14 +8,11 @@ from datetime import datetime, timedelta
 
 from typing import Dict, List, Optional
 
-
 import pandas as pd
 
 import requests
 
-
 logger = logging.getLogger(__name__)
-
 
 class PriceFetcher:
     """Price data fetching from Binance API."""
@@ -36,8 +33,6 @@ class PriceFetcher:
 
         Get kline/candlestick data from Binance.
 
-
-
         Args:
 
             symbol: Trading pair (e.g., 'BTCUSDT')
@@ -45,8 +40,6 @@ class PriceFetcher:
             interval: Timeframe ('1d')
 
             limit: Number of records (max 1000)
-
-
 
         Returns:
 
@@ -151,13 +144,9 @@ class PriceFetcher:
 
         Get current price for a symbol.
 
-
-
         Args:
 
             symbol: Trading pair (e.g., 'BTCUSDT')
-
-
 
         Returns:
 
@@ -196,8 +185,6 @@ class PriceFetcher:
 
         Get price data for multiple symbols.
 
-
-
         Args:
 
             symbols: List of trading pairs
@@ -205,8 +192,6 @@ class PriceFetcher:
             interval: Timeframe
 
             limit: Number of records per symbol
-
-
 
         Returns:
 
@@ -251,15 +236,11 @@ class PriceFetcher:
 
         Validate that DataFrame has sufficient data for analysis.
 
-
-
         Args:
 
             df: DataFrame to validate
 
             min_records: Minimum number of records required
-
-
 
         Returns:
 
@@ -326,13 +307,9 @@ class PriceFetcher:
 
         Get market information for a symbol.
 
-
-
         Args:
 
             symbol: Trading pair
-
-
 
         Returns:
 

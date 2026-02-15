@@ -16,16 +16,12 @@ from typing import Dict, List, Optional
 
 from threading import Thread, Lock
 
-
 logger = logging.getLogger(__name__)
-
 
 class PriceMonitor:
     """
 
     REFACTORED Price Monitor - Now acts as coordinator only
-
-
 
     Main responsibilities:
 
@@ -34,8 +30,6 @@ class PriceMonitor:
     - Handle Google Sheets logging
 
     - Provide monitoring status and controls
-
-
 
     Removed responsibilities (now handled by PositionManager):
 
@@ -51,8 +45,6 @@ class PriceMonitor:
         """
 
         Initialize simplified Price Monitor coordinator
-
-
 
         Args:
 
@@ -103,8 +95,6 @@ class PriceMonitor:
         """
 
         Inject refactored services
-
-
 
         Args:
 
@@ -166,8 +156,6 @@ class PriceMonitor:
         """
 
         Main monitoring loop - simplified coordinator
-
-
 
         This loop now focuses on:
 
@@ -267,8 +255,6 @@ class PriceMonitor:
         """
 
         Process position updates for Google Sheets logging
-
-
 
         Args:
 
@@ -395,8 +381,6 @@ class PriceMonitor:
 
         Force check all positions immediately via PositionManager
 
-
-
         Returns:
 
             Dict with check results
@@ -450,13 +434,9 @@ class PriceMonitor:
 
         Get current price for symbol via DataManager
 
-
-
         Args:
 
             symbol: Trading symbol
-
-
 
         Returns:
 

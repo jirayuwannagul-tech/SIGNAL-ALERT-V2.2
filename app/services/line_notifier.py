@@ -1,407 +1,204 @@
 """LINE Bot notification service for trading signals - REFACTORED for v2.0"""
-
 import logging
-
 import requests
-
 from datetime import datetime
-
 from typing import Dict, Optional
-
-
 from linebot import LineBotApi, WebhookHandler
-
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
-
 from linebot.models import TextSendMessage
-
-
 logger = logging.getLogger(__name__)
-
-
 class LineNotifier:
     """
-
     REFACTORED LINE Bot service for v2.0
-
-
-
     Main responsibilities:
-
     - Send trading signal notifications
-
     - Send position update alerts
-
     - Send daily summaries and error alerts
-
     - Handle LINE webhook verification
-
-
-
     Uses ConfigManager for:
-
     - LINE channel access token
-
     - LINE channel secret
-
     - LINE user ID
-
     """
-
     def __init__(self, config: Dict):
         """
-
         Initialize LINE notifier with ConfigManager config
-
-
-
         Args:
-
             config: Configuration from ConfigManager.get_line_config()
-
                    Expected keys: 'access_token', 'secret', optionally 'user_id'
-
         """
-
         # Configuration from ConfigManager
-
         self.channel_access_token = config.get("access_token")
-
         self.channel_secret = config.get("secret")
-
         self.user_id = config.get("user_id")  # Optional, can be set later
-
         if not self.channel_access_token or not self.channel_secret:
-
             logger.warning(
                 "LINE credentials not fully configured - notifications disabled"
             )
-
             self.line_bot_api = None
-
             self.handler = None
-
             return
-
         try:
-
             self.line_bot_api = LineBotApi(self.channel_access_token)
-
             self.handler = WebhookHandler(self.channel_secret)
-
             logger.info("LineNotifier v2.0 initialized successfully")
-
         except Exception as e:
-
             logger.error(f"LINE Bot initialization failed: {e}")
-
             self.line_bot_api = None
-
             self.handler = None
-
     def send_signal_alert(self, analysis: Dict) -> bool:
         """ส่งสัญญาณเทรดไป LINE และส่งต่อให้จ่าเฉย"""
-
         symbol = analysis.get("symbol", "UNKNOWN")
-
         try:
-
             # 🚨 1. ส่งต่อให้จ่าเฉย (ทำก่อนเลย)
-
             jachey_url = "https://web-production-82bfc.up.railway.app/callback"  # เช็ค URL อีกทีนะครับ
-
             try:
-
                 # ส่ง data ทั้งก้อน (analysis) ไปให้จ่าเลย
-
                 requests.post(jachey_url, json=analysis, timeout=5)
-
                 logger.info(f"👮‍♂️ [RELAY] ข้อมูลถึงจ่าเฉยแล้ว: {symbol}")
-
             except Exception as e:
-
                 logger.error(f"❌ [RELAY] ส่งหาจ่าพลาด: {str(e)}")
-
             # 🚨 2. ส่ง LINE หาพี่ (โค้ดเดิม)
-
             if not self.line_bot_api or not self.user_id:
-
                 return False
-
             signals = analysis.get("signals", {})
-
             if signals.get("buy") or signals.get("short"):
-
                 message = self._create_entry_signal_message(analysis)
-
                 self.line_bot_api.push_message(
                     self.user_id, TextSendMessage(text=message)
                 )
-
                 logger.info(f"✅ LINE ALERT SENT: {symbol}")
-
                 return True
-
             return False
-
         except Exception as e:
-
             logger.error(f"💥 ERROR: {str(e)}")
-
             return False
-
     def send_position_update(self, update_data: Dict) -> bool:
         """
-
         Send position update notification to LINE
-
-
-
         Args:
-
             update_data: Position update data with events and position info
-
-
-
         Returns:
-
             bool: True if message sent successfully
-
         """
-
         try:
-
             if not self.line_bot_api or not self.user_id:
-
                 logger.warning(
                     "LINE not properly configured, cannot send position update"
                 )
-
                 return False
-
             # Check if there are significant events to report
-
             events = update_data.get("events", [])
-
             if not events:
-
                 return False  # No significant update
-
             message = self._create_position_update_message(update_data)
-
             self.line_bot_api.push_message(self.user_id, TextSendMessage(text=message))
-
             logger.info(f"Position update sent: {', '.join(events)}")
-
             return True
-
         except Exception as e:
-
             logger.error(f"Error sending position update: {e}")
-
             return False
-
     def send_daily_summary(self, summary: Dict) -> bool:
         """
-
         Send daily trading summary
-
-
-
         Args:
-
             summary: Daily summary data
-
-
-
         Returns:
-
             bool: True if message sent successfully
-
         """
-
         try:
-
             if not self.line_bot_api or not self.user_id:
-
                 logger.warning(
                     "LINE not properly configured, cannot send daily summary"
                 )
-
                 return False
-
             message = self._create_daily_summary_message(summary)
-
             self.line_bot_api.push_message(self.user_id, TextSendMessage(text=message))
-
             logger.info("Daily summary sent")
-
             return True
-
         except Exception as e:
-
             logger.error(f"Error sending daily summary: {e}")
-
             return False
-
     def _create_entry_signal_message(self, analysis: Dict) -> str:
         """Create formatted message for entry signals - 1D CDC style"""
-
         symbol = analysis.get("symbol", "UNKNOWN")
-
         timeframe = analysis.get("timeframe", "1d")
-
         current_price = analysis.get("current_price", 0)
-
         signals = analysis.get("signals", {})
-
         risk_levels = analysis.get("risk_levels", {})
-
         signal_strength = analysis.get("signal_strength", 0)
-
         # Get risk levels
-
         entry_price = risk_levels.get("entry_price", current_price)
-
         sl_price = risk_levels.get("stop_loss", 0)
-
         tp1_price = risk_levels.get("take_profit_1", 0)
-
         tp2_price = risk_levels.get("take_profit_2", 0)
-
         tp3_price = risk_levels.get("take_profit_3", 0)
-
         rr_ratio = risk_levels.get("risk_reward_ratio", 0)
-
         # Determine direction
-
         if signals.get("buy"):
-
             direction = "LONG"
-
             direction_emoji = "🟢"
-
             # Calculate percentages for LONG
-
             sl_pct = ((sl_price - entry_price) / entry_price) * 100
-
             tp1_pct = ((tp1_price - entry_price) / entry_price) * 100
-
             tp2_pct = ((tp2_price - entry_price) / entry_price) * 100
-
             tp3_pct = ((tp3_price - entry_price) / entry_price) * 100
-
         elif signals.get("short"):
-
             direction = "SHORT"
-
             direction_emoji = "🔴"
-
             # Calculate percentages for SHORT
-
             sl_pct = ((sl_price - entry_price) / entry_price) * 100
-
             tp1_pct = -((entry_price - tp1_price) / entry_price) * 100  # ✅ เป็น -
-
             tp2_pct = -((entry_price - tp2_price) / entry_price) * 100  # ✅ เป็น -
-
             tp3_pct = -((entry_price - tp3_price) / entry_price) * 100  # ✅ เป็น -
-
         else:
-
             direction = "UNKNOWN"
-
             direction_emoji = "❓"
-
             sl_pct = tp1_pct = tp2_pct = tp3_pct = 0
-
         # Calculate R:R ratios for each TP
-
         if sl_pct != 0:
-
             rr1 = abs(tp1_pct / sl_pct)
-
             rr2 = abs(tp2_pct / sl_pct)
-
             rr3 = abs(tp3_pct / sl_pct)
-
         else:
-
             rr1 = rr2 = rr3 = 0
-
         # Get indicator values
-
         indicators = analysis.get("indicators", {})
-
         squeeze = indicators.get("squeeze", {})
-
         macd = indicators.get("macd", {})
-
         rsi = indicators.get("rsi", {})
-
         # ✅ สีและ strategy ตาม timeframe
-
         if timeframe == "1d":
-
             header_emoji = "🔵⚡ CDC ALERT ⚡🔵"
-
             strategy_name = "1D SWING"
-
             # 1D indicators (CDC ActionZone)
-
             ema12 = analysis.get("ema12", 0)
-
             ema26 = analysis.get("ema26", 0)
-
             if ema12 > ema26:
-
                 trend_status = "GREEN Trend"
-
             else:
-
                 trend_status = "RED Trend"
-
             indicator_line = f"""📊 CDC: {trend_status}
-
             📊 RSI: {rsi.get('value', 50):.1f}"""
-
         alert_title = "CDC TREND ALERT"
-
         # Create formatted message
-
         message = f"""{header_emoji} {alert_title} {header_emoji}
-
 ━━━━━━━━━━━━━━━━━
-
 📊 Strategy: {strategy_name}
-
 🪙 {symbol} - {direction} {direction_emoji}
-
 💵 Entry: {entry_price:,.2f}
-
 🛑 SL: {sl_price:,.2f} ({sl_pct:+.1f}%)
-
 🎯 TP1: {tp1_price:,.2f} ({tp1_pct:+.1f}%) [{rr1:.1f}:1]
-
 🎯 TP2: {tp2_price:,.2f} ({tp2_pct:+.1f}%) [{rr2:.1f}:1]
-
 🎯 TP3: {tp3_price:,.2f} ({tp3_pct:+.1f}%) [{rr3:.1f}:1]
-
 {indicator_line}
-
 🕐 {datetime.now().strftime('%H:%M:%S')}
-
 🤖 SIGNAL-ALERT v2.2
-
 ━━━━━━━━━━━━━━━━━"""
-
         return message
-
     def _create_position_update_message(self, update_data: Dict) -> str:
         """Create formatted message for position updates"""
-
         # Extract position and update information
-
         position = update_data.get("position", {})
 
         updates = update_data.get("updates", {})

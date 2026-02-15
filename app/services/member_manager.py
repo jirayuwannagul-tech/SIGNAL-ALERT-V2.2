@@ -4,9 +4,7 @@ from datetime import datetime
 
 from ..models.database import Database
 
-
 logger = logging.getLogger(__name__)
-
 
 class MemberManager:
 

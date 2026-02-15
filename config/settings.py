@@ -17,12 +17,12 @@ class Config:
     # System version and identification
     VERSION = "2.2-refactored"
     DEBUG = os.getenv("DEBUG", "false").lower() == "true"
-    
+
     # Basic settings
     CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", "900"))  # 15 minutes
     TIMEFRAMES = ["15m", "1d"]
     MAX_CONCURRENT_REQUESTS = int(os.getenv("MAX_CONCURRENT_REQUESTS", "10"))
-    
+
     # Refactored service settings
     SIGNAL_COOLDOWN_MINUTES = int(os.getenv("SIGNAL_COOLDOWN_MINUTES", "30"))
     PRICE_MONITOR_INTERVAL = int(os.getenv("PRICE_MONITOR_INTERVAL", "30"))  # seconds
@@ -44,7 +44,7 @@ class Config:
     # Google Sheets (updated for ConfigManager)
     GOOGLE_SHEETS_ID = os.getenv("GOOGLE_SHEETS_ID", "")
     GOOGLE_SHEETS_CREDENTIALS = os.getenv("GOOGLE_SHEETS_CREDENTIALS", "")
-    
+
     # Fix: Unescape JSON string
     _creds_json = os.getenv("GOOGLE_CREDENTIALS_JSON", "")
     if _creds_json:
@@ -52,7 +52,7 @@ class Config:
         _creds_json = _creds_json.strip('"')
         # Replace escaped quotes and newlines
         _creds_json = _creds_json.replace('\\"', '"').replace('\\n', '\n')
-    
+
     GOOGLE_APPLICATION_CREDENTIALS = _creds_json or os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "/app/credentials.json")
 
     # ================================================================
@@ -64,19 +64,19 @@ class Config:
         # Top 10 - Major coins
         "BTCUSDT", "ETHUSDT", "XRPUSDT", "BNBUSDT", "SOLUSDT",
         "ADAUSDT", "DOGEUSDT", "TRXUSDT", "TONUSDT", "LINKUSDT",
-        
+
         # 11-20 - Large caps
         "AVAXUSDT", "DOTUSDT", "LTCUSDT", "NEARUSDT", "UNIUSDT",
         "ICPUSDT", "APTUSDT", "ATOMUSDT", "HBARUSDT", "FILUSDT",
-        
+
         # 21-30 - Mid caps
         "ARBUSDT", "OPUSDT", "SUIUSDT", "INJUSDT", "STXUSDT",
         "IMXUSDT", "AAVEUSDT", "GRTUSDT", "RENDERUSDT", "TIAUSDT",
-        
+
         # 31-40 - DeFi & Layer 1/2
         "POLUSDT", "MKRUSDT", "ALGOUSDT", "LDOUSDT", "VETUSDT",
         "SEIUSDT", "TAOUSDT", "FTMUSDT", "KAVAUSDT", "RUNEUSDT",
-        
+
         # 41-50 - Gaming, Metaverse & Others
         "BEAMXUSDT", "SANDUSDT", "MANAUSDT", "AXSUSDT", "FLOWUSDT",
         "CHZUSDT", "ENSUSDT", "APEUSDT", "QNTUSDT", "EGLDUSDT"
@@ -278,24 +278,24 @@ class Config:
         print("=" * 60)
         print(f"🚀 SIGNAL ALERT SYSTEM v{cls.VERSION} - CONFIGURATION")
         print("=" * 60)
-        
+
         print(f"Check Interval: {cls.CHECK_INTERVAL} seconds")
         print(f"Timeframes: {', '.join(cls.TIMEFRAMES)}")
         print(f"Symbols: {len(cls.DEFAULT_SYMBOLS)} total")
         print(f"Priority Symbols: {len(cls.PRIORITY_SYMBOLS)}")
         print(f"Signal Cooldown: {cls.SIGNAL_COOLDOWN_MINUTES} minutes")
         print(f"Price Monitor Interval: {cls.PRICE_MONITOR_INTERVAL} seconds")
-        
+
         print("\n📡 API Connections:")
         print(f"Binance: {'✅ Configured' if cls.BINANCE_BASE_URL else '❌ Not configured'}")
         print(f"Line Bot: {'✅ Configured' if cls.LINE_CHANNEL_ACCESS_TOKEN else '❌ Not configured'}")
         print(f"Google Sheets: {'✅ Configured' if cls.GOOGLE_SHEETS_ID else '❌ Not configured'}")
-        
+
         print(f"\n🔧 Refactored Services:")
         print(f"ConfigManager: ✅ Ready")
         print(f"DataManager: ✅ Ready")
         print(f"PositionManager: ✅ Ready")
-        
+
         print(f"\n📊 Technical Indicators:")
         for name, settings in cls.INDICATORS.items():
             print(f"{name.upper()}: {settings}")

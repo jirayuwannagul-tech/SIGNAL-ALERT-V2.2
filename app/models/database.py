@@ -34,7 +34,7 @@ class Database:
         """เพิ่มสมาชิกใหม่หรือต่ออายุ"""
         joined_date = datetime.now()
         expiry_date = joined_date + timedelta(days=days)
-        
+
         query = """
         INSERT INTO members (user_id, username, full_name, status, joined_date, expiry_date)
         VALUES (?, ?, ?, 'VIP', ?, ?)

@@ -4,7 +4,6 @@ from typing import Any, Dict, List, Union
 
 import numpy as np
 
-
 def convert_numpy_types(obj: Any) -> Any:
     """
     Convert NumPy types to Python native types for JSON serialization.
@@ -32,14 +31,12 @@ def convert_numpy_types(obj: Any) -> Any:
     else:
         return obj
 
-
 def safe_float(value: Any, default: float = 0.0) -> float:
     """Safely convert value to float."""
     try:
         return float(value)
     except (ValueError, TypeError):
         return default
-
 
 def safe_bool(value: Any, default: bool = False) -> bool:
     """Safely convert value to bool."""

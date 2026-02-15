@@ -6,7 +6,6 @@ import sys
 
 from flask import Flask, jsonify
 
-
 def create_app() -> Flask:
     """Create minimal Flask application."""
     app = Flask(__name__)
@@ -41,7 +40,6 @@ def create_app() -> Flask:
 
     logger.info("Minimal Flask app initialized")
     return app
-
 
 if __name__ == "__main__":
     try:
