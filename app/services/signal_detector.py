@@ -334,6 +334,9 @@ class SignalDetector:
                 ema12_prev = df["ema12"].iloc[-2]
                 ema26_prev = df["ema26"].iloc[-2]
                 price_curr = df["close"].iloc[-1]
+                logger.info(
+                    f"[1D-THRESHOLD] price={float(price_curr):.2f} ema12={float(ema12_curr):.2f} ema26={float(ema26_curr):.2f} | SELL if price<ema12 and ema12<ema26 | BUY if price>ema12 and ema12>ema26"
+                )
                 # -------------------------
                 # 1) Cross Entry (เริ่มเทรนด์)
                 # -------------------------

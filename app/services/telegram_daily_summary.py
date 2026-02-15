@@ -32,6 +32,55 @@ def send_daily_summary():
             positions = resolved
     else:
         positions = []
+
+    # ===============================
+    # สถิติวันนี้ (Open / Close / TP / SL)
+    # ===============================
+    tz_today = datetime.now().date()
+    opened_today = 0
+    closed_today = 0
+    tp_today = 0
+    sl_today = 0
+
+    # โหลดทุก position (รวมที่ปิดแล้ว ถ้ามีใน store)
+    all_positions = getattr(pm, "active_positions", {}) or {}
+    if isinstance(all_positions, dict):
+        all_positions = list(all_positions.values())
+
+    for p in all_positions:
+        try:
+            # นับเปิดวันนี้
+            entry_time = p.get("entry_time")
+            if entry_time:
+                dt = datetime.fromisoformat(entry_time.replace("Z", "+00:00"))
+                if dt.date() == tz_today:
+                    opened_today += 1
+
+            # นับปิดวันนี้
+            close_time = p.get("close_time")
+            if close_time:
+                dt = datetime.fromisoformat(close_time.replace("Z", "+00:00"))
+                if dt.date() == tz_today:
+                    closed_today += 1
+
+            # นับ TP / SL วันนี้จาก events
+            events = p.get("events") or {}
+            for k in ("TP1", "TP2", "TP3", "SL"):
+                e = events.get(k)
+                if not e or not isinstance(e, dict):
+                    continue
+                ts = e.get("timestamp")
+                if not ts:
+                    continue
+                dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+                if dt.date() != tz_today:
+                    continue
+                if k == "SL":
+                    sl_today += 1
+                else:
+                    tp_today += 1
+        except Exception:
+            continue
     tf_1d = 0
     tf_15m = 0
     for p in positions or []:
@@ -41,14 +90,16 @@ def send_daily_summary():
         elif tf == "15m":
             tf_15m += 1
     header = [
-        "📊 *DAILY SUMMARY*",
-        f"📅 `{datetime.now().strftime('%Y-%m-%d')}`",
-        f"📦 Total Signals: {len(positions) if positions else 0}",
-        f"   • 1D: {tf_1d}",
-        f"   • 15m: {tf_15m}",
-        f"🟢 Active Positions: {len(positions) if positions else 0}",
-        "🔴 Closed Positions: 0",
-        "━━━━━━━━━━━━━━━━━",
+        "📊 *สรุปผลการเทรดประจำวัน*",
+        f"📅 วันที่ `{datetime.now().strftime('%d/%m/%Y')}`",
+        f"📦 จำนวนไม้ที่เปิดอยู่ตอนนี้: {len(positions) if positions else 0}",
+        f"🆕 เปิดวันนี้: {opened_today} ไม้",
+        f"🔒 ปิดวันนี้: {closed_today} ไม้",
+        f"🎯 TP วันนี้: {tp_today} ครั้ง",
+        f"🛑 SL วันนี้: {sl_today} ครั้ง",
+        f"   • TF 1D: {tf_1d} ไม้",
+        f"   • TF 15m: {tf_15m} ไม้",
+        "━━━━━━━━━━━━━━━━━━",
     ]
     topic_normal = _to_int_env("TOPIC_NORMAL_ID", 0)
     if not positions:
@@ -89,15 +140,16 @@ def send_daily_summary():
             hit.append("⏳ ยังไม่ถึงเป้า")
         emoji = "🟢" if pnl > 0 else "🔴" if pnl < 0 else "⚪"
         block = (
-            f"🪙 *{symbol}* `{tf}` {direction}\n"
-            f"💵 Entry: `{entry:,.2f}`\n"
-            f"🛑 SL: `{sl:,.2f}`\n"
-            f"🎯 TP1: `{tp1:,.2f}`\n"
-            f"🎯 TP2: `{tp2:,.2f}`\n"
-            f"🎯 TP3: `{tp3:,.2f}`\n"
-            f"{emoji} *PnL:* `{pnl:+.2f}%`\n"
-            f"📌 Status: {' | '.join(hit)}\n"
-            f"━━━━━━━━━━━━━━━━━"
+            f"🪙 *{symbol}*  |  TF `{tf}`  |  {direction}\n"
+            f"💰 ราคาเข้า: `{entry:,.2f}`\n"
+            f"📍 ราคาปัจจุบัน: `{current:,.2f}`\n"
+            f"🛑 Stop Loss: `{sl:,.2f}`\n"
+            f"🎯 เป้ากำไร TP1: `{tp1:,.2f}`\n"
+            f"🎯 เป้ากำไร TP2: `{tp2:,.2f}`\n"
+            f"🎯 เป้ากำไร TP3: `{tp3:,.2f}`\n"
+            f"{emoji} กำไร/ขาดทุน: `{pnl:+.2f}%`\n"
+            f"📌 สถานะปัจจุบัน: {' | '.join(hit)}\n"
+            f"━━━━━━━━━━━━━━━━━━"
         )
         blocks.append(block)
     tg.send_message("\n".join(header + blocks), thread_id=topic_normal)
