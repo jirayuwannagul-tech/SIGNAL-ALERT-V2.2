@@ -207,17 +207,12 @@ def initialize_services_background():
             services["performance_analyzer"] = None
 
         # Step 8: Start automatic position monitoring
-        if services["position_manager"]:
-            try:
-                # Start background position monitoring thread
-                monitor_thread = Thread(
-                    target=start_position_monitoring,
-                    daemon=True
-                )
-                monitor_thread.start()
-                logger.info("✅ Background position monitoring started")
-            except Exception as e:
-                logger.warning(f"⚠️ Failed to start background monitoring: {e}")
+        # DISABLED: prevent duplicate TP/SL notifications.
+        # Use SignalScheduler._update_positions_refactored as the single source for TP/SL alerts.
+        # (Keep endpoints like /api/positions/update for manual/health usage only.)
+        #
+        # If you want to re-enable later, ensure ONLY ONE component calls update_positions() for alerts.
+        pass
 
         services["initialized"] = True
         logger.info(f"🎉 All services initialized successfully! SIGNAL-ALERT {VERSION} ready")
@@ -277,18 +272,7 @@ def start_position_monitoring():
                                             "events": [f"{tp_level} hit"],
                                             "updates": update_info
                                         })
-                                    if services.get("telegram_notifier"):
-                                        services["telegram_notifier"].send_tp_sl_alert({
-                                            "symbol": position.get("symbol"),
-                                            "timeframe": position.get("timeframe"),
-                                            "side": position.get("direction"),
-                                            "entry": position.get("entry_price"),
-                                            "tp_levels": position.get("tp_levels"),
-                                            "sl_level": position.get("sl_level"),
-                                            "tp_hit": position.get("tp_hit"),
-                                            "sl_hit": position.get("sl_hit"),
-                                            "event": tp_level
-                                        })
+                                    # TG TP/SL alerts disabled here (single source is SignalScheduler._update_positions_refactored)
                                     logger.info(f"✅ Notified {tp_level} hit for {position_id}")
                                 except Exception as e:
                                     logger.error(f"Notify {tp_level} error: {e}")
@@ -302,18 +286,7 @@ def start_position_monitoring():
                                         "events": ["SL hit"],
                                         "updates": update_info
                                     })
-                                if services.get("telegram_notifier"):
-                                    services["telegram_notifier"].send_tp_sl_alert({
-                                        "symbol": position.get("symbol"),
-                                        "timeframe": position.get("timeframe"),
-                                        "side": position.get("direction"),
-                                        "entry": position.get("entry_price"),
-                                        "tp_levels": position.get("tp_levels"),
-                                        "sl_level": position.get("sl_level"),
-                                        "tp_hit": position.get("tp_hit"),
-                                        "sl_hit": True,
-                                        "event": "SL"
-                                    })
+                                # TG TP/SL alerts disabled here (single source is SignalScheduler._update_positions_refactored)
                                 logger.info(f"✅ Notified SL hit for {position_id}")
                             except Exception as e:
                                 logger.error(f"Notify SL error: {e}")
@@ -552,7 +525,7 @@ def receive_signal_from_outside():
                 tg_bot = TelegramNotifier(tg_token, tg_chat_id)
                 # ✅ disabled: prevent duplicate TG alerts (scheduler will handle)
                 # tg_bot.send_signal_alert(analysis)
-                logger.info(f"✅ พ่นสัญญาณลง Telegram สำเร็จแล้วครับพี่!")
+                logger.info("Telegram disabled in /receive-signal (scheduler handles alerts)")
             else:
                 logger.warning("⚠️ ข้าม Telegram: ไม่พบ TOKEN หรือ CHAT_ID ใน Variables")
         except Exception as e:
@@ -1074,18 +1047,9 @@ def debug_create_position():
         "signal_strength": 100,
     }
 
-    # ส่ง Telegram ทดสอบ (ถ้ามี)
-    try:
-        tn = services.get("telegram_notifier") or services.get("telegram")
-        if tn:
-            if hasattr(tn, "send_signal_alert"):
-                tn.send_signal_alert(telegram_data)
-            elif hasattr(tn, "notify_signal"):
-                tn.notify_signal(telegram_data)
-            elif hasattr(tn, "send_message"):
-                tn.send_message(f"TEST SIGNAL {symbol} {timeframe} {direction} @ {price}")
-    except Exception as e:
-        logger.error(f"Telegram send failed in debug_create_position: {e}")
+    # disabled: prevent duplicate TG alerts (scheduler handles alerts)
+    # (debug endpoint must not send to Telegram in production)
+    pass
 
     return jsonify({"status": "ok", "position_id": pid})
 

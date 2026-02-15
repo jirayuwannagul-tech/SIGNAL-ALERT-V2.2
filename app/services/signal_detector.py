@@ -183,9 +183,8 @@ class SignalDetector:
                     self.signal_history.clear_opposite_signal(
                         symbol, timeframe, signal_type
                     )
-                if self.telegram_notifier and should_notify:
-                    logger.info(f"📤 Sending Telegram alert: {symbol} {timeframe}")
-                    self.telegram_notifier.send_signal_alert(result)
+                # NOTE: Telegram sending is handled by Scheduler/Trading pipeline only.
+                # (Prevent double-send: SignalDetector should not send Telegram directly.)
                 # ===================================================================
             return result
         except Exception as e:

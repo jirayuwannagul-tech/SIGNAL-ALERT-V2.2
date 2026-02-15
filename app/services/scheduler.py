@@ -243,9 +243,19 @@ class SignalScheduler:
             # ใหม่: record ไว้ได้ แต่ "ไม่หยุด" ให้ส่งต่อได้เลย
             if not signal.get("position_created", False):
                 self._record_signal(symbol, timeframe, direction)
-            # ===== Telegram ส่งจาก analyze_symbol() แล้ว ไม่ต้องส่งซ้ำ =====
+            # ===== Single-source: Trading first, then notify (Scheduler only) =====
+            if not signal.get("position_created", False):
+                # ไม่มีการเปิด position จริง -> ไม่ส่งแจ้งเตือน/ไม่บันทึก trading journal
+                return False
+
+            if self.telegram_notifier:
+                try:
+                    self.telegram_notifier.send_signal_alert(signal)
+                except Exception as tg_err:
+                    logger.error(f"Telegram send_signal_alert failed: {tg_err}")
+
             logger.info(
-                f"✅ Signal processed: {signal.get('symbol')} {timeframe} {direction}"
+                f"✅ Trading+Notify: {signal.get('symbol')} {timeframe} {direction}"
             )
             # ช่องทางสำรองอื่นๆ
             if self.line_notifier:
