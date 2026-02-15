@@ -77,14 +77,21 @@ class TechnicalIndicators:
                             else:
                                 momentum_direction = "NEUTRAL"
             # Additional details for analysis
+            bb_width = float(upper_bb.iloc[-1] - lower_bb.iloc[-1])
+            kc_width = float(upper_kc.iloc[-1] - lower_kc.iloc[-1])
+            # Guard: avoid division by zero / NaN in squeeze_intensity
+            if kc_width == 0.0 or np.isnan(kc_width):
+                squeeze_intensity = 0.0
+            else:
+                squeeze_intensity = bb_width / kc_width
+
             details = {
                 "bb_upper": float(upper_bb.iloc[-1]),
                 "bb_lower": float(lower_bb.iloc[-1]),
                 "kc_upper": float(upper_kc.iloc[-1]),
                 "kc_lower": float(lower_kc.iloc[-1]),
                 "momentum_value": float(momentum_value),
-                "squeeze_intensity": float(upper_bb.iloc[-1] - lower_bb.iloc[-1])
-                / float(upper_kc.iloc[-1] - lower_kc.iloc[-1]),
+                "squeeze_intensity": float(squeeze_intensity),
             }
             # Ensure boolean is Python native type
             squeeze_off = bool(squeeze_off)
